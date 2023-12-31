@@ -14,6 +14,7 @@ export class Move {
         let face, shallow = 1, deep = 1, amount = 1;
         const stream = new SiGNTokenInputStream(moveString);
         let char = stream.input.peek();
+        let shallowSpecified = false;
         if (stream.isNumber(char)) {
             deep = Number.parseInt(stream.readNumber());
             if (stream.input.peek() === "-") {
@@ -21,10 +22,11 @@ export class Move {
                 let newDeep = Number.parseInt(stream.readNumber());
                 shallow = deep;
                 deep = newDeep;
+                shallowSpecified = true;
             }
         }
         face = stream.input.next();
-        if (face === face.toUpperCase() && stream.input.peek() !== "w" && deep !== 1) {
+        if (face === face.toUpperCase() && stream.input.peek() !== "w" && !shallowSpecified && deep !== 1) {
             shallow = deep;
         }
         if (stream.input.peek() === "w" || face === face.toLowerCase()) {

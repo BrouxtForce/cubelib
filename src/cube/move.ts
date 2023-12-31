@@ -26,6 +26,7 @@ export class Move implements AlgNode {
         let char = stream.input.peek();
 
         // Wide layer turns
+        let shallowSpecified = false;
         if (stream.isNumber(char)) {
             deep = Number.parseInt(stream.readNumber());
 
@@ -34,6 +35,7 @@ export class Move implements AlgNode {
                 let newDeep = Number.parseInt(stream.readNumber());
                 shallow = deep;
                 deep = newDeep;
+                shallowSpecified = true;
             }
         }
 
@@ -41,7 +43,7 @@ export class Move implements AlgNode {
         face = stream.input.next();
 
         // Ex: 2R is 2-2r, so shallow and deep should both be 2. Check against 'w' because 2Rw != 2-2r
-        if (face === face.toUpperCase() && stream.input.peek() !== "w" && deep !== 1) {
+        if (face === face.toUpperCase() && stream.input.peek() !== "w" && !shallowSpecified && deep !== 1) {
             shallow = deep;
         }
 
