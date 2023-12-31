@@ -1,0 +1,17 @@
+{
+    "compilerOptions": {
+        "incremental": true,
+        "tsBuildInfoFile": "./build/build-info.tsbuildinfo",
+        "target": "es2020",
+        "module": "es2022",
+        "allowJs": true,
+        "outDir": "./build",
+        "removeComments": true,
+        "esModuleInterop": true,
+        "forceConsistentCasingInFileNames": true,
+        "strict": true,
+        "skipLibCheck": true,
+        "rootDir": "./src"
+    },
+    "include": ["src/**/*"]
+}
