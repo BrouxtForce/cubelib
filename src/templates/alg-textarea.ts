@@ -55,14 +55,46 @@ export class AlgTextarea extends HTMLElement {
         this.appendChild(this.textarea);
         this.appendChild(this.errorDiv);
 
-        // Load the CSS if it hasn't been loaded yet
-        if (!document.querySelector("link#alg-textarea")) {
-            const link = document.createElement("link");
-            link.id = "alg-textarea";
-            link.rel = "stylesheet";
-            link.type = "text/css";
-            link.href = "/src/cubing/templates/alg-textarea.css";
-            document.head.appendChild(link);
+        // Embed the CSS if it hasn't been embedded yet
+        const STYLE_ID = "alg-textarea-style";
+        if (!document.querySelector(`style#${STYLE_ID}`)) {
+            const style = document.createElement("style");
+            style.id = STYLE_ID;
+            style.textContent = `
+                alg-textarea textarea, alg-textarea .rows-ruler {
+                    position: relative;
+                    width: 100%;
+                    background-color: #444;
+                    box-sizing: border-box;
+                    font-family: Arial, Helvetica, sans-serif;
+                    font-size: 1.5em;
+                    padding: 0.75em;
+                    resize: none;
+                    line-height: 1.2em;
+                    overflow: hidden;
+                }
+                alg-textarea textarea.invalid {
+                    background-color: #933;
+                }
+                alg-textarea .error-message {
+                    position: relative;
+                    width: 100%;
+                    background-color: #b66;
+                    color: white;
+                    font-family: Arial, Helvetica, sans-serif;
+                    text-align: center;
+                    padding: 0.25em;
+                    box-sizing: border-box;
+                    display: none;
+                }
+                alg-textarea .rows-ruler {
+                    position: absolute;
+                    pointer-events: none;
+                    white-space: pre-wrap;
+                    visibility: hidden;
+                }
+            `;
+            document.head.appendChild(style);
         }
     }
     static get observedAttributes() {

@@ -212,6 +212,84 @@ export class AlgInput extends HTMLElement {
         this.appendChild(this.placeholderDiv);
         this.appendChild(this.textInput);
         this.appendChild(this.errorDiv);
+        const STYLE_ID = "alg-input-style";
+        if (!document.querySelector(`style#${STYLE_ID}`)) {
+            const style = document.createElement("style");
+            style.id = STYLE_ID;
+            style.textContent = `
+                alg-input {
+                    background-color: #444;
+                    display: block;
+                    position: relative;
+                }
+
+                alg-input .text-input {
+                    position: relative;
+                    line-height: 1.2em;
+                    width: 100%;
+                    box-sizing: border-box;
+                    font-family: Arial, Helvetica, sans-serif;
+                    font-size: 1.5em;
+                    padding: 0.75em;
+                    margin: 0;
+                    border-radius: 0;
+                    color: white;
+                    border: 1px solid #777;
+                    display: inline-block;
+                    white-space: pre-wrap;
+                    word-wrap: break-word;
+                }
+
+                alg-input .placeholder {
+                    position: absolute;
+                    line-height: 1.2em;
+                    font-size: 1.5em;
+                    padding: 0.75em;
+                    color: #777;
+                    user-select: none;
+                    pointer-events: none;
+                }
+
+                alg-input .error-message {
+                    position: relative;
+                    width: 100%;
+                    background-color: #b66;
+                    color: white;
+                    font-family: Arial, Helvetica, sans-serif;
+                    text-align: center;
+                    padding: 0.25em;
+                    box-sizing: border-box;
+                    display: none;
+                }
+
+                alg-input .rows-ruler {
+                    position: absolute;
+                    width: 0px;
+                    right: 0;
+                    opacity: 0;
+                }
+
+                .text-input span {
+                    background-color: transparent;
+                }
+                .text-input span.comment {
+                    color: #888;
+                    font-style: italic;
+                }
+                .text-input span.move {
+                    color: #ddd;
+                }
+                .text-input span.punctuation {
+                    /* color: white; */
+                    color: #aaa;
+                }
+                .text-input span.rotation {
+                    /* color: yellow; */
+                    color: skyblue;
+                }
+            `;
+            document.head.appendChild(style);
+        }
         const link = document.createElement("link");
         link.rel = "stylesheet";
         link.href = "/src/cubing/templates/alg-input.css";
