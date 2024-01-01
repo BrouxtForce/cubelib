@@ -13,7 +13,7 @@ export class CharacterInputStream {
         this.input = input;
     }
 
-    next() {
+    next(): string {
         let char = this.input.charAt(this.pos);
         this.pos++;
         if (char === "\n") {
@@ -24,15 +24,19 @@ export class CharacterInputStream {
         }
         return char;
     }
-    peek() {
+    peek(): string {
         return this.input.charAt(this.pos);
     }
-    eof() {
+    match(str: string): boolean {
+        return this.input.substring(this.pos, this.pos + str.length) === str;
+    }
+    eof(): boolean {
         return this.peek() === "";
     }
-    croak(message: string) {
+    croak(message: string): never {
         throw `Error Ln ${this.line} Col ${this.col}: ${message}`;
     }
+
 }
 
 export interface SiGNToken {
@@ -61,13 +65,10 @@ export class SiGNTokenInputStream {
     isNumber(char: string): boolean {
         return "0123456789".indexOf(char) > -1;
     }
-    isForwardSlash(char: string): boolean {
-        return char === "/";
-    }
 
-    readWhile(func: (char: string) => any): string {
+    readWhile(predicate: (char: string) => any): string {
         let stringArray: string[] = [];
-        while (!this.input.eof() && func(this.input.peek())) {
+        while (!this.input.eof() && predicate(this.input.peek())) {
             stringArray.push(this.input.next());
         }
         return stringArray.join("");
@@ -76,126 +77,137 @@ export class SiGNTokenInputStream {
         return this.readWhile(this.isNumber);
     }
     readMove(): string {
-        let move = "";
+        let moveString = "";
+
+        // Check for both number prefixes
         if (this.isNumber(this.input.peek())) {
-            move += this.readNumber();
+            moveString += this.readNumber();
         }
         if (this.input.peek() === "-") {
-            move += this.input.next();
-            move += this.readNumber();
+            moveString += this.input.next();
+            moveString += this.readNumber();
         }
 
-        move += this.input.next();
+        const face = this.input.next();
+        moveString += face;
+
+        // Check for number suffix
         let char = this.input.peek();
         if (this.isNumber(char)) {
-            move += this.readNumber();
+            moveString += this.readNumber();
             if (this.input.peek() === "'") {
-                move += this.input.next();
+                moveString += this.input.next();
             }
-            return move;
+            return moveString;
         }
+
+        // Check for wide and inverse moves
         switch (char) {
             case "w":
-                if ("UFRBLD".indexOf(move[move.length - 1]) === -1) {
+                if ("UFRBLD".indexOf(face) === -1) {
                     this.input.croak("Invalid move before 'w'");
                 }
-                move += this.input.next();
+                moveString += this.input.next();
                 if (this.isNumber(this.input.peek())) {
-                    move += this.readNumber();
+                    moveString += this.readNumber();
                 }
                 if (this.input.peek() === "'") {
-                    move += this.input.next();
+                    moveString += this.input.next();
                 }
-                return move;
+                return moveString;
             case "'":
-                return move + this.input.next();
+                return moveString + this.input.next();
         }
-        return move;
+        return moveString;
     }
     readPunc(): string {
         return this.input.next();
     }
     readCommentToken(): { type: "lineComment" | "blockComment", value: string } | null {
-        this.input.next(); // First '/' in comment declaration
-        if (this.input.peek() === "/") {
-            this.input.next();
-            
-            let comment = this.readWhile((char: string) => char !== "\n");
-            return {
-                type: "lineComment",
-                value: comment
-            };
-        }
-        if (this.input.peek() === "*") {
-            this.input.next();
+        // Both line comments and block comments start with '/', so we can skip this value
+        this.input.next();
+    
+        switch (this.input.peek()) {
+            // Line comment: Read until end of line
+            case "/": {
+                // Skip the '/'
+                this.input.next();
 
-            let comment = "";
-            let char = "";
-            while (!this.input.eof()) {
-                char = this.input.next();
-                if (char === "*" && this.input.peek() === "/") {
-                    this.input.next();
-                    return {
-                        type: "blockComment",
-                        value: comment
-                    };
-                } else {
-                    comment += char;
-                }
+                let comment = this.readWhile((char: string) => char !== "\n");
+                return {
+                    type: "lineComment",
+                    value: comment
+                };
             }
-            this.input.croak("Syntax Error: Missing end to multi-line comment.");
-            return null;
+            // Block comment: Read until matching "*/"
+            case "*": {
+                // Skip the '*'
+                this.input.next();
+
+                let comment = "";
+                while (!this.input.eof()) {
+                    comment += this.readWhile(char => char !== "*");
+                    if (this.input.match("*/")) {
+                        this.input.next(); // Reads '*'
+                        this.input.next(); // Reads '/'
+                        return {
+                            type: "blockComment",
+                            value: comment
+                        };
+                    }
+                    // Read the '*' to avoid an infinite loop
+                    this.input.next();
+                }
+                this.input.croak("Syntax Error: Missing end to multi-line comment.");
+            }
+            default:
+                this.input.croak("Syntax Error: Random forward slash.");
         }
-        this.input.croak("Syntax Error: Random forward slash.");
-        return null;
     }
     readWhitespace(): string {
         return this.readWhile(this.isWhitespace);
     }
 
     readNext(): SiGNToken | null {
-        while (true) {
-            if (this.input.eof()) {
-                return null;
-            }
-
-            let char = this.input.peek();
-            if (this.isWhitespace(char)) {
-                return {
-                    type: "whitespace",
-                    value: this.readWhitespace()
-                };
-            }
-            if (this.isMove(char) || this.isNumber(char)) {
-                return {
-                    type: "move",
-                    value: this.readMove()
-                };
-            }
-            if (this.isPunctuation(char)) {
-                let token: SiGNToken = {
-                    type: "punctuation",
-                    value: this.readPunc()
-                };
-                if ((this.isNumber(this.input.peek()) || this.input.peek() === "'") && (token.value === ")" || token.value === "]")) {
-                    token.amount = Number.parseInt(this.readNumber());
-                    if (isNaN(token.amount)) {
-                        token.amount = 1;
-                    }
-                    if (this.input.peek() === "'") {
-                        this.input.next();
-                        token.amount *= -1;
-                    }
-                }
-                return token;
-            }
-            if (this.isForwardSlash(char)) {
-                // It's fine if it returns null because the alg will not finish parsing if there is an error
-                return this.readCommentToken();
-            }
-
-            this.input.croak(`Syntax Error: ${char}`);
+        if (this.input.eof()) {
+            return null;
         }
+
+        let char = this.input.peek();
+        if (this.isWhitespace(char)) {
+            return {
+                type: "whitespace",
+                value: this.readWhitespace()
+            };
+        }
+        if (this.isMove(char) || this.isNumber(char)) {
+            return {
+                type: "move",
+                value: this.readMove()
+            };
+        }
+        if (this.isPunctuation(char)) {
+            let token: SiGNToken = {
+                type: "punctuation",
+                value: this.readPunc()
+            };
+            if ((this.isNumber(this.input.peek()) || this.input.peek() === "'") && (token.value === ")" || token.value === "]")) {
+                token.amount = Number.parseInt(this.readNumber());
+                if (isNaN(token.amount)) {
+                    token.amount = 1;
+                }
+                if (this.input.peek() === "'") {
+                    this.input.next();
+                    token.amount *= -1;
+                }
+            }
+            return token;
+        }
+        if (char === "/") {
+            return this.readCommentToken();
+        }
+
+        this.input.croak(`Syntax Error: Unexpected character: '${char}'`);
     }
 }
 
