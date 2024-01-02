@@ -5,6 +5,7 @@ export class CharacterInputStream {
         this.col = 0;
         this.input = input;
     }
+    get string() { return this.input; }
     next() {
         let char = this.input.charAt(this.pos);
         this.pos++;
@@ -20,6 +21,11 @@ export class CharacterInputStream {
     peek() {
         return this.input.charAt(this.pos);
     }
+    skip(length) {
+        for (let i = 0; i < length && this.pos < this.input.length; i++) {
+            this.next();
+        }
+    }
     match(str) {
         return this.input.substring(this.pos, this.pos + str.length) === str;
     }
@@ -32,19 +38,34 @@ export class CharacterInputStream {
 }
 export class SiGNTokenInputStream {
     constructor(input) {
+        this.variableSet = new Set();
         this.input = new CharacterInputStream(input);
     }
     isWhitespace(char) {
         return " \t\n".indexOf(char) > -1;
     }
     isPunctuation(char) {
-        return "[](),:".indexOf(char) > -1;
+        return "[](),:=".indexOf(char) > -1;
     }
     isMove(char) {
         return "ufrbldmesxyz".indexOf(char.toLowerCase()) > -1;
     }
     isNumber(char) {
         return "0123456789".indexOf(char) > -1;
+    }
+    isVariable(char) {
+        return (char >= "a" && char <= "z") || (char >= "A" && char <= "Z");
+    }
+    peekVariable() {
+        const str = this.input.string;
+        for (let i = this.input.pos; i < str.length; i++) {
+            const char = str[i];
+            if ((char >= "a" && char <= "z") || (char >= "A" && char <= "Z")) {
+                continue;
+            }
+            return str.substring(this.input.pos, i);
+        }
+        return str.substring(this.input.pos);
     }
     readWhile(predicate) {
         let stringArray = [];
@@ -141,6 +162,41 @@ export class SiGNTokenInputStream {
                 type: "whitespace",
                 value: this.readWhitespace()
             };
+        }
+        if (this.isVariable(char)) {
+            const variable = this.peekVariable();
+            if (this.variableSet.has(variable)) {
+                this.input.skip(variable.length);
+                let amount = 1;
+                if (this.isNumber(this.input.peek())) {
+                    amount = Number.parseInt(this.readNumber());
+                }
+                if (this.input.peek() === "'") {
+                    this.input.next();
+                    amount *= -1;
+                }
+                return {
+                    type: "variable",
+                    value: variable,
+                    amount: amount
+                };
+            }
+            const str = this.input.string;
+            for (let i = this.input.pos + variable.length; i < str.length; i++) {
+                const char = str[i];
+                if (this.isWhitespace(char)) {
+                    continue;
+                }
+                if (char === "=") {
+                    this.variableSet.add(variable);
+                    this.input.skip(variable.length);
+                    return {
+                        type: "variable",
+                        value: variable
+                    };
+                }
+                break;
+            }
         }
         if (this.isMove(char) || this.isNumber(char)) {
             return {

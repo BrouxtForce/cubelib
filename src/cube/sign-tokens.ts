@@ -13,6 +13,8 @@ export class CharacterInputStream {
         this.input = input;
     }
 
+    get string(): string { return this.input; }
+
     next(): string {
         let char = this.input.charAt(this.pos);
         this.pos++;
@@ -27,6 +29,11 @@ export class CharacterInputStream {
     peek(): string {
         return this.input.charAt(this.pos);
     }
+    skip(length: number): void {
+        for (let i = 0; i < length && this.pos < this.input.length; i++) {
+            this.next();
+        }
+    }
     match(str: string): boolean {
         return this.input.substring(this.pos, this.pos + str.length) === str;
     }
@@ -36,17 +43,18 @@ export class CharacterInputStream {
     croak(message: string): never {
         throw `Error Ln ${this.line} Col ${this.col}: ${message}`;
     }
-
 }
 
 export interface SiGNToken {
-    type: "move" | "punctuation" | "whitespace" | "lineComment" | "blockComment";
+    type: "move" | "punctuation" | "whitespace" | "lineComment" | "blockComment" | "variable";
     value: string;
-    amount?: number; // Only used for punctuation
+    amount?: number; // Only used for punctuation and variables
 }
 
 export class SiGNTokenInputStream {
     public input: CharacterInputStream;
+
+    private variableSet: Set<string> = new Set();
 
     constructor(input: string) {
         this.input = new CharacterInputStream(input);
@@ -57,13 +65,28 @@ export class SiGNTokenInputStream {
         return " \t\n".indexOf(char) > -1;
     }
     isPunctuation(char: string): boolean {
-        return "[](),:".indexOf(char) > -1;
+        return "[](),:=".indexOf(char) > -1;
     }
     isMove(char: string): boolean {
         return "ufrbldmesxyz".indexOf(char.toLowerCase()) > -1;
     }
     isNumber(char: string): boolean {
         return "0123456789".indexOf(char) > -1;
+    }
+    isVariable(char: string): boolean {
+        return (char >= "a" && char <= "z") || (char >= "A" && char <= "Z");
+    }
+
+    peekVariable(): string {
+        const str = this.input.string;
+        for (let i = this.input.pos; i < str.length; i++) {
+            const char = str[i];
+            if ((char >= "a" && char <= "z") || (char >= "A" && char <= "Z")) {
+                continue;
+            }
+            return str.substring(this.input.pos, i);
+        }
+        return str.substring(this.input.pos);
     }
 
     readWhile(predicate: (char: string) => any): string {
@@ -179,6 +202,51 @@ export class SiGNTokenInputStream {
                 type: "whitespace",
                 value: this.readWhitespace()
             };
+        }
+        // This is slightly annoying, because some variable names may be valid SiGN notation.
+        // To handle this, any "word" found in the scramble will only be handled as a variable
+        // if the variable has already been declared or if the next relevant token is a '='.
+        if (this.isVariable(char)) {
+            const variable = this.peekVariable();
+            if (this.variableSet.has(variable)) {
+                // Read over the variable
+                this.input.skip(variable.length);
+
+                let amount = 1;
+
+                if (this.isNumber(this.input.peek())) {
+                    amount = Number.parseInt(this.readNumber());
+                }
+                if (this.input.peek() === "'") {
+                    this.input.next(); // Reads the apostrophe
+                    amount *= -1;
+                }
+
+                return {
+                    type: "variable",
+                    value: variable,
+                    amount: amount
+                };
+            }
+
+            // If the next token is an '=', then this must be a variable
+            // Otherwise, it's either a SiGN move or it's illegal
+            const str = this.input.string;
+            for (let i = this.input.pos + variable.length; i < str.length; i++) {
+                const char = str[i];
+                if (this.isWhitespace(char)) {
+                    continue;
+                }
+                if (char === "=") {
+                    this.variableSet.add(variable);
+                    this.input.skip(variable.length);
+                    return {
+                        type: "variable",
+                        value: variable
+                    };
+                }
+                break;
+            }
         }
         if (this.isMove(char) || this.isNumber(char)) {
             return {
