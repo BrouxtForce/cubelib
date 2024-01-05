@@ -1,8 +1,11 @@
 import { Alg } from "../cube/alg.js";
 export class AlgTextarea extends HTMLElement {
+    textarea;
+    errorDiv;
+    rowsRulerDiv;
+    animationFrame = 0;
     constructor() {
         super();
-        this.animationFrame = 0;
         this.textarea = document.createElement("textarea");
         this.textarea.placeholder = "Click here to add moves";
         this.textarea.rows = 1;

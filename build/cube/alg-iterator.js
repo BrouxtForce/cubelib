@@ -1,4 +1,6 @@
 export class MoveIterator {
+    move;
+    done;
     constructor(move, reverse = false) {
         this.move = reverse ? move.inverted() : move;
         this.done = false;
@@ -22,6 +24,10 @@ export class MoveIterator {
     }
 }
 export class CommutatorIterator {
+    phase;
+    algA;
+    algB;
+    currentIterator;
     constructor(commutator, reverse = false) {
         this.phase = reverse ? 4 : 0;
         this.algA = commutator.algA;
@@ -65,6 +71,11 @@ export class CommutatorIterator {
     }
 }
 export class ConjugateIterator {
+    phase;
+    algA;
+    algB;
+    currentIterator;
+    reverse;
     constructor(conjugate, reverse = false) {
         this.phase = 0;
         this.algA = conjugate.algA;
@@ -95,6 +106,11 @@ export class ConjugateIterator {
     }
 }
 export class AlgIterator {
+    index;
+    amount;
+    algNodes;
+    currentIterator;
+    reverse;
     constructor(alg, reverse = false) {
         this.reverse = (reverse) !== (alg.amount < 0);
         this.index = this.reverse ? alg.nodes.length - 1 : 0;

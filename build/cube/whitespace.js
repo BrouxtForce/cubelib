@@ -1,8 +1,9 @@
 import { EmptyIterator } from "./alg-iterator.js";
 export class Whitespace {
+    type = "Whitespace";
+    value;
+    amount = 0;
     constructor(whitespace) {
-        this.type = "Whitespace";
-        this.amount = 0;
         this.value = whitespace;
     }
     copy() { return new Whitespace(this.value); }

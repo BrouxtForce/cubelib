@@ -1,8 +1,10 @@
 import { CommutatorIterator } from "./alg-iterator.js";
 export class Commutator {
+    type = "Commutator";
+    algA;
+    algB;
+    amount = 1;
     constructor(algA, algB) {
-        this.type = "Commutator";
-        this.amount = 1;
         this.algA = algA;
         this.algB = algB;
     }

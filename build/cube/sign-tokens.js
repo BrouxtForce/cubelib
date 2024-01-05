@@ -1,8 +1,9 @@
 export class CharacterInputStream {
+    input;
+    pos = 0;
+    line = 1;
+    col = 0;
     constructor(input) {
-        this.pos = 0;
-        this.line = 1;
-        this.col = 0;
         this.input = input;
     }
     get string() { return this.input; }
@@ -37,23 +38,34 @@ export class CharacterInputStream {
     }
 }
 export class SiGNTokenInputStream {
+    input;
+    variableSet = new Set();
     constructor(input) {
-        this.variableSet = new Set();
         this.input = new CharacterInputStream(input);
     }
     isWhitespace(char) {
+        if (!char)
+            return false;
         return " \t\n".indexOf(char) > -1;
     }
     isPunctuation(char) {
+        if (!char)
+            return false;
         return "[](),:=".indexOf(char) > -1;
     }
     isMove(char) {
+        if (!char)
+            return false;
         return "ufrbldmesxyz".indexOf(char.toLowerCase()) > -1;
     }
     isNumber(char) {
+        if (!char)
+            return false;
         return "0123456789".indexOf(char) > -1;
     }
     isVariable(char) {
+        if (!char)
+            return false;
         return (char >= "a" && char <= "z") || (char >= "A" && char <= "Z");
     }
     peekVariable() {

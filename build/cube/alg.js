@@ -6,9 +6,10 @@ import { Conjugate } from "./conjugate.js";
 import { Comment } from "./comment.js";
 import { Whitespace } from "./whitespace.js";
 export class Alg {
+    type = "Alg";
+    nodes;
+    amount = 1;
     constructor(nodes) {
-        this.type = "Alg";
-        this.amount = 1;
         this.nodes = nodes;
     }
     static fromString(moveString) {

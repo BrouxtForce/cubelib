@@ -1,8 +1,10 @@
 import { EmptyIterator } from "./alg-iterator.js";
 export class Comment {
+    type = "Comment";
+    value;
+    commentType;
+    amount = 0;
     constructor(comment, commentType) {
-        this.type = "Comment";
-        this.amount = 0;
         this.value = comment;
         this.commentType = commentType;
     }

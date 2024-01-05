@@ -1,8 +1,10 @@
 import { ConjugateIterator } from "./alg-iterator.js";
 export class Conjugate {
+    type = "Conjugate";
+    algA;
+    algB;
+    amount = 1;
     constructor(algA, algB) {
-        this.type = "Conjugate";
-        this.amount = 1;
         this.algA = algA;
         this.algB = algB;
     }

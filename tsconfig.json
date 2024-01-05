@@ -2,7 +2,7 @@
     "compilerOptions": {
         "incremental": true,
         "tsBuildInfoFile": "./build/build-info.tsbuildinfo",
-        "target": "es2020",
+        "target": "es2022",
         "module": "es2022",
         "allowJs": true,
         "outDir": "./build",

@@ -2,6 +2,9 @@ import { Cube } from "./cube.js";
 import { Alg } from "./alg.js";
 import { Move } from "./move.js";
 export class CubeSolver {
+    layerCount;
+    state;
+    cycles;
     constructor(layerCount) {
         console.assert(Number.isInteger(layerCount) && layerCount > 1);
         this.layerCount = layerCount;

@@ -57,6 +57,8 @@ function rotateIndexCcw(index, size) {
     return newY * size + newX;
 }
 export class Cube {
+    layerCount;
+    stickers;
     constructor(layerCount) {
         console.assert(Number.isInteger(layerCount) && layerCount > 1);
         this.layerCount = layerCount;

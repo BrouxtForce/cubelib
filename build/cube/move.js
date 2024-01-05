@@ -1,10 +1,12 @@
 import { MoveIterator } from "./alg-iterator.js";
 import { SiGNTokenInputStream } from "./sign-tokens.js";
 export class Move {
+    type = "Move";
+    face;
+    shallow = 1;
+    deep = 1;
+    amount;
     constructor(face, shallow, deep, amount) {
-        this.type = "Move";
-        this.shallow = 1;
-        this.deep = 1;
         this.face = face;
         this.shallow = shallow;
         this.deep = deep;

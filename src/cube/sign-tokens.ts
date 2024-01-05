@@ -60,20 +60,24 @@ export class SiGNTokenInputStream {
         this.input = new CharacterInputStream(input);
     }
 
-    // Warning: will return true for empty strings
     isWhitespace(char: string): boolean {
+        if (!char) return false;
         return " \t\n".indexOf(char) > -1;
     }
     isPunctuation(char: string): boolean {
+        if (!char) return false;
         return "[](),:=".indexOf(char) > -1;
     }
     isMove(char: string): boolean {
+        if (!char) return false;
         return "ufrbldmesxyz".indexOf(char.toLowerCase()) > -1;
     }
     isNumber(char: string): boolean {
+        if (!char) return false;
         return "0123456789".indexOf(char) > -1;
     }
     isVariable(char: string): boolean {
+        if (!char) return false;
         return (char >= "a" && char <= "z") || (char >= "A" && char <= "Z");
     }
 
