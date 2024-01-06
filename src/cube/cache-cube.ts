@@ -1,9 +1,9 @@
 import { assert, mod } from "../utils.js";
 import { Cube } from "./cube.js";
 
-import type { Alg } from "./alg.js";
-import type { Commutator } from "./commutator.js";
-import type { Conjugate } from "./conjugate.js";
+import type { Alg } from "../alg/alg.js";
+import type { Commutator } from "../alg/commutator.js";
+import type { Conjugate } from "../alg/conjugate.js";
 
 export class CacheCube {
     public readonly layerCount: number;

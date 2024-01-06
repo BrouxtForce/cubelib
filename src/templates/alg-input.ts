@@ -1,5 +1,5 @@
-import { Alg } from "../cube/alg.js";
-import { SiGNToken, SiGNTokens } from "../cube/sign-tokens.js";
+import { Alg } from "../alg/alg.js";
+import { SiGNToken, SiGNTokens } from "../alg/sign-tokens.js";
 
 // https://stackoverflow.com/questions/4811822/get-a-ranges-start-and-end-offsets-relative-to-its-parent-container/4812022#4812022
 function getCaretCharacterOffsetWithin(element: HTMLDivElement): number {

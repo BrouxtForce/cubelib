@@ -1,4 +1,4 @@
-import { Alg } from "../cube/alg.js";
+import { Alg } from "../alg/alg.js";
 export class AlgTextarea extends HTMLElement {
     textarea;
     errorDiv;

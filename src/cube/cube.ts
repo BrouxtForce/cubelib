@@ -1,4 +1,4 @@
-import type { AlgNode } from "./alg.js";
+import type { AlgNode } from "../alg/alg.js";
 import { assert } from "../utils.js"
 
 export enum Face {
