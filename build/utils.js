@@ -10,6 +10,8 @@ export function assert(condition, message) {
     }
 }
 export function arrayRepeat(array, repeat) {
+    assert(Number.isInteger(repeat), "arrayRepeat() repeat must be an integer");
+    assert(repeat >= 0, "arrayRepeat() repeat must be a nonnegative integer");
     const originalLength = array.length;
     array.length = repeat * originalLength;
     for (let i = 1; i < repeat;) {

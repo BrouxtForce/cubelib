@@ -4,14 +4,16 @@ export class Commutator {
     type = "Commutator";
     algA;
     algB;
-    isGrouping = false;
-    amount = 1;
-    constructor(algA, algB) {
+    isGrouping;
+    amount;
+    constructor(algA, algB, amount = 1, isGrouping = true) {
         this.algA = algA;
         this.algB = algB;
+        this.amount = amount;
+        this.isGrouping = isGrouping;
     }
     copy() {
-        return new Commutator(this.algA.copy(), this.algB.copy());
+        return new Commutator(this.algA.copy(), this.algB.copy(), this.amount, this.isGrouping);
     }
     expand() {
         if (this.amount === 0) {
@@ -47,7 +49,9 @@ export class Commutator {
         return arrayRepeat(outArray, Math.abs(this.amount));
     }
     invert() {
-        this.amount *= -1;
+        const swap = this.algA;
+        this.algA = this.algB;
+        this.algB = swap;
         return this;
     }
     toString() {

@@ -3,14 +3,16 @@ export class Conjugate {
     type = "Conjugate";
     algA;
     algB;
-    isGrouping = true;
-    amount = 1;
-    constructor(algA, algB) {
+    isGrouping;
+    amount;
+    constructor(algA, algB, amount = 1, isGrouping = true) {
         this.algA = algA;
         this.algB = algB;
+        this.amount = amount;
+        this.isGrouping = isGrouping;
     }
     copy() {
-        return new Conjugate(this.algA.copy(), this.algB.copy());
+        return new Conjugate(this.algA.copy(), this.algB.copy(), this.amount, this.isGrouping);
     }
     expand() {
         const expandedA = this.algA.expand();
@@ -22,7 +24,7 @@ export class Conjugate {
                 invertedA.push(node.copy().invert());
                 continue;
             }
-            invertedA.push(node.copy());
+            invertedA.push(node);
         }
         if (this.amount < 0) {
             for (let i = 0; i < expandedB.length; i++) {
