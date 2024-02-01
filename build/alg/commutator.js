@@ -1,8 +1,10 @@
 import { CommutatorIterator } from "./alg-iterator.js";
+import { arrayRepeat } from "../utils.js";
 export class Commutator {
     type = "Commutator";
     algA;
     algB;
+    isGrouping = false;
     amount = 1;
     constructor(algA, algB) {
         this.algA = algA;
@@ -11,60 +13,68 @@ export class Commutator {
     copy() {
         return new Commutator(this.algA.copy(), this.algB.copy());
     }
-    expand(copy) {
-        const expandedA = this.algA.expand(copy);
-        const expandedB = this.algB.expand(copy);
+    expand() {
+        if (this.amount === 0) {
+            return [];
+        }
+        const expandedA = this.algA.expand();
+        const expandedB = this.algB.expand();
         const invertedA = [];
         const invertedB = [];
         for (let i = expandedA.length - 1; i >= 0; i--) {
-            invertedA.push(expandedA[i].inverted());
+            const node = expandedA[i];
+            if (node.type === "Move") {
+                invertedA.push(node.copy().invert());
+                continue;
+            }
+            invertedA.push(node);
         }
         for (let i = expandedB.length - 1; i >= 0; i--) {
-            invertedB.push(expandedB[i].inverted());
+            const node = expandedB[i];
+            if (node.type === "Move") {
+                invertedB.push(node.copy().invert());
+                continue;
+            }
+            invertedB.push(node);
         }
-        return expandedA.concat(expandedB, invertedA, invertedB);
+        let outArray;
+        if (this.amount > 0) {
+            outArray = expandedA.concat(expandedB, invertedA, invertedB);
+        }
+        else {
+            outArray = expandedB.concat(expandedA, invertedB, invertedA);
+        }
+        return arrayRepeat(outArray, Math.abs(this.amount));
     }
     invert() {
-        let swap = this.algA;
-        this.algA = this.algB;
-        this.algB = swap;
+        this.amount *= -1;
         return this;
     }
-    inverted() {
-        return new Commutator(this.algB.copy(), this.algA.copy());
-    }
     toString() {
-        return `[${this.algA.toString()},${this.algB.toString()}]`;
-    }
-    stripComments() {
-        this.algA.stripComments();
-        this.algB.stripComments();
-    }
-    removeWhitespace() {
-        this.algA.removeWhitespace();
-        this.algB.removeWhitespace();
-    }
-    addWhitespace() {
-        this.algA.addWhitespace();
-        this.algB.addWhitespace();
+        const outString = `[${this.algA.toString()},${this.algB.toString()}]`;
+        if (this.isGrouping) {
+            return `[${outString}]`;
+        }
+        return outString;
     }
     simplify() {
         this.algA.simplify();
         this.algB.simplify();
-    }
-    forwardIterator() {
-        return new CommutatorIterator(this);
-    }
-    reverseIterator() {
-        return new CommutatorIterator(this, true);
+        if (this.amount < 0) {
+            const swap = this.algA;
+            this.algA = this.algB;
+            this.algB = swap;
+            this.amount *= -1;
+        }
+        return this;
     }
     forward() {
-        return { [Symbol.iterator]: () => this.forwardIterator() };
+        return { [Symbol.iterator]: () => new CommutatorIterator(this) };
     }
     reverse() {
-        return { [Symbol.iterator]: () => this.reverseIterator() };
+        return { [Symbol.iterator]: () => new CommutatorIterator(this, true) };
     }
     [Symbol.iterator]() {
-        return this.forwardIterator();
+        return new CommutatorIterator(this);
     }
 }

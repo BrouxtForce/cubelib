@@ -1,7 +1,7 @@
 /// <reference types="bun-types" />
 
 import { expect, test } from "bun:test";
-import { Move } from "../src/cube/move";
+import { Move } from "../src/alg/move";
 
 test("Move with number suffix", () => {
     const move = Move.fromString("U5");

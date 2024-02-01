@@ -1,4 +1,4 @@
-import type { AlgNode } from "../alg/alg.js";
+import type { AlgMoveNode } from "../alg/alg.js";
 import { assert } from "../utils.js"
 
 export enum Face {
@@ -802,7 +802,7 @@ export class Cube {
             }
         }
     }
-    execute(alg: AlgNode): void {
+    execute(alg: AlgMoveNode): void {
         for (const move of alg) {
             if ("UFRBLD".indexOf(move.face) > -1) {
                 this.move(stringToFace(move.face), move.amount, move.shallow, move.deep);

@@ -1,16 +1,17 @@
-import { Alg, AlgNode } from "./alg.js";
-import { Move } from "./move.js";
-import { Commutator } from "./commutator.js";
-import { Conjugate } from "./conjugate.js";
+import type { Alg, AlgMoveNode } from "./alg.js";
+import type { Move } from "./move.js";
+import type { Commutator } from "./commutator.js";
+import type { Conjugate } from "./conjugate.js";
 
 export class MoveIterator implements Iterator<Move> {
     private move: Move;
     private done: boolean;
 
     constructor(move: Move, reverse: boolean = false) {
-        this.move = reverse ? move.inverted() : move;
+        this.move = reverse ? move.copy().invert() : move;
         this.done = false;
     }
+
     next(): IteratorResult<Move, Move | undefined> {
         let result: IteratorResult<Move, Move | undefined>;
         if (this.done) {
@@ -28,6 +29,7 @@ export class MoveIterator implements Iterator<Move> {
         return result;
     }
 }
+
 export class CommutatorIterator implements Iterator<Move> {
     private phase: number;
     private algA: Alg;
@@ -41,8 +43,9 @@ export class CommutatorIterator implements Iterator<Move> {
 
         reverse = (reverse) !== (commutator.amount < 0);
 
-        this.currentIterator = reverse ? this.algB.forwardIterator() : this.algA.forwardIterator();
+        this.currentIterator = new AlgIterator(reverse ? this.algB : this.algA);
     }
+
     next(): IteratorResult<Move, Move | undefined> {
         const result = this.currentIterator.next();
 
@@ -51,24 +54,24 @@ export class CommutatorIterator implements Iterator<Move> {
             switch (this.phase) {
                 // Forward
                 case 1:
-                    this.currentIterator = this.algB.forwardIterator();
+                    this.currentIterator = new AlgIterator(this.algB);
                     break;
                 case 2:
-                    this.currentIterator = this.algA.reverseIterator();
+                    this.currentIterator = new AlgIterator(this.algA, true);
                     break;
                 case 3:
-                    this.currentIterator = this.algB.reverseIterator();
+                    this.currentIterator = new AlgIterator(this.algB, true);
                     break;
 
                 // Reverse
                 case 5:
-                    this.currentIterator = this.algA.forwardIterator();
+                    this.currentIterator = new AlgIterator(this.algA);
                     break;
                 case 6:
-                    this.currentIterator = this.algB.reverseIterator();
+                    this.currentIterator = new AlgIterator(this.algB, true);
                     break;
                 case 7:
-                    this.currentIterator = this.algA.reverseIterator();
+                    this.currentIterator = new AlgIterator(this.algA, true);
                     break;
 
                 // Done
@@ -84,6 +87,7 @@ export class CommutatorIterator implements Iterator<Move> {
         return result;
     }
 }
+
 export class ConjugateIterator implements Iterator<Move> {
     private phase: number;
     private algA: Alg;
@@ -97,8 +101,9 @@ export class ConjugateIterator implements Iterator<Move> {
         this.algB = conjugate.algB;
         this.reverse = (reverse) !== (conjugate.amount < 0);
 
-        this.currentIterator = this.algA.forwardIterator();
+        this.currentIterator = new AlgIterator(this.algA);
     }
+
     next(): IteratorResult<Move, Move | undefined> {
         const result = this.currentIterator.next();
 
@@ -106,10 +111,10 @@ export class ConjugateIterator implements Iterator<Move> {
             this.phase++;
             switch (this.phase) {
                 case 1:
-                    this.currentIterator = this.reverse ? this.algB.reverseIterator() : this.algB.forwardIterator();
+                    this.currentIterator = new AlgIterator(this.algB, this.reverse);
                     break;
                 case 2:
-                    this.currentIterator = this.algA.reverseIterator();
+                    this.currentIterator = new AlgIterator(this.algA, true);
                     break;
                 case 3:
                     return {
@@ -123,60 +128,65 @@ export class ConjugateIterator implements Iterator<Move> {
         return result;
     }
 }
+
 export class AlgIterator implements Iterator<Move> {
     private index: number;
     private amount: number;
-    private algNodes: AlgNode[];
-    private currentIterator: Iterator<Move>;
+    private algMoveNodes: AlgMoveNode[];
+    private currentIterator: Iterator<Move> | null;
     private reverse: boolean;
 
     constructor(alg: Alg, reverse: boolean = false) {
         this.reverse = (reverse) !== (alg.amount < 0);
         this.index = this.reverse ? alg.nodes.length - 1 : 0;
         this.amount = Math.abs(alg.amount);
-        this.algNodes = alg.nodes;
+        this.algMoveNodes = alg.moveNodes;
 
-        this.currentIterator = this.algNodes[this.index]?.[this.reverse ? "reverseIterator" : "forwardIterator"]?.();
+        this.currentIterator = this.#getIterator(this.algMoveNodes[this.index], this.reverse);
     }
+
+    #getIterator(node?: AlgMoveNode, reverse: boolean = false): Iterator<Move> | null {
+        if (!node) {
+            return null;
+        }
+        switch (node.type) {
+            case "Move":
+                return new MoveIterator(node, reverse);
+            case "Commutator":
+                return new CommutatorIterator(node, reverse);
+            case "Conjugate":
+                return new ConjugateIterator(node, reverse);
+            case "Alg":
+                return new AlgIterator(node, reverse);
+            default:
+                // @ts-expect-error if all cases have been accounted for, node.type is of type never
+                throw new Error(`Unknown alg move node type: ${node.type}`);
+        }
+    }
+
     next(): IteratorResult<Move, Move | undefined> {
-        // If provided an empty alg, leave
-        if (this.algNodes.length === 0) {
-            return {
-                done: true,
-                value: undefined
-            };
-        }
-
-        const result = this.currentIterator.next();
-        if (!result.done) {
-            return {
-                done: false,
-                value: result.value
-            };
-        }
-
-        this.index += this.reverse ? -1 : 1;
-        if ((this.index < this.algNodes.length && !this.reverse) || (this.index >= 0 && this.reverse)) {
-            this.currentIterator = this.algNodes[this.index][this.reverse ? "reverseIterator" : "forwardIterator"]();
-            return this.next();
-        } else {
-            if (--this.amount > 0) {
-                this.index = this.reverse ? this.algNodes.length - 1 : 0;
-                this.currentIterator = this.algNodes[this.index][this.reverse ? "reverseIterator" : "forwardIterator"]();
-                return this.next();
-            } else {
+        if (this.currentIterator) {
+            const result = this.currentIterator.next();
+            if (!result.done) {
                 return {
-                    done: true,
-                    value: undefined
+                    done: false,
+                    value: result.value
                 };
             }
         }
 
-        // return this.currentIterator.next();
-    }
-}
-export class EmptyIterator implements Iterator<Move> {
-    next(): IteratorResult<Move, Move | undefined> {
+        this.index += this.reverse ? -1 : 1;
+        if ((this.index < this.algMoveNodes.length && !this.reverse) || (this.index >= 0 && this.reverse)) {
+            this.currentIterator = this.#getIterator(this.algMoveNodes[this.index], this.reverse);
+            return this.next();
+        }
+
+        if (--this.amount > 0) {
+            this.index = this.reverse ? this.algMoveNodes.length - 1 : 0;
+            this.currentIterator = this.#getIterator(this.algMoveNodes[this.index], this.reverse);
+            return this.next();
+        }
+
         return {
             done: true,
             value: undefined

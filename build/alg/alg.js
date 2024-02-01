@@ -5,12 +5,28 @@ import { Commutator } from "./commutator.js";
 import { Conjugate } from "./conjugate.js";
 import { Comment } from "./comment.js";
 import { Whitespace } from "./whitespace.js";
+import { arrayRepeat } from "../utils.js";
+;
+;
 export class Alg {
     type = "Alg";
     nodes;
+    moveNodes;
+    isGrouping = false;
     amount = 1;
     constructor(nodes) {
         this.nodes = nodes;
+        this.moveNodes = [];
+        for (const node of nodes) {
+            switch (node.type) {
+                case "Alg":
+                case "Move":
+                case "Commutator":
+                case "Conjugate":
+                    this.moveNodes.push(node);
+                    break;
+            }
+        }
     }
     static fromString(moveString) {
         return Alg.parseSiGN(moveString);
@@ -22,129 +38,50 @@ export class Alg {
         }
         return new Alg(copiedNodes);
     }
-    expand(copy = false) {
-        const nodes = [];
-        if (this.amount > 0) {
-            for (const node of this.nodes) {
-                nodes.push(...node.expand(copy));
-            }
+    expand() {
+        if (this.amount === 0) {
+            return [];
         }
-        else {
-            for (let i = this.nodes.length - 1; i >= 0; i--) {
-                nodes.push(...this.nodes[i].inverted().expand(copy));
+        const expandedNodes = [];
+        for (const node of this.nodes) {
+            if (node.type === "Whitespace" || node.type === "Comment") {
+                expandedNodes.push(node);
+                continue;
             }
+            expandedNodes.push(...node.expand());
         }
-        const repeatedNodesArray = [];
-        if (copy) {
-            for (let i = 0; i < Math.abs(this.amount); i++) {
-                let copyArray = [];
-                for (let j = 0; j < nodes.length; j++) {
-                    copyArray[j] = nodes[j].copy();
-                }
-                repeatedNodesArray.push(...copyArray);
-            }
+        if (this.amount < 0) {
+            expandedNodes.reverse();
         }
-        else {
-            for (let i = 0; i < Math.abs(this.amount); i++) {
-                repeatedNodesArray.push(...nodes.slice());
-            }
-        }
-        return repeatedNodesArray;
-    }
-    expanded() {
-        return new Alg(this.expand());
+        arrayRepeat(expandedNodes, Math.abs(this.amount));
+        return expandedNodes;
     }
     invert() {
-        const invertedNodes = [];
-        for (let i = this.nodes.length - 1; i >= 0; i--) {
-            this.nodes[i].invert();
-            invertedNodes.push(this.nodes[i]);
-        }
-        for (let i = 0; i < invertedNodes.length; i++) {
-            if (invertedNodes[i].type === "Comment") {
-                const comment = invertedNodes[i];
-                if (comment.commentType !== "lineComment") {
-                    continue;
-                }
-                if (i + 1 >= invertedNodes.length || invertedNodes[i + 1].type === "Whitespace") {
-                    const whitespace = invertedNodes[i];
-                    if (whitespace.value.indexOf("\n") > -1) {
-                        continue;
-                    }
-                }
-                invertedNodes.splice(i, 1);
-                let broken = false;
-                for (let j = i; j < invertedNodes.length; j++) {
-                    if (invertedNodes[j].type === "Whitespace") {
-                        const whitespace = invertedNodes[j];
-                        if (whitespace.value[0] === "\n") {
-                            broken = true;
-                            invertedNodes.splice(j, 0, comment);
-                            break;
-                        }
-                    }
-                }
-                if (!broken) {
-                    invertedNodes.push(comment);
-                }
+        for (const node of this.nodes) {
+            if (node.type === "Comment" || node.type === "Whitespace") {
+                continue;
             }
+            node.invert();
         }
-        this.nodes = invertedNodes;
+        this.nodes.reverse();
         return this;
     }
-    inverted() {
-        return this.copy().invert();
-    }
-    toString(parent = true) {
-        const stringArray = [];
+    toString() {
+        let outString = "";
         for (const node of this.nodes) {
-            stringArray.push(node.toString(false));
+            outString += node.toString();
         }
-        if (this.amount === 1 && parent) {
-            return stringArray.join("");
-        }
-        const absAmount = Math.abs(this.amount);
-        return `(${stringArray.join("")})${absAmount !== 1 ? absAmount : ""}${this.amount < 0 ? "'" : ""}`;
-    }
-    stripComments() {
-        for (let i = 0; i < this.nodes.length; i++) {
-            if (this.nodes[i].type === "Comment") {
-                this.nodes.splice(i, 1);
-                i--;
-                continue;
+        if (this.isGrouping) {
+            const absAmount = Math.abs(this.amount);
+            if (absAmount !== 1) {
+                outString += absAmount.toString();
             }
-            this.nodes[i].stripComments?.();
-        }
-    }
-    removeWhitespace(removeNewlines = false) {
-        for (let i = 0; i < this.nodes.length; i++) {
-            if (this.nodes[i].type === "Whitespace") {
-                const whitespace = this.nodes[i];
-                if (removeNewlines || whitespace.value.indexOf("\n") === -1) {
-                    this.nodes.splice(i, 1);
-                    i--;
-                    continue;
-                }
-                whitespace.value = whitespace.value.replace(/./g, "");
-                continue;
+            if (this.amount < 0) {
+                outString += "'";
             }
-            this.nodes[i].removeWhitespace?.();
+            return `(${outString})`;
         }
-    }
-    addWhitespace() {
-        for (let i = 0; i < this.nodes.length; i++) {
-            this.nodes[i].addWhitespace?.();
-            let type = this.nodes[i].type;
-            if (type !== "Whitespace") {
-                if (i + 1 >= this.nodes.length) {
-                    continue;
-                }
-                if (this.nodes[i + 1].type !== "Whitespace") {
-                    this.nodes.splice(i + 1, 0, new Whitespace(" "));
-                    i++;
-                }
-            }
-        }
+        return outString;
     }
     simplify() {
         let changed = true;
@@ -157,22 +94,18 @@ export class Alg {
                 if (node.type === "Whitespace" || node.type === "Comment") {
                     continue;
                 }
-                node.simplify?.();
+                node.simplify();
                 if (node.type === "Move") {
-                    if (node.amount % 4 === 0) {
+                    if (node.amount === 0) {
                         this.nodes.splice(i, 1);
                         i--;
                         continue;
                     }
-                    node.amount %= 4;
                 }
                 if (node.type === "Move" && prevNode?.type === "Move") {
                     if (node.face === prevNode.face) {
                         changed = true;
                         prevNode.amount += node.amount;
-                        if (node.amount === 0) {
-                            this.nodes.splice(prevNodeIndex, 1);
-                        }
                         this.nodes.splice(i, 1);
                         i = prevNodeIndex;
                         continue;
@@ -182,26 +115,22 @@ export class Alg {
                 prevNodeIndex = i;
             }
         }
-    }
-    forwardIterator() {
-        return new AlgIterator(this);
-    }
-    reverseIterator() {
-        return new AlgIterator(this, true);
+        return this;
     }
     forward() {
-        return { [Symbol.iterator]: () => this.forwardIterator() };
+        return { [Symbol.iterator]: () => new AlgIterator(this) };
     }
     reverse() {
-        return { [Symbol.iterator]: () => this.reverseIterator() };
+        return { [Symbol.iterator]: () => new AlgIterator(this, true) };
     }
     [Symbol.iterator]() {
-        return this.forwardIterator();
+        return new AlgIterator(this);
     }
     static tokensToAlg(tokens, algAmount, algVariableMap) {
         let alg = new Alg([]);
         alg.amount = algAmount;
         let nodes = alg.nodes;
+        let moveNodes = alg.moveNodes;
         for (let i = 0; i < tokens.length; i++) {
             let token = tokens[i];
             switch (token.type) {
@@ -209,6 +138,7 @@ export class Alg {
                     const move = Move.fromString(token.value);
                     if (move !== null) {
                         nodes.push(move);
+                        moveNodes.push(move);
                     }
                     break;
                 }
@@ -223,6 +153,7 @@ export class Alg {
                             alg = new Alg([group]);
                             alg.amount = amount;
                             nodes = group.algB.nodes;
+                            moveNodes = group.algB.moveNodes;
                             break;
                         }
                         case "[":
@@ -232,7 +163,9 @@ export class Alg {
                                 if ("])".indexOf(tokens[j].value) > -1) {
                                     neededClosingBrackets--;
                                     if (neededClosingBrackets === 0) {
-                                        nodes.push(Alg.tokensToAlg(tokens.slice(i + 1, j), tokens[j].amount ?? 1, algVariableMap));
+                                        const group = Alg.tokensToAlg(tokens.slice(i + 1, j), tokens[j].amount ?? 1, algVariableMap);
+                                        nodes.push(group);
+                                        moveNodes.push(group);
                                         i = j;
                                         token = tokens[j];
                                         break;
@@ -330,11 +263,13 @@ export class Alg {
                     }
                     if (token.amount === 1 || token.amount === undefined) {
                         nodes.push(algVariable);
+                        moveNodes.push(algVariable);
                         break;
                     }
                     const alg = new Alg([algVariable]);
                     alg.amount = token.amount;
                     nodes.push(alg);
+                    moveNodes.push(alg);
                     break;
                 }
                 default:

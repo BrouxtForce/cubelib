@@ -1,14 +1,14 @@
-import { AlgNode } from "./alg.js";
+import type { IAlgMoveNode } from "./alg.js";
 import { MoveIterator } from "./alg-iterator.js";
 import { SiGNTokenInputStream } from "./sign-tokens.js";
 
-export class Move implements AlgNode {
-    public type = "Move";
+export class Move implements IAlgMoveNode {
+    public readonly type = "Move" as const;
 
     public face: string;
     public shallow: number = 1;
     public deep: number = 1;
-    public amount: number; // Negative for counterclockwise turns
+    public amount: number;
 
     constructor(face: string, shallow: number, deep: number, amount: number) {
         this.face = face;
@@ -16,6 +16,7 @@ export class Move implements AlgNode {
         this.deep = deep;
         this.amount = amount;
     }
+
     // Move.fromString() is strict, requiring proper move notation without a single extra character
     // TODO: Validation and errors
     static fromString(moveString: string): Move {
@@ -100,18 +101,18 @@ export class Move implements AlgNode {
     copy(): Move {
         return new Move(this.face, this.shallow, this.deep, this.amount);
     }
-    expand(copy: boolean): Move[] {
-        return copy ? [this] : [this.copy()];
+
+    expand(): Move[] {
+        return [this];
     }
+
     invert(): Move {
         this.amount *= -1;
         return this;
     }
-    inverted(): Move {
-        return new Move(this.face, this.shallow, this.deep, -this.amount);
-    }
+
     toString(): string {
-        const stringArray: (string | number)[] = [];
+        let outString = "";
 
         let lowercase = false; // Defines whether the face turn (ex: 'F"') should be lowercase
 
@@ -124,52 +125,54 @@ export class Move implements AlgNode {
             if (this.shallow !== 1) {
                 // If shallow == deep, and 2-2r == 2R, then we should output 2R for simplicity
                 if (this.shallow === this.deep) {
-                    stringArray.push(this.shallow);
+                    outString += this.shallow;
                     lowercase = false;
                 } else {
-                    stringArray.push(this.shallow, "-", this.deep);
+                    outString += this.shallow + "-" + this.deep;
                 }
             }
 
             // r is implicitly 2r, skip if deep == 2
             else if (this.deep !== 2) {
-                stringArray.push(this.deep);
+                outString += this.deep;
             }
         }
 
         // Face (TODO: Add option for both 'w' and lowercase face)
         if (lowercase) {
-            stringArray.push(this.face.toLowerCase());
+            outString += this.face.toLowerCase();
         } else {
-            stringArray.push(this.face);
+            outString += this.face;
         }
 
         // Turn amount
         if (Math.abs(this.amount) !== 1) {
-            stringArray.push(Math.abs(this.amount));
+            outString += Math.abs(this.amount);
         }
         if (this.amount < 0) {
-            stringArray.push("'");
+            outString += "'";
         }
 
-        return stringArray.join("");
-        // return `${this.face}${((this.wide !== 1) ? "w" + this.wide : "")}${Math.abs(this.amount)}${(this.amount > 0) ? "" : "'"}`;
+        return outString;
     }
 
-    forwardIterator(): MoveIterator {
-        return new MoveIterator(this);
+    simplify(): IAlgMoveNode {
+        this.amount %= 4;
+
+        if (Math.abs(this.amount) === 3) {
+            this.amount = -Math.sign(this.amount);
+        }
+
+        return this;
     }
-    reverseIterator(): MoveIterator {
-        return new MoveIterator(this, true);
-    }
+
     forward() {
-        return { [Symbol.iterator]: () => this.forwardIterator() };
+        return { [Symbol.iterator]: () => new MoveIterator(this) };
     }
     reverse() {
-        return { [Symbol.iterator]: () => this.reverseIterator() };
+        return { [Symbol.iterator]: () => new MoveIterator(this, true) };
     }
     [Symbol.iterator](): MoveIterator {
-        // return new MoveIterator(this);
-        return this.forwardIterator();
+        return new MoveIterator(this);
     }
 }

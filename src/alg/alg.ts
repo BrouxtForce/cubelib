@@ -1,199 +1,146 @@
-import { SiGNTokens, SiGNToken } from "./sign-tokens.js";
+import { SiGNTokens, type SiGNToken } from "./sign-tokens.js";
 import { AlgIterator } from "./alg-iterator.js";
 import { Move } from "./move.js";
 import { Commutator } from "./commutator.js";
 import { Conjugate } from "./conjugate.js";
 import { Comment } from "./comment.js";
 import { Whitespace } from "./whitespace.js";
+import { arrayRepeat } from "../utils.js";
 
-// TODO: Optimization (for both this and sign-tokens.ts)
+export interface IAlgMoveNode {
+    name?: string;
+    type: string;
+    amount: number;
 
-export interface AlgNode {
-    type: string; // Type of AlgNode
-    amount: number; // Amount of times the node should be executed. Negative means to invert the node
+    copy(): IAlgMoveNode;
+    expand(): (Move | IAlgNonMoveNode)[];
+    invert(): IAlgMoveNode;
+    simplify(): IAlgMoveNode;
+    toString(): string;
 
-    copy(): AlgNode; // Returns a deep copy of the AlgNode
-    expand(copy: boolean): AlgNode[]; // Expands the node into a (Move | Comment | Whitespace)[], written as AlgNode[] for simplicity
-    invert(): AlgNode; // Inverts the AlgNode
-    inverted(): AlgNode; // Returns an inverted copy of the AlgNode
-    simplify?(): void; // Simplifies the node (Combines and mod 4's moves).
-    toString(parent?: boolean): string; // Returns a string representation of the AlgNode. Parameter used internally.
+    [Symbol.iterator](): Iterator<Move>;
+    forward(): { [Symbol.iterator](): Iterator<Move> };
+    reverse(): { [Symbol.iterator](): Iterator<Move> };
+};
 
-    stripComments?(): void; // (optional) Strips comments from the node
-    removeWhitespace?(): void; // (optional) Removes whitespace (except \n's) from the node
-    addWhitespace?(): void; // (optional) Adds whitespace where it makes sense to the node
+export interface IAlgNonMoveNode {
+    type: string;
 
-    [Symbol.iterator](): Iterator<any>;
-    forwardIterator(): Iterator<any>;
-    reverseIterator(): Iterator<any>;
-    forward(): { [Symbol.iterator](): Iterator<any> };
-    reverse(): { [Symbol.iterator](): Iterator<any> };
-}
+    copy(): IAlgNonMoveNode;
+    toString(): string;
+};
 
-export class Alg implements AlgNode {
-    public type = "Alg";
+export type AlgMoveNode = Move | Commutator | Conjugate | Alg;
+export type AlgNonMoveNode = Comment | Whitespace;
+export type AlgNode = AlgMoveNode | AlgNonMoveNode;
 
-    public nodes: AlgNode[];
+export class Alg implements IAlgMoveNode {
+    public readonly type = "Alg" as const;
 
-    public amount: number = 1;
+    public readonly nodes: AlgNode[];
+    public readonly moveNodes: AlgMoveNode[];
 
-    constructor(nodes: AlgNode[]) {
+    public isGrouping: boolean;
+
+    public amount: number;
+
+    constructor(nodes: AlgNode[], amount: number = 1, isGrouping: boolean = false) {
         this.nodes = nodes;
+        this.moveNodes = [];
+        this.amount = amount;
+        this.isGrouping = isGrouping;
+
+        for (const node of nodes) {
+            switch (node.type) {
+                case "Alg":
+                case "Move":
+                case "Commutator":
+                case "Conjugate":
+                    this.moveNodes.push(node);
+                    break;
+            }
+        }
     }
+
     static fromString(moveString: string): Alg {
         return Alg.parseSiGN(moveString);
     }
 
     copy(): Alg {
-        const copiedNodes = [];
+        const copiedNodes: AlgNode[] = [];
         for (const node of this.nodes) {
             copiedNodes.push(node.copy());
         }
-        return new Alg(copiedNodes);
+        return new Alg(copiedNodes, this.amount, this.isGrouping);
     }
-    expand(copy: boolean = false): AlgNode[] {
-        const nodes: AlgNode[] = [];
-        if (this.amount > 0) {
-            for (const node of this.nodes) {
-                nodes.push(...node.expand(copy));
-            }
-        } else {
-            for (let i = this.nodes.length - 1; i >= 0; i--) {
-                nodes.push(...this.nodes[i].inverted().expand(copy));
-            }
+
+    expand(): (Move | AlgNonMoveNode)[] {
+        if (this.amount === 0) {
+            return [];
         }
 
-        const repeatedNodesArray: AlgNode[] = [];
-        if (copy) {
-            for (let i = 0; i < Math.abs(this.amount); i++) {
-                let copyArray: AlgNode[] = [];
-                for (let j = 0; j < nodes.length; j++) {
-                    copyArray[j] = nodes[j].copy();
+        const expandedNodes: (Move | AlgNonMoveNode)[] = [];
+
+        for (const node of this.nodes) {
+            if (node.type === "Whitespace" || node.type === "Comment") {
+                expandedNodes.push(node);
+                continue;
+            }
+            expandedNodes.push(...node.copy().expand());
+        }
+
+        if (this.amount < 0) {
+            expandedNodes.reverse();
+            for (const node of expandedNodes) {
+                if (node.type === "Move") {
+                    node.invert();
                 }
-                repeatedNodesArray.push(...copyArray);
-            }
-        } else {
-            for (let i = 0; i < Math.abs(this.amount); i++) {
-                repeatedNodesArray.push(...nodes.slice());
             }
         }
 
-        return repeatedNodesArray;
+        arrayRepeat(expandedNodes, Math.abs(this.amount));
+
+        return expandedNodes;
     }
-    expanded(): Alg {
-        return new Alg(this.expand());
-    }
+
     invert(): Alg {
-        // Invert the nodes
-        const invertedNodes = [];
-        for (let i = this.nodes.length - 1; i >= 0; i--) {
-            this.nodes[i].invert();
-            invertedNodes.push(this.nodes[i]);
+        for (const node of this.moveNodes) {
+            node.invert();
         }
+        this.nodes.reverse();
 
-        // Fix line comment positioning
-        for (let i = 0; i < invertedNodes.length; i++) {
-            if (invertedNodes[i].type === "Comment") {
-                const comment = invertedNodes[i] as Comment;
-                if (comment.commentType !== "lineComment") {
-                    continue;
-                }
-                if (i + 1 >= invertedNodes.length || invertedNodes[i + 1].type === "Whitespace") {
-                    const whitespace = invertedNodes[i] as Whitespace;
-                    if (whitespace.value.indexOf("\n") > -1) {
-                        continue;
-                    }
-                }
-
-                invertedNodes.splice(i, 1);
-
-                let broken = false;
-                for (let j = i; j < invertedNodes.length; j++) {
-                    if (invertedNodes[j].type === "Whitespace") {
-                        const whitespace = invertedNodes[j] as Whitespace;
-                        // Whitespace will always start with '\n' after a comment
-                        if (whitespace.value[0] === "\n") {
-                            broken = true;
-                            invertedNodes.splice(j, 0, comment);
-                            break;
-                        }
-                    }
-                }
-                if (!broken) {
-                    invertedNodes.push(comment);
-                }
-            }
-        }
-
-        this.nodes = invertedNodes;
+        // TODO: Fix line comments
         return this;
     }
-    inverted(): Alg {
-        return this.copy().invert();
-    }
-    toString(parent = true): string {
-        const stringArray = [];
+
+    toString(): string {
+        let outString = "";
+
         for (const node of this.nodes) {
-            stringArray.push(node.toString(false));
-        }
-        if (this.amount === 1 && parent) {
-            return stringArray.join("");
+            outString += node.toString();
         }
 
-        const absAmount = Math.abs(this.amount);
-        return `(${stringArray.join("")})${absAmount !== 1 ? absAmount : ""}${this.amount < 0 ? "'" : ""}`;
-    }
-    stripComments(): void {
-        for (let i = 0; i < this.nodes.length; i++) {
-            if (this.nodes[i].type === "Comment") {
-                this.nodes.splice(i, 1);
-                i--;
-                continue;
+        if (this.isGrouping) {
+            const absAmount = Math.abs(this.amount);
+            if (absAmount !== 1) {
+                outString += absAmount.toString();
             }
-            this.nodes[i].stripComments?.();
-        }
-    }
-    removeWhitespace(removeNewlines = false): void {
-        for (let i = 0; i < this.nodes.length; i++) {
-            if (this.nodes[i].type === "Whitespace") {
-                const whitespace = this.nodes[i] as Whitespace;
-
-                if (removeNewlines || whitespace.value.indexOf("\n") === -1) {
-                    this.nodes.splice(i, 1);
-                    i--;
-                    continue;
-                }
-
-                // Regex . is everything but \n (which is quite convenient here)
-                whitespace.value = whitespace.value.replace(/./g, "");
-                continue;
+            if (this.amount < 0) {
+                outString += "'";
             }
-
-            this.nodes[i].removeWhitespace?.();
+            return `(${outString})`;
         }
-    }
-    addWhitespace(): void {
-        for (let i = 0; i < this.nodes.length; i++) {
-            this.nodes[i].addWhitespace?.();
 
-            let type = this.nodes[i].type;
-            if (type !== "Whitespace") {
-                if (i + 1 >= this.nodes.length) {
-                    continue;
-                }
-                if (this.nodes[i + 1].type !== "Whitespace") {
-                    this.nodes.splice(i + 1, 0, new Whitespace(" "));
-                    i++;
-                }
-            }
-        }
+        // If this is not a grouping, it is assumed that this.amount === 1
+        return outString;
     }
-    simplify(): void {
+
+    simplify(): Alg {
         let changed = true;
         while (changed) {
             changed = false;
 
-            let prevNode: AlgNode | null = null;
+            let prevNode: AlgMoveNode | null = null;
             let prevNodeIndex = -1;
             for (let i = 0; i < this.nodes.length; i++) {
                 let node = this.nodes[i];
@@ -204,31 +151,26 @@ export class Alg implements AlgNode {
                 }
 
                 // Simplify the node
-                node.simplify?.();
+                node.simplify();
 
-                // Single move simplifications
+                // If a move does nothing, remove it (e.g. R0, L0, etc.)
                 if (node.type === "Move") {
-                    if (node.amount % 4 === 0) {
+                    if (node.amount === 0) {
                         this.nodes.splice(i, 1);
                         i--;
                         continue;
                     }
-                    node.amount %= 4;
                 }
 
-                // Two move simplifications
+                // Merge two moves together if possible
                 if (node.type === "Move" && prevNode?.type === "Move") {
-                    if ((node as Move).face === (prevNode as Move).face) {
+                    if (node.face === prevNode.face) {
                         changed = true;
 
                         prevNode.amount += node.amount;
-                        if (node.amount === 0) {
-                            this.nodes.splice(prevNodeIndex, 1);
-                        }
                         this.nodes.splice(i, 1);
 
                         i = prevNodeIndex;
-
                         continue;
                     }
                 }
@@ -237,28 +179,25 @@ export class Alg implements AlgNode {
                 prevNodeIndex = i;
             }
         }
+
+        return this;
     }
 
-    forwardIterator(): AlgIterator {
-        return new AlgIterator(this);
-    }
-    reverseIterator(): AlgIterator {
-        return new AlgIterator(this, true);
-    }
     forward() {
-        return { [Symbol.iterator]: () => this.forwardIterator() };
+        return { [Symbol.iterator]: () => new AlgIterator(this) };
     }
     reverse() {
-        return { [Symbol.iterator]: () => this.reverseIterator() };
+        return { [Symbol.iterator]: () => new AlgIterator(this, true) };
     }
     [Symbol.iterator](): AlgIterator {
-        return this.forwardIterator();
+        return new AlgIterator(this);
     }
 
     private static tokensToAlg(tokens: SiGNToken[], algAmount: number, algVariableMap: Map<string, Alg>): Alg {
         let alg = new Alg([]);
         alg.amount = algAmount;
         let nodes: AlgNode[] = alg.nodes;
+        let moveNodes: AlgMoveNode[] = alg.moveNodes;
 
         for (let i = 0; i < tokens.length; i++) {
             let token = tokens[i];
@@ -267,6 +206,7 @@ export class Alg implements AlgNode {
                     const move = Move.fromString(token.value);
                     if (move !== null) {
                         nodes.push(move);
+                        moveNodes.push(move);
                     }
                     break;
                 }
@@ -286,6 +226,7 @@ export class Alg implements AlgNode {
                             alg = new Alg([group]);
                             alg.amount = amount;
                             nodes = group.algB.nodes;
+                            moveNodes = group.algB.moveNodes;
                             break;
                         }
                         case "[": case "(": {
@@ -294,7 +235,10 @@ export class Alg implements AlgNode {
                                 if ("])".indexOf(tokens[j].value) > -1) {
                                     neededClosingBrackets--;
                                     if (neededClosingBrackets === 0) {
-                                        nodes.push(Alg.tokensToAlg(tokens.slice(i + 1, j), tokens[j].amount ?? 1, algVariableMap));
+                                        // nodes.push(Alg.tokensToAlg(tokens.slice(i + 1, j), tokens[j].amount ?? 1, algVariableMap));
+                                        const group = Alg.tokensToAlg(tokens.slice(i + 1, j), tokens[j].amount ?? 1, algVariableMap);
+                                        nodes.push(group);
+                                        moveNodes.push(group);
                                         i = j;
                                         token = tokens[j];
                                         break;
@@ -403,6 +347,7 @@ export class Alg implements AlgNode {
                     // If the alg is being executed exactly once in order, simply push the alg directly
                     if (token.amount === 1 || token.amount === undefined) {
                         nodes.push(algVariable);
+                        moveNodes.push(algVariable);
                         break;
                     }
 
@@ -411,6 +356,7 @@ export class Alg implements AlgNode {
                     const alg = new Alg([algVariable]);
                     alg.amount = token.amount;
                     nodes.push(alg);
+                    moveNodes.push(alg);
 
                     break;
                 }

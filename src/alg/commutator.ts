@@ -1,86 +1,109 @@
-import { Alg, AlgNode } from "./alg.js";
+import type { Alg, AlgNonMoveNode, IAlgMoveNode } from "./alg.js";
+import type { Move } from "./move.js";
 import { CommutatorIterator } from "./alg-iterator.js";
+import { arrayRepeat } from "../utils.js";
 
-export class Commutator implements AlgNode {
-    public type = "Commutator";
+export class Commutator implements IAlgMoveNode {
+    public readonly type = "Commutator" as const;
 
     public algA: Alg;
     public algB: Alg;
 
-    public amount: number = 1;
+    public isGrouping: boolean;
 
-    constructor(algA: Alg, algB: Alg) {
+    public amount: number;
+
+    constructor(algA: Alg, algB: Alg, amount: number = 1, isGrouping: boolean = true) {
         this.algA = algA;
         this.algB = algB;
+        this.amount = amount;
+        this.isGrouping = isGrouping;
     }
 
     copy(): Commutator {
-        return new Commutator(this.algA.copy(), this.algB.copy());
+        return new Commutator(this.algA.copy(), this.algB.copy(), this.amount, this.isGrouping);
     }
-    expand(copy: boolean): AlgNode[] {
-        const expandedA = this.algA.expand(copy);
-        const expandedB = this.algB.expand(copy);
-        const invertedA: AlgNode[] = [];
-        const invertedB: AlgNode[] = [];
+
+    expand(): (Move | AlgNonMoveNode)[] {
+        if (this.amount === 0) {
+            return [];
+        }
+
+        const expandedA = this.algA.expand();
+        const expandedB = this.algB.expand();
+        const invertedA: (Move | AlgNonMoveNode)[] = [];
+        const invertedB: (Move | AlgNonMoveNode)[] = [];
 
         // Copy expandedA and expandedB into separate arrays and invert the sequences
         for (let i = expandedA.length - 1; i >= 0; i--) {
-            invertedA.push(expandedA[i].inverted());
+            const node = expandedA[i];
+            if (node.type === "Move") {
+                invertedA.push(node.copy().invert());
+                continue;
+            }
+            invertedA.push(node);
         }
         for (let i = expandedB.length - 1; i >= 0; i--) {
-            invertedB.push(expandedB[i].inverted());
+            const node = expandedB[i];
+            if (node.type === "Move") {
+                invertedB.push(node.copy().invert());
+                continue;
+            }
+            invertedB.push(node);
         }
 
-        // Return the concatenated arrays in order of A B A' B'
-        return expandedA.concat(expandedB, invertedA, invertedB);
-    }
-    invert(): Commutator {
-        let swap = this.algA;
-        this.algA = this.algB;
-        this.algB = swap;
-        return this;
-    }
-    inverted(): Commutator {
-        return new Commutator(this.algB.copy(), this.algA.copy());
-    }
-    toString(): string {
-        return `[${this.algA.toString()},${this.algB.toString()}]`;
-    }
-    stripComments(): void {
-        this.algA.stripComments();
-        this.algB.stripComments();
-    }
-    removeWhitespace(): void {
-        this.algA.removeWhitespace();
-        this.algB.removeWhitespace();
-    }
-    addWhitespace(): void {
-        this.algA.addWhitespace();
-        this.algB.addWhitespace();
-    }
-    simplify(): void {
-        this.algA.simplify();
-        this.algB.simplify();
+        let outArray: (Move | AlgNonMoveNode)[];
+        if (this.amount > 0) {
+            // A B A' B'
+            outArray = expandedA.concat(expandedB, invertedA, invertedB);
+        } else {
+            // B A B' A'
+            outArray = expandedB.concat(expandedA, invertedB, invertedA);
+        }
+
+        return arrayRepeat(outArray, Math.abs(this.amount));
     }
 
-    forwardIterator(): CommutatorIterator {
-        return new CommutatorIterator(this);
+    invert(): Commutator {
+        const swap = this.algA;
+        this.algA = this.algB;
+        this.algB = swap;
+        
+        return this;
     }
-    reverseIterator(): CommutatorIterator {
-        return new CommutatorIterator(this, true);
+
+    toString(): string {
+        const outString = `[${this.algA.toString()},${this.algB.toString()}]`;
+        if (this.isGrouping) {
+            return `[${outString}]`;
+        }
+        return outString;
     }
+
+    simplify(): Commutator {
+        this.algA.simplify();
+        this.algB.simplify();
+
+        // If the commutator is inverted, then we can apply the following transformation:
+        // [A, B]' -> [B, A]
+        // (A B A' B')' -> B A B' A'
+        if (this.amount < 0) {
+            const swap = this.algA;
+            this.algA = this.algB;
+            this.algB = swap;
+            this.amount *= -1;
+        }
+
+        return this;
+    }
+
     forward() {
-        return { [Symbol.iterator]: () => this.forwardIterator() };
+        return { [Symbol.iterator]: () => new CommutatorIterator(this) };
     }
     reverse() {
-        return { [Symbol.iterator]: () => this.reverseIterator() }
+        return { [Symbol.iterator]: () => new CommutatorIterator(this, true) };
     }
     [Symbol.iterator](): CommutatorIterator {
-        // if (this.amount < 0) {
-        //     this.amount *= -1;
-        //     this.invert();
-        // }
-        // return new CommutatorIterator(this);
-        return this.forwardIterator();
+        return new CommutatorIterator(this);
     }
 }

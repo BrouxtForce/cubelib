@@ -69,61 +69,59 @@ export class Move {
     copy() {
         return new Move(this.face, this.shallow, this.deep, this.amount);
     }
-    expand(copy) {
-        return copy ? [this] : [this.copy()];
+    expand() {
+        return [this];
     }
     invert() {
         this.amount *= -1;
         return this;
     }
-    inverted() {
-        return new Move(this.face, this.shallow, this.deep, -this.amount);
-    }
     toString() {
-        const stringArray = [];
+        let outString = "";
         let lowercase = false;
         if (this.deep !== 1) {
             lowercase = true;
             if (this.shallow !== 1) {
                 if (this.shallow === this.deep) {
-                    stringArray.push(this.shallow);
+                    outString += this.shallow;
                     lowercase = false;
                 }
                 else {
-                    stringArray.push(this.shallow, "-", this.deep);
+                    outString += this.shallow + "-" + this.deep;
                 }
             }
             else if (this.deep !== 2) {
-                stringArray.push(this.deep);
+                outString += this.deep;
             }
         }
         if (lowercase) {
-            stringArray.push(this.face.toLowerCase());
+            outString += this.face.toLowerCase();
         }
         else {
-            stringArray.push(this.face);
+            outString += this.face;
         }
         if (Math.abs(this.amount) !== 1) {
-            stringArray.push(Math.abs(this.amount));
+            outString += Math.abs(this.amount);
         }
         if (this.amount < 0) {
-            stringArray.push("'");
+            outString += "'";
         }
-        return stringArray.join("");
+        return outString;
     }
-    forwardIterator() {
-        return new MoveIterator(this);
-    }
-    reverseIterator() {
-        return new MoveIterator(this, true);
+    simplify() {
+        this.amount %= 4;
+        if (Math.abs(this.amount) === 3) {
+            this.amount = -Math.sign(this.amount);
+        }
+        return this;
     }
     forward() {
-        return { [Symbol.iterator]: () => this.forwardIterator() };
+        return { [Symbol.iterator]: () => new MoveIterator(this) };
     }
     reverse() {
-        return { [Symbol.iterator]: () => this.reverseIterator() };
+        return { [Symbol.iterator]: () => new MoveIterator(this, true) };
     }
     [Symbol.iterator]() {
-        return this.forwardIterator();
+        return new MoveIterator(this);
     }
 }

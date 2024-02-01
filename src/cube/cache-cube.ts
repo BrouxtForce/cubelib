@@ -1,9 +1,8 @@
-import { assert, mod } from "../utils.js";
-import { Cube } from "./cube.js";
-
 import type { Alg } from "../alg/alg.js";
 import type { Commutator } from "../alg/commutator.js";
 import type { Conjugate } from "../alg/conjugate.js";
+import { Cube } from "./cube.js";
+import { assert, mod } from "../utils.js";
 
 export class CacheCube {
     public readonly layerCount: number;
@@ -138,56 +137,61 @@ export class CacheCube {
         this.#resetCycleCube();
 
         // Call #recordAlgsRecursive recursively on all child algs
-        for (const node of alg.nodes) {
+        for (const node of alg.moveNodes) {
             switch (node.type) {
-                case "Alg": {
-                    this.#recordAlgsRecursive(node as Alg);
+                case "Alg":
+                    this.#recordAlgsRecursive(node);
                     break;
-                }
-                case "Commutator": {
-                    this.#recordAlgsRecursive((node as Commutator).algA);
-                    this.#recordAlgsRecursive((node as Commutator).algB);
-                }
-                case "Conjugate": {
-                    this.#recordAlgsRecursive((node as Conjugate).algA);
-                    this.#recordAlgsRecursive((node as Conjugate).algB);
-                }
+                case "Commutator":
+                case "Conjugate":
+                    this.#recordAlgsRecursive(node.algA);
+                    this.#recordAlgsRecursive(node.algB);
                 case "Move":
-                case "Whitespace":
-                case "Comment":
                     continue;
                 default:
-                    throw new Error(`Unimplemented alg node type in CacheCube.execute(): '${node.type}'`);
+                    // @ts-expect-error if all cases have been covered, node.type should be of type never
+                    throw new Error(`Unimplemented alg move node type in CacheCube.execute(): '${node.type}'`);
             }
         }
 
         // Record the current alg
         this.#resetCycleCube();
-        for (const node of alg.nodes) {
+        for (const node of alg.moveNodes) {
             switch (node.type) {
-                case "Alg":
-                    const cycles = this.#algMap.get(node as Alg);
+                case "Alg": {
+                    const cycles = this.#algMap.get(node);
                     assert(cycles !== undefined);
                     CacheCube.#executeCycles(this.#cycleCube, cycles, node.amount);
                     break;
+                }
                 case "Commutator":
-                case "Conjugate":
-                    const algA = (node as Commutator | Conjugate).algA;
-                    const algB = (node as Commutator | Conjugate).algB;
-
-                    const cyclesA = this.#algMap.get(algA);
-                    const cyclesB = this.#algMap.get(algB);
+                case "Conjugate": {
+                    const cyclesA = this.#algMap.get(node.algA);
+                    const cyclesB = this.#algMap.get(node.algB);
                     assert(cyclesA !== undefined && cyclesB !== undefined);
 
-                    // Commutator = A B A' B'
-                    // Conjugate = A B A'
-                    CacheCube.#executeCycles(this.#cycleCube, cyclesA, node.amount * algA.amount);
-                    CacheCube.#executeCycles(this.#cycleCube, cyclesB, node.amount * algB.amount);
-                    CacheCube.#executeCycles(this.#cycleCube, cyclesA, -node.amount * algA.amount);
-                    if (node.type === "Commutator") {
-                        CacheCube.#executeCycles(this.#cycleCube, cyclesB, -node.amount * algB.amount);
+                    const absAmount = Math.abs(node.amount);
+                    if (node.amount > 0) {
+                        // Commutator = A B A' B'
+                        // Conjugate = A B A'
+                        CacheCube.#executeCycles(this.#cycleCube, cyclesA, absAmount * node.algA.amount);
+                        CacheCube.#executeCycles(this.#cycleCube, cyclesB, absAmount * node.algB.amount);
+                        CacheCube.#executeCycles(this.#cycleCube, cyclesA, -absAmount * node.algA.amount);
+                        if (node.type === "Commutator") {
+                            CacheCube.#executeCycles(this.#cycleCube, cyclesB, -absAmount * node.algB.amount);
+                        }
+                    } else {
+                        // Commutator' = B A B' A'
+                        // Conjugate' = A B' A'
+                        if (node.type === "Commutator") {
+                            CacheCube.#executeCycles(this.#cycleCube, cyclesB, absAmount * node.algB.amount);
+                        }
+                        CacheCube.#executeCycles(this.#cycleCube, cyclesA, absAmount * node.algA.amount);
+                        CacheCube.#executeCycles(this.#cycleCube, cyclesB, -absAmount * node.algB.amount);
+                        CacheCube.#executeCycles(this.#cycleCube, cyclesA, -absAmount * node.algA.amount);
                     }
                     break;
+                }
                 case "Move":
                     this.#cycleCube.execute(node);
             }

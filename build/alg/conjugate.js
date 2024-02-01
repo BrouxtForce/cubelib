@@ -3,6 +3,7 @@ export class Conjugate {
     type = "Conjugate";
     algA;
     algB;
+    isGrouping = true;
     amount = 1;
     constructor(algA, algB) {
         this.algA = algA;
@@ -11,12 +12,26 @@ export class Conjugate {
     copy() {
         return new Conjugate(this.algA.copy(), this.algB.copy());
     }
-    expand(copy) {
-        const expandedA = this.algA.expand(copy);
-        const expandedB = this.algB.expand(copy);
+    expand() {
+        const expandedA = this.algA.expand();
+        const expandedB = this.algB.expand();
         const invertedA = [];
         for (let i = expandedA.length - 1; i >= 0; i--) {
-            invertedA.push(expandedA[i].inverted());
+            const node = expandedA[i];
+            if (node.type === "Move") {
+                invertedA.push(node.copy().invert());
+                continue;
+            }
+            invertedA.push(node.copy());
+        }
+        if (this.amount < 0) {
+            for (let i = 0; i < expandedB.length; i++) {
+                const node = expandedB[i];
+                if (node.type === "Move") {
+                    expandedB[i] = node.copy().invert();
+                }
+            }
+            expandedB.reverse();
         }
         return expandedA.concat(expandedB, invertedA);
     }
@@ -24,41 +39,29 @@ export class Conjugate {
         this.algB.invert();
         return this;
     }
-    inverted() {
-        return new Conjugate(this.algA.copy(), this.algB.inverted());
-    }
     toString() {
-        return `[${this.algA.toString()}:${this.algB.toString()}]`;
-    }
-    stripComments() {
-        this.algA.stripComments();
-        this.algB.stripComments();
-    }
-    removeWhitespace() {
-        this.algA.removeWhitespace();
-        this.algB.removeWhitespace();
-    }
-    addWhitespace() {
-        this.algA.addWhitespace();
-        this.algB.addWhitespace();
+        const outString = `${this.algA.toString()}:${this.algB.toString()}`;
+        if (this.isGrouping) {
+            return `[${outString}]`;
+        }
+        return outString;
     }
     simplify() {
         this.algA.simplify();
         this.algB.simplify();
-    }
-    forwardIterator() {
-        return new ConjugateIterator(this);
-    }
-    reverseIterator() {
-        return new ConjugateIterator(this, true);
+        if (this.amount < 0) {
+            this.algB.invert();
+            this.amount *= -1;
+        }
+        return this;
     }
     forward() {
-        return { [Symbol.iterator]: () => this.forwardIterator() };
+        return { [Symbol.iterator]: () => new ConjugateIterator(this) };
     }
     reverse() {
-        return { [Symbol.iterator]: () => this.reverseIterator() };
+        return { [Symbol.iterator]: () => new ConjugateIterator(this, true) };
     }
     [Symbol.iterator]() {
-        return this.forwardIterator();
+        return new ConjugateIterator(this);
     }
 }
