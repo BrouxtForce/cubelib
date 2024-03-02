@@ -130,6 +130,9 @@ export class SiGNTokenInputStream {
         return this.input.next();
     }
     readCommentToken() {
+        const pos = this.input.pos;
+        const line = this.input.line;
+        const col = this.input.col;
         this.input.next();
         switch (this.input.peek()) {
             case "/": {
@@ -137,7 +140,8 @@ export class SiGNTokenInputStream {
                 let comment = this.readWhile((char) => char !== "\n");
                 return {
                     type: "lineComment",
-                    value: comment
+                    value: comment,
+                    pos, line, col
                 };
             }
             case "*": {
@@ -150,7 +154,8 @@ export class SiGNTokenInputStream {
                         this.input.next();
                         return {
                             type: "blockComment",
-                            value: comment
+                            value: comment,
+                            pos, line, col
                         };
                     }
                     this.input.next();
@@ -168,11 +173,15 @@ export class SiGNTokenInputStream {
         if (this.input.eof()) {
             return null;
         }
+        const pos = this.input.pos;
+        const line = this.input.line;
+        const col = this.input.col;
         let char = this.input.peek();
         if (this.isWhitespace(char)) {
             return {
                 type: "whitespace",
-                value: this.readWhitespace()
+                value: this.readWhitespace(),
+                pos, line, col
             };
         }
         if (this.isVariable(char)) {
@@ -190,7 +199,8 @@ export class SiGNTokenInputStream {
                 return {
                     type: "variable",
                     value: variable,
-                    amount: amount
+                    amount: amount,
+                    pos, line, col
                 };
             }
             const str = this.input.string;
@@ -204,7 +214,8 @@ export class SiGNTokenInputStream {
                     this.input.skip(variable.length);
                     return {
                         type: "variable",
-                        value: variable
+                        value: variable,
+                        pos, line, col
                     };
                 }
                 break;
@@ -213,13 +224,15 @@ export class SiGNTokenInputStream {
         if (this.isMove(char) || this.isNumber(char)) {
             return {
                 type: "move",
-                value: this.readMove()
+                value: this.readMove(),
+                pos, line, col
             };
         }
         if (this.isPunctuation(char)) {
             let token = {
                 type: "punctuation",
-                value: this.readPunc()
+                value: this.readPunc(),
+                pos, line, col
             };
             if ((this.isNumber(this.input.peek()) || this.input.peek() === "'") && (token.value === ")" || token.value === "]")) {
                 token.amount = Number.parseInt(this.readNumber());

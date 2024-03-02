@@ -30,7 +30,7 @@ export class Alg {
         if (errors.length > 0) {
             let message = "";
             for (const error of errors) {
-                message += error.message + "\n";
+                message += `Error Ln ${error.line} Col ${error.col}: ${error.message}\n`;
             }
             throw new Error(message);
         }

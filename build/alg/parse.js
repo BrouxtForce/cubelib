@@ -44,6 +44,9 @@ function parseExpression(stream, root = false) {
         if (!token) {
             break;
         }
+        const pos = token.pos;
+        const line = token.line;
+        const col = token.col;
         if (token.type === "move") {
             leftNodes.push(Move.fromString(token.value));
             continue;
@@ -53,7 +56,7 @@ function parseExpression(stream, root = false) {
             if (!variableAlg) {
                 errors.push({
                     message: `Undefined variable '${token.value}'`,
-                    pos: 0, line: 0, col: 0
+                    pos, line, col
                 });
                 continue;
             }
@@ -65,10 +68,16 @@ function parseExpression(stream, root = false) {
                 case ":":
                 case ",": {
                     const right = parseExpression(stream, false);
-                    if (right === null) {
+                    if (leftNodes.length === 0) {
+                        errors.push({
+                            message: `Left-hand side of ${token.value === "," ? "commutator" : "conjugate"} cannot be empty.`,
+                            pos, line, col
+                        });
+                    }
+                    else if (right.moveNodes.length === 0) {
                         errors.push({
                             message: `Right-hand side of ${token.value === "," ? "commutator" : "conjugate"} cannot be empty.`,
-                            pos: 0, line: 0, col: 0
+                            pos, line, col
                         });
                         return new Alg(leftNodes);
                     }
@@ -85,7 +94,7 @@ function parseExpression(stream, root = false) {
                     if (!closingToken) {
                         errors.push({
                             message: `Missing closing ${token.value === "(" ? "parentheses" : "brackets"}`,
-                            pos: 0, line: 0, col: 0
+                            pos, line, col
                         });
                         break;
                     }
@@ -95,7 +104,7 @@ function parseExpression(stream, root = false) {
                     if (incorrectClosing) {
                         errors.push({
                             message: `Unexpected token '${token.value}'`,
-                            pos: 0, line: 0, col: 0
+                            pos, line, col
                         });
                     }
                     break;
@@ -105,7 +114,7 @@ function parseExpression(stream, root = false) {
                     if (root) {
                         errors.push({
                             message: `Unexpected closing bracked: '${token.value}'`,
-                            pos: 0, line: 0, col: 0
+                            pos, line, col
                         });
                     }
                     stream.prev();
@@ -113,7 +122,7 @@ function parseExpression(stream, root = false) {
                 default:
                     errors.push({
                         message: `Bug: Unknown punctuation '${token.value}'`,
-                        pos: 0, line: 0, col: 0
+                        pos, line, col
                     });
             }
         }

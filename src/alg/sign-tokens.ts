@@ -49,6 +49,10 @@ export interface SiGNToken {
     type: "move" | "punctuation" | "whitespace" | "lineComment" | "blockComment" | "variable";
     value: string;
     amount?: number; // Only used for punctuation and variables
+
+    pos: number;
+    line: number;
+    col: number;
 }
 
 export class SiGNTokenInputStream {
@@ -150,7 +154,11 @@ export class SiGNTokenInputStream {
     readPunc(): string {
         return this.input.next();
     }
-    readCommentToken(): { type: "lineComment" | "blockComment", value: string } | null {
+    readCommentToken(): SiGNToken | null {
+        const pos = this.input.pos;
+        const line = this.input.line;
+        const col = this.input.col;
+
         // Both line comments and block comments start with '/', so we can skip this value
         this.input.next();
     
@@ -163,7 +171,8 @@ export class SiGNTokenInputStream {
                 let comment = this.readWhile((char: string) => char !== "\n");
                 return {
                     type: "lineComment",
-                    value: comment
+                    value: comment,
+                    pos, line, col
                 };
             }
             // Block comment: Read until matching "*/"
@@ -179,7 +188,8 @@ export class SiGNTokenInputStream {
                         this.input.next(); // Reads '/'
                         return {
                             type: "blockComment",
-                            value: comment
+                            value: comment,
+                            pos, line, col
                         };
                     }
                     // Read the '*' to avoid an infinite loop
@@ -200,11 +210,16 @@ export class SiGNTokenInputStream {
             return null;
         }
 
+        const pos = this.input.pos;
+        const line = this.input.line;
+        const col = this.input.col;
+
         let char = this.input.peek();
         if (this.isWhitespace(char)) {
             return {
                 type: "whitespace",
-                value: this.readWhitespace()
+                value: this.readWhitespace(),
+                pos, line, col
             };
         }
         // This is slightly annoying, because some variable names may be valid SiGN notation.
@@ -229,7 +244,8 @@ export class SiGNTokenInputStream {
                 return {
                     type: "variable",
                     value: variable,
-                    amount: amount
+                    amount: amount,
+                    pos, line, col
                 };
             }
 
@@ -246,7 +262,8 @@ export class SiGNTokenInputStream {
                     this.input.skip(variable.length);
                     return {
                         type: "variable",
-                        value: variable
+                        value: variable,
+                        pos, line, col
                     };
                 }
                 break;
@@ -255,13 +272,15 @@ export class SiGNTokenInputStream {
         if (this.isMove(char) || this.isNumber(char)) {
             return {
                 type: "move",
-                value: this.readMove()
+                value: this.readMove(),
+                pos, line, col
             };
         }
         if (this.isPunctuation(char)) {
             let token: SiGNToken = {
                 type: "punctuation",
-                value: this.readPunc()
+                value: this.readPunc(),
+                pos, line, col
             };
             if ((this.isNumber(this.input.peek()) || this.input.peek() === "'") && (token.value === ")" || token.value === "]")) {
                 token.amount = Number.parseInt(this.readNumber());
