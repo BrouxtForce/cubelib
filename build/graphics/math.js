@@ -28,21 +28,29 @@ export function createTranslationMatrix(translation) {
         translation[0], translation[1], translation[2], 1
     ]);
 }
-export function createRotationMatrix(rotation) {
-    const [x, y, z, w] = rotation;
-    const a = [
-        w, z, -y, x,
-        -z, w, x, y,
-        y, -x, w, z,
-        -x, -y, -z, w
-    ];
-    const b = [
-        w, z, -y, -x,
-        -z, w, x, -y,
-        y, -x, w, -z,
-        x, y, z, w
-    ];
-    return matrixMult(transpose(a), transpose(b));
+export function matrixRotationX(radians, outMatrix) {
+    outMatrix ??= new Float32Array(16);
+    const cosRad = Math.cos(radians);
+    const sinRad = Math.sin(radians);
+    outMatrix.set([
+        1, 0, 0, 0,
+        0, cosRad, -sinRad, 0,
+        0, sinRad, cosRad, 0,
+        0, 0, 0, 1
+    ]);
+    return outMatrix;
+}
+export function matrixRotationY(radians, outMatrix) {
+    outMatrix ??= new Float32Array(16);
+    const cosRad = Math.cos(radians);
+    const sinRad = Math.sin(radians);
+    outMatrix.set([
+        cosRad, 0, sinRad, 0,
+        0, 1, 0, 0,
+        -sinRad, 0, cosRad, 0,
+        0, 0, 0, 1
+    ]);
+    return outMatrix;
 }
 export function createScaleMatrix(scale) {
     return new Float32Array([
@@ -52,13 +60,8 @@ export function createScaleMatrix(scale) {
         0, 0, 0, 1
     ]);
 }
-export function createTransformMatrix(position, rotation, scale) {
-    const outMatrix = new Float32Array(16);
-    matrixMult(matrixMult(createTranslationMatrix(position), createRotationMatrix(rotation)), createScaleMatrix(scale), outMatrix);
-    return outMatrix;
-}
 export function createPerspectiveMatrix(fovRadians, aspect, znear) {
-    return ([
+    return new Float32Array([
         fovRadians / aspect, 0, 0, 0,
         0, fovRadians, 0, 0,
         0, 0, -1, -2 * znear,

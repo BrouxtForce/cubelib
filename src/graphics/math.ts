@@ -1,6 +1,5 @@
-type Matrix4x4 = Float32Array | number[];
+type Matrix4x4 = Float32Array;
 type Vector3 = number[];
-type Quaternion = number[];
 
 export function transpose(a: Matrix4x4, outMatrix?: Matrix4x4): Matrix4x4 {
     outMatrix ??= new Float32Array(16);
@@ -39,24 +38,34 @@ export function createTranslationMatrix(translation: Vector3): Matrix4x4 {
     ]);
 }
 
-export function createRotationMatrix(rotation: Quaternion): Matrix4x4 {
-    const [ x, y, z, w ] = rotation;
+export function matrixRotationX(radians: number, outMatrix?: Matrix4x4): Matrix4x4 {
+    outMatrix ??= new Float32Array(16);
+    
+    const cosRad = Math.cos(radians);
+    const sinRad = Math.sin(radians);
+    outMatrix.set([
+        1, 0, 0, 0,
+        0, cosRad, -sinRad, 0,
+        0, sinRad, cosRad, 0,
+        0, 0, 0, 1
+    ]);
 
-    const a: number[] = [
-         w,  z, -y, x,
-        -z,  w,  x, y,
-         y, -x,  w, z,
-        -x, -y, -z, w
-    ];
+    return outMatrix;
+}
 
-    const b: number[] = [
-         w,  z, -y, -x,
-        -z,  w,  x, -y,
-         y, -x,  w, -z,
-         x,  y,  z,  w
-    ];
+export function matrixRotationY(radians: number, outMatrix?: Matrix4x4): Matrix4x4 {
+    outMatrix ??= new Float32Array(16);
 
-    return matrixMult(transpose(a), transpose(b));
+    const cosRad = Math.cos(radians);
+    const sinRad = Math.sin(radians);
+    outMatrix.set([
+        cosRad, 0, sinRad, 0,
+        0, 1, 0, 0,
+        -sinRad, 0, cosRad, 0,
+        0, 0, 0, 1
+    ]);
+
+    return outMatrix;
 }
 
 export function createScaleMatrix(scale: Vector3): Matrix4x4 {
@@ -68,23 +77,8 @@ export function createScaleMatrix(scale: Vector3): Matrix4x4 {
     ]);
 }
 
-export function createTransformMatrix(position: Vector3, rotation: Quaternion, scale: Vector3): Matrix4x4 {
-    const outMatrix = new Float32Array(16);
-
-    matrixMult(
-        matrixMult(
-            createTranslationMatrix(position),
-            createRotationMatrix(rotation)
-        ),
-        createScaleMatrix(scale),
-        outMatrix
-    );
-
-    return outMatrix;
-}
-
 export function createPerspectiveMatrix(fovRadians: number, aspect: number, znear: number): Matrix4x4 {
-    return ([
+    return new Float32Array([
         fovRadians / aspect, 0, 0, 0,
         0, fovRadians, 0, 0,
         0, 0, -1, -2 * znear,
