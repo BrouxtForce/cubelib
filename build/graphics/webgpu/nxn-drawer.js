@@ -1,92 +1,37 @@
 import device from "./device.js";
-import { matrixMult, createPerspectiveMatrix, createScaleMatrix, transpose, createTranslationMatrix, matrixRotationX, matrixRotationY } from "../math.js";
-
-export default class PuzzleDrawer {
-    private readonly context: GPUCanvasContext;
-    private depthTexture: GPUTexture;
-    private readonly renderPassDescriptor: GPURenderPassDescriptor;
-    private readonly module: GPUShaderModule;
-    private readonly renderPipeline: GPURenderPipeline;
-    private readonly cameraDataBuffer: GPUBuffer;
-    private readonly bindGroupLayout: GPUBindGroupLayout;
-    private readonly pipelineLayout: GPUPipelineLayout;
-    private readonly bindGroups: GPUBindGroup[];
-    private readonly stickerBuffer: GPUBuffer;
-
-    private static depthTextureFormat: GPUTextureFormat = "depth16unorm";
-
-    constructor(canvas: HTMLCanvasElement, public readonly layerCount: number) {
-        const context = canvas.getContext("webgpu");
-        if (!context) {
-            throw new Error("Failed to initialize WebGPU canvas context.");
-        }
-    
-        const preferredFormat = navigator.gpu.getPreferredCanvasFormat();
-        context.configure({ device, format: preferredFormat });
-    
-        this.context = context;
-        this.depthTexture = PuzzleDrawer.createDepthTexture(canvas.width, canvas.height);
-        this.renderPassDescriptor = {
-            label: "Draw Puzzle Render Pass",
-            colorAttachments: [{
-                view: null as any,
-                clearValue: [1, 1, 1, 1],
-                loadOp: "clear",
-                storeOp: "store"
-            }],
-            depthStencilAttachment: {
-                view: this.depthTexture.createView(),
-                depthClearValue: 1,
-                depthLoadOp: "clear",
-                depthStoreOp: "store"
-            }
-        };
-        this.module = PuzzleDrawer.createShader(this.layerCount);
-
-        this.cameraDataBuffer = device.createBuffer({
-            size: 80,
-            usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.UNIFORM
-        });
-
-        this.stickerBuffer = PuzzleDrawer.createStickerBuffer(this.layerCount);
-        this.bindGroupLayout = device.createBindGroupLayout({
-            entries: [
-                {
-                    binding: 0,
-                    visibility: GPUShaderStage.VERTEX,
-                    buffer: { type: "uniform" }
-                },
-                {
-                    binding: 1,
-                    visibility: GPUShaderStage.FRAGMENT | GPUShaderStage.COMPUTE,
-                    buffer: { type: "storage" }
-                }
-            ]
-        });
-        this.pipelineLayout = device.createPipelineLayout({
-            bindGroupLayouts: [this.bindGroupLayout]
-        });
-        this.bindGroups = [
-            device.createBindGroup({
-                layout: this.bindGroupLayout,
-                entries: [
-                    { binding: 0, resource: { buffer: this.cameraDataBuffer } },
-                    { binding: 1, resource: { buffer: this.stickerBuffer }}
-                ]
-            })
-        ];
-
-        this.renderPipeline = PuzzleDrawer.createRenderPipeline(this.module, preferredFormat, this.pipelineLayout);
-        
-        this.initStickerBuffer();
+import { matrixMult, createPerspectiveMatrix, transpose, createTranslationMatrix, matrixRotationX, matrixRotationY } from "../math.js";
+export default class NxNDrawer {
+    layerCount;
+    canvas;
+    context;
+    depthTexture;
+    renderPassDescriptor;
+    shaderModule;
+    renderPipeline;
+    computePipeline;
+    bindGroups;
+    stickerBuffer;
+    cameraDataBuffer;
+    constructor(canvas, layerCount) {
+        this.layerCount = layerCount;
+        let preferredFormat;
+        this.canvas = canvas;
+        [this.context, preferredFormat] = NxNDrawer.initCanvasContext(canvas);
+        this.depthTexture = NxNDrawer.createDepthTexture(canvas.width, canvas.height);
+        this.renderPassDescriptor = NxNDrawer.createRenderPassDescriptor(this.depthTexture);
+        this.shaderModule = NxNDrawer.createShaderModule(layerCount);
+        const bindGroupLayout = NxNDrawer.createBindGroupLayout();
+        const piplineLayout = NxNDrawer.createPipelineLayout(bindGroupLayout);
+        this.renderPipeline = NxNDrawer.createRenderPipeline(this.shaderModule, piplineLayout, preferredFormat, this.depthTexture.format);
+        this.computePipeline = NxNDrawer.createComputePipeline(this.shaderModule, piplineLayout);
+        this.stickerBuffer = NxNDrawer.createStickerBuffer(layerCount);
+        this.cameraDataBuffer = NxNDrawer.createCameraDataBuffer();
+        this.bindGroups = NxNDrawer.createBindGroups(bindGroupLayout, this.cameraDataBuffer, this.stickerBuffer);
     }
-
-    render(): void {
-        const commandEncoder = device.createCommandEncoder({ label: "Puzzle Drawer Command Encoder" });
-
-        // @ts-expect-error
+    render() {
+        this.resize(this.canvas.clientWidth, this.canvas.clientHeight);
+        const commandEncoder = device.createCommandEncoder({ label: "Draw NxN" });
         this.renderPassDescriptor.colorAttachments[0].view = this.context.getCurrentTexture().createView();
-
         const pass = commandEncoder.beginRenderPass(this.renderPassDescriptor);
         pass.setPipeline(this.renderPipeline);
         for (let i = 0; i < this.bindGroups.length; i++) {
@@ -94,36 +39,84 @@ export default class PuzzleDrawer {
         }
         pass.draw(4, 6);
         pass.end();
-
         device.queue.submit([commandEncoder.finish()]);
     }
-
-    setCameraTransform(position: number[], rotationX: number, rotationY: number, scale: number[]): void {
+    reset() {
+        const commandEncoder = device.createCommandEncoder({ label: "Reset NxN" });
+        const pass = commandEncoder.beginComputePass();
+        pass.setPipeline(this.computePipeline);
+        for (let i = 0; i < this.bindGroups.length; i++) {
+            pass.setBindGroup(i, this.bindGroups[i]);
+        }
+        pass.dispatchWorkgroups(Math.ceil(this.stickerBuffer.size / 256));
+        pass.end();
+        device.queue.submit([commandEncoder.finish()]);
+    }
+    setCameraTransform(position, rotationX, rotationY, scale) {
         const viewMatrix = matrixMult(matrixMult(matrixRotationY(rotationY), matrixRotationX(rotationX)), createTranslationMatrix(position));
-        const projMatrix = createPerspectiveMatrix(1, this.context.canvas.width / this.context.canvas.height, 0.01);
-
+        const projMatrix = createPerspectiveMatrix(1, this.canvas.width / this.canvas.height, 0.01);
         const cameraData = new ArrayBuffer(80);
         const viewProjMatrix = new Float32Array(cameraData, 0, 16);
         const worldPosition = new Float32Array(cameraData, 64, 3);
-
         viewProjMatrix.set(matrixMult(viewMatrix, transpose(projMatrix)));
         worldPosition.set([0, 0, 0]);
-
         device.queue.writeBuffer(this.cameraDataBuffer, 0, cameraData);
     }
-    
-    private static createDepthTexture(width: number, height: number): GPUTexture {
+    destroy() {
+        this.context.unconfigure();
+        this.depthTexture.destroy();
+        this.stickerBuffer.destroy();
+        this.cameraDataBuffer.destroy();
+    }
+    resize(width, height) {
+        if (this.canvas.width === width && this.canvas.height === height) {
+            return;
+        }
+        this.canvas.width = width;
+        this.canvas.height = height;
+        this.depthTexture.destroy();
+        this.depthTexture = NxNDrawer.createDepthTexture(width, height);
+        const attachment = this.renderPassDescriptor.depthStencilAttachment;
+        attachment.view = this.depthTexture.createView();
+    }
+    static initCanvasContext(canvas) {
+        canvas.width = canvas.clientWidth;
+        canvas.height = canvas.clientHeight;
+        const context = canvas.getContext("webgpu");
+        if (!context) {
+            throw new Error("Failed to initialize WebGPU canvas context");
+        }
+        const preferredFormat = navigator.gpu.getPreferredCanvasFormat();
+        context.configure({ device, format: preferredFormat });
+        return [context, preferredFormat];
+    }
+    static createDepthTexture(width, height) {
         return device.createTexture({
             size: { width, height },
-            format: this.depthTextureFormat,
+            format: "depth16unorm",
             dimension: "2d",
             usage: GPUTextureUsage.RENDER_ATTACHMENT
         });
     }
-    
-    private static createShader(layerCount: number): GPUShaderModule {
-        const stickerBufferLength = this.getStickerBufferLength(layerCount);
-
+    static createRenderPassDescriptor(depthTexture) {
+        return {
+            label: "Draw NxN Render Pass Descriptor",
+            colorAttachments: [{
+                    view: null,
+                    clearValue: [1, 1, 1, 1],
+                    loadOp: "clear",
+                    storeOp: "store"
+                }],
+            depthStencilAttachment: {
+                view: depthTexture.createView(),
+                depthClearValue: 1,
+                depthLoadOp: "clear",
+                depthStoreOp: "store"
+            }
+        };
+    }
+    static createShaderModule(layerCount) {
+        const stickerBufferLength = NxNDrawer.getStickerBufferByteLength(layerCount) / 4;
         const source = `
             struct CameraData {
                 viewProjMatrix: mat4x4f,
@@ -231,14 +224,58 @@ export default class PuzzleDrawer {
                 }
             }
         `;
-    
         return device.createShaderModule({
             label: "puzzle shader module",
             code: source
         });
     }
-    
-    private static createRenderPipeline(module: GPUShaderModule, format: GPUTextureFormat, pipelineLayout: GPUPipelineLayout): GPURenderPipeline {
+    static getStickerBufferByteLength(layerCount) {
+        return Math.ceil(6 * layerCount * layerCount / 10) * 4;
+    }
+    static createStickerBuffer(layerCount) {
+        return device.createBuffer({
+            label: "Sticker Buffer",
+            size: NxNDrawer.getStickerBufferByteLength(layerCount),
+            usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC
+        });
+    }
+    static createCameraDataBuffer() {
+        return device.createBuffer({
+            size: 80,
+            usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.UNIFORM
+        });
+    }
+    static createBindGroupLayout() {
+        return device.createBindGroupLayout({
+            entries: [
+                {
+                    binding: 0,
+                    visibility: GPUShaderStage.VERTEX,
+                    buffer: { type: "uniform" }
+                },
+                {
+                    binding: 1,
+                    visibility: GPUShaderStage.FRAGMENT | GPUShaderStage.COMPUTE,
+                    buffer: { type: "storage" }
+                }
+            ]
+        });
+    }
+    static createBindGroups(bindGroupLayout, cameraDataBuffer, stickerBuffer) {
+        return [
+            device.createBindGroup({
+                layout: bindGroupLayout,
+                entries: [
+                    { binding: 0, resource: { buffer: cameraDataBuffer } },
+                    { binding: 1, resource: { buffer: stickerBuffer } }
+                ]
+            })
+        ];
+    }
+    static createPipelineLayout(bindGroupLayout) {
+        return device.createPipelineLayout({ bindGroupLayouts: [bindGroupLayout] });
+    }
+    static createRenderPipeline(module, pipelineLayout, format, depthTextureFormat) {
         return device.createRenderPipeline({
             label: "Draw Puzzle Render Pipeline",
             layout: pipelineLayout,
@@ -252,7 +289,7 @@ export default class PuzzleDrawer {
                 targets: [{ format }]
             },
             depthStencil: {
-                format: this.depthTextureFormat,
+                format: depthTextureFormat,
                 depthWriteEnabled: true,
                 depthCompare: "less"
             },
@@ -261,42 +298,13 @@ export default class PuzzleDrawer {
             }
         });
     }
-
-    private static createStickerBuffer(layerCount: number): GPUBuffer {
-        return device.createBuffer({
-            label: "Sticker Buffer",
-            size: this.getStickerBufferByteLength(layerCount),
-            usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC
-        });
-    }
-
-    private static getStickerBufferLength(layerCount: number): number {
-        return Math.ceil(6 * layerCount * layerCount / 10);
-    }
-
-    private static getStickerBufferByteLength(layerCount: number): number {
-        return this.getStickerBufferLength(layerCount) * 4;
-    }
-
-    private initStickerBuffer(): void {
-        const commandEncoder = device.createCommandEncoder({ label: "Puzzle Drawer Init Stickers Buffer" });
-
-        const stickerComputePipeline = device.createComputePipeline({
-            layout: this.pipelineLayout,
+    static createComputePipeline(module, pipelineLayout) {
+        return device.createComputePipeline({
+            layout: pipelineLayout,
             compute: {
-                module: this.module,
+                module,
                 entryPoint: "initStickers"
             }
         });
-
-        const pass = commandEncoder.beginComputePass();
-        pass.setPipeline(stickerComputePipeline);
-        for (let i = 0; i < this.bindGroups.length; i++) {
-            pass.setBindGroup(i, this.bindGroups[i]);
-        }
-        pass.dispatchWorkgroups(Math.ceil(this.stickerBuffer.size / 256));
-        pass.end();
-
-        device.queue.submit([commandEncoder.finish()]);
     }
 }
