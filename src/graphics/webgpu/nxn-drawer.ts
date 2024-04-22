@@ -1,3 +1,4 @@
+import type { Cube } from "../../cube/cube.js";
 import device from "./device.js";
 import { matrixMult, createPerspectiveMatrix, transpose, createTranslationMatrix, matrixRotationX, matrixRotationY } from "../math.js";
 
@@ -68,7 +69,7 @@ export default class NxNDrawer {
 
     setCameraTransform(position: number[], rotationX: number, rotationY: number): void {
         const viewMatrix = matrixMult(matrixMult(matrixRotationY(rotationY), matrixRotationX(rotationX)), createTranslationMatrix(position));
-        const projMatrix = createPerspectiveMatrix(1, this.canvas.width / this.canvas.height, 0.01);
+        const projMatrix = createPerspectiveMatrix(1.5, this.canvas.width / this.canvas.height, 0.01);
 
         const cameraData = new ArrayBuffer(80);
         const viewProjMatrix = new Float32Array(cameraData, 0, 16);
@@ -78,6 +79,27 @@ export default class NxNDrawer {
         worldPosition.set([0, 0, 0]);
 
         device.queue.writeBuffer(this.cameraDataBuffer, 0, cameraData);
+    }
+
+    set(cube: Cube): void {
+        const arrayBuffer = new ArrayBuffer(this.stickerBuffer.size);
+        const view = new Uint32Array(arrayBuffer);
+
+        let index = 0;
+        let shift = 0;
+        for (let i = 0; i < cube.stickers.length; i++) {
+            for (let j = 0; j < cube.stickers[i].length; j++) {
+                view[index] |= cube.stickers[i][j] << shift;
+
+                shift += 3;
+                if (shift >= 30) {
+                    index++;
+                    shift = 0;
+                }
+            }
+        }
+
+        device.queue.writeBuffer(this.stickerBuffer, 0, arrayBuffer);
     }
 
     destroy(): void {
@@ -203,11 +225,11 @@ export default class NxNDrawer {
                 out.face = instanceId;
 
                 switch (instanceId) {
-                    case 0: { out.uv = vec2f(-out.uv.y, -out.uv.x); break; }
                     case 1: { out.uv = vec2f(out.uv.y, -out.uv.x); break; }
-                    case 3: { out.uv.y *= -1; break; }
-                    case 4: { out.uv.y *= -1; break; }
-                    case 5: { out.uv *= -1; break; }
+                    case 2: { out.uv.y *= -1; break; }
+                    case 3: { out.uv = vec2f(-out.uv.y, -out.uv.x); break; }
+                    case 4: { out.uv *= -1; break; }
+                    case 5: { out.uv.y *= -1; break; }
                     default: { break; }
                 }
 
@@ -322,7 +344,7 @@ export default class NxNDrawer {
         return device.createBuffer({
             label: "Sticker Buffer",
             size: NxNDrawer.getStickerBufferByteLength(layerCount),
-            usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC
+            usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST
         });
     }
 
