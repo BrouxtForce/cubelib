@@ -1,6 +1,7 @@
 import type { Cube } from "../../cube/cube.js";
+import type { Move } from "../../alg/move.js";
 import device from "./device.js";
-import { matrixMult, createPerspectiveMatrix, transpose, createTranslationMatrix, matrixRotationX, matrixRotationY } from "../math.js";
+import { matrixMult, createPerspectiveMatrix, transpose, createTranslationMatrix, matrixRotationX, matrixRotationY, createScaleMatrix } from "../math.js";
 
 export default class NxNDrawer {
     public readonly layerCount: number;
@@ -14,6 +15,8 @@ export default class NxNDrawer {
     private readonly computePipeline: GPUComputePipeline;
     private readonly stickerBuffer: GPUBuffer;
     private readonly cameraDataBuffer: GPUBuffer;
+    private readonly blockDataBuffer: GPUBuffer;
+    private numBlocks: number = 1;
     private readonly bindGroups: GPUBindGroup[];
 
     constructor(canvas: HTMLCanvasElement, layerCount: number) {
@@ -31,7 +34,11 @@ export default class NxNDrawer {
         this.computePipeline = NxNDrawer.createComputePipeline(this.shaderModule, piplineLayout);
         this.stickerBuffer = NxNDrawer.createStickerBuffer(layerCount);
         this.cameraDataBuffer = NxNDrawer.createCameraDataBuffer();
-        this.bindGroups = NxNDrawer.createBindGroups(bindGroupLayout, this.cameraDataBuffer, this.stickerBuffer);
+        this.blockDataBuffer = NxNDrawer.createBlockDataBuffer();
+        this.bindGroups = NxNDrawer.createBindGroups(bindGroupLayout, this.cameraDataBuffer, this.stickerBuffer, this.blockDataBuffer);
+
+        this.reset();
+        this.clearAnimation();
     }
 
     render(): void {
@@ -47,7 +54,7 @@ export default class NxNDrawer {
         for (let i = 0; i < this.bindGroups.length; i++) {
             pass.setBindGroup(i, this.bindGroups[i]);
         }
-        pass.draw(4, 6);
+        pass.draw(4, 6 * this.numBlocks);
         pass.end();
 
         device.queue.submit([commandEncoder.finish()]);
@@ -68,17 +75,16 @@ export default class NxNDrawer {
     }
 
     setCameraTransform(position: number[], rotationX: number, rotationY: number): void {
-        const viewMatrix = matrixMult(matrixMult(matrixRotationY(rotationY), matrixRotationX(rotationX)), createTranslationMatrix(position));
-        const projMatrix = createPerspectiveMatrix(1.5, this.canvas.width / this.canvas.height, 0.01);
+        const viewMatrix = matrixMult(createScaleMatrix(Array(3).fill(0.8)), matrixMult(
+            matrixMult(matrixRotationY(rotationY), matrixRotationX(rotationX)),
+            createTranslationMatrix(position)
+        ));
+        const projMatrix = createPerspectiveMatrix(2, this.canvas.width / this.canvas.height, 0.01);
 
-        const cameraData = new ArrayBuffer(80);
-        const viewProjMatrix = new Float32Array(cameraData, 0, 16);
-        const worldPosition = new Float32Array(cameraData, 64, 3);
-
+        const viewProjMatrix = new Float32Array(16);
         viewProjMatrix.set(matrixMult(viewMatrix, transpose(projMatrix)));
-        worldPosition.set([0, 0, 0]);
 
-        device.queue.writeBuffer(this.cameraDataBuffer, 0, cameraData);
+        device.queue.writeBuffer(this.cameraDataBuffer, 0, viewProjMatrix);
     }
 
     set(cube: Cube): void {
@@ -100,6 +106,44 @@ export default class NxNDrawer {
         }
 
         device.queue.writeBuffer(this.stickerBuffer, 0, arrayBuffer);
+    }
+
+    private static makeBlock(rotation: number, scale: number, translation: number, axis: number): number[] {
+        if (scale <= 0) return [];
+        return [rotation | (scale << 16), translation | (axis << 16)];
+    }
+
+    // TODO: Slice moves and rotations
+    animateMove(move: Move, t: number): void {
+        function mod(a: number, b: number): number {
+            return ((a % b) + b) % b;
+        }
+
+        const face = "ULFRBD".indexOf(move.face.toUpperCase());
+        if (face === -1) {
+            throw new Error(`Unsupported face '${move.face}'`);
+        }
+
+        const data: number[] = [];
+        const rotation = mod(Math.floor(0xffff * t * move.amount / 4), 0xffff);
+        if (move.shallow === 1) {
+            data.push(...NxNDrawer.makeBlock(rotation, move.deep, this.layerCount - move.deep, face));
+            data.push(...NxNDrawer.makeBlock(0, this.layerCount - move.deep, 0, face));
+        } else {
+            data.push(...NxNDrawer.makeBlock(0, move.shallow - 1, this.layerCount - move.shallow + 1, face));
+            data.push(...NxNDrawer.makeBlock(rotation, move.deep - move.shallow + 1, this.layerCount - move.deep, face));
+            data.push(...NxNDrawer.makeBlock(0, this.layerCount - move.deep, 0, face));
+        }
+        this.numBlocks = data.length / 2;
+
+        device.queue.writeBuffer(this.blockDataBuffer, 0, new Uint32Array(data));
+    }
+
+    clearAnimation(): void {
+        const data = new Uint32Array(NxNDrawer.makeBlock(0, this.layerCount, 0, 0));
+        this.numBlocks = 1;
+
+        device.queue.writeBuffer(this.blockDataBuffer, 0, new Uint32Array(data));
     }
 
     destroy(): void {
@@ -170,7 +214,11 @@ export default class NxNDrawer {
         const source = `
             struct CameraData {
                 viewProjMatrix: mat4x4f,
-                worldPosition: vec3f,
+            };
+
+            struct BlockData {
+                packedRotationScale: u32,
+                packedAxisTranslation: u32,
             };
 
             const vertices = array<vec2f, 4>(
@@ -201,11 +249,13 @@ export default class NxNDrawer {
         
             @group(0) @binding(0) var<uniform> cameraData: CameraData;
             @group(0) @binding(1) var<storage, read_write> stickers: array<u32, ${stickerBufferLength}>;
+            @group(0) @binding(2) var<storage, read> blocks: array<BlockData>;
         
             struct VertexOut {
                 @builtin(position) position: vec4f,
                 @location(0) uv: vec2f,
                 @location(1) @interpolate(flat) face: u32,
+                @location(2) @interpolate(flat) fill: u32,
             };
     
             @vertex
@@ -213,18 +263,76 @@ export default class NxNDrawer {
                 var out: VertexOut;
 
                 var vertex = vertices[vertexId];
-                let normal = normals[instanceId];
+                let normal = normals[instanceId % 6];
+
+                let block = blocks[instanceId / 6];
+
+                let scaleU32 = (block.packedRotationScale >> 16) & 0xffff;
+                let translationU32 = block.packedAxisTranslation & 0xffff;
+
+                let rotation: f32 = -f32(block.packedRotationScale & 0xffff) / f32(0xffff) * 6.2831853072;
+                let halfScale: f32 = f32(scaleU32) / f32(${layerCount});
+                let translation: f32 = -1 + 2 * f32(translationU32) / f32(${layerCount});
+                let axis: vec3f = normals[(block.packedAxisTranslation >> 16) & 0x7];
 
                 var position = vec3f(vertex, 0.0);
                 if (normal.x != 0) { position = position.zxy + normal; }
                 if (normal.y != 0) { position = position.xzy + normal; }
                 if (normal.z != 0) { position += normal; }
 
+                let normalDotAxis = dot(normal, axis);
+                out.fill = u32(
+                    (normalDotAxis == 1.0 && translationU32 + scaleU32 < ${layerCount}) ||
+                    (normalDotAxis == -1.0 && translationU32 != 0)
+                );
+
+                if (normalDotAxis > 0.1) {
+                    position -= position * abs(axis);
+                    position += axis * (translation + halfScale * 2);
+                } else if (normalDotAxis < -0.1) {
+                    position -= position * abs(axis);
+                    position += axis * translation;
+                } else {
+                    let positionDotAxis = dot(position, axis);
+                    if (positionDotAxis > 0.1) {
+                        position -= position * abs(axis);
+                        position += axis * (translation + halfScale * 2);
+                    } else {
+                        position -= position * abs(axis);
+                        position += axis * translation;
+                    }
+
+                    let scale = halfScale * 2.0;
+
+                    if (axis.x != 0.0) {
+                        vertex.x *= halfScale;
+                        vertex.x += axis.x * (halfScale + translation);
+                    } else if (axis.y != 0.0) {
+                        let i = instanceId % 6;
+                        if (i == 1 || i == 3) {
+                            vertex.x *= halfScale;
+                            vertex.x += axis.y * (halfScale + translation);
+                        } else {
+                            vertex.y *= halfScale;
+                            vertex.y += axis.y * (halfScale + translation);
+                        }
+                    } else if (axis.z != 0.0) {
+                        vertex.y *= halfScale;
+                        vertex.y += axis.z * (halfScale + translation);
+                    }
+                }
+
+                // https://en.wikipedia.org/wiki/Axis-angle_representation#Rotating_a_vector
+                position =
+                    cos(rotation) * position +
+                    sin(rotation) * cross(axis, position) +
+                    (1 - cos(rotation)) * dot(axis, position) * axis;
+
                 out.position = cameraData.viewProjMatrix * vec4f(position * 0.1, 1);
                 out.uv = vertex;
-                out.face = instanceId;
+                out.face = instanceId % 6;
 
-                switch (instanceId) {
+                switch (instanceId % 6) {
                     case 1: { out.uv = vec2f(out.uv.y, -out.uv.x); break; }
                     case 2: { out.uv.y *= -1; break; }
                     case 3: { out.uv = vec2f(-out.uv.y, -out.uv.x); break; }
@@ -245,6 +353,11 @@ export default class NxNDrawer {
 
                 // https://bgolus.medium.com/the-best-darn-grid-shader-yet-727f9278b9d8
                 var gridAA = max(abs(dpdx(in.uv)), abs(dpdy(in.uv))) * 1;
+
+                if (bool(in.fill)) {
+                    return vec4f(0, 0, 0, 1);
+                }
+
                 var drawWidth = clamp(lineWidth, gridAA, vec2f(0.5));
                 var gridUV = 1.0 - abs(fract(in.uv * gridRepeat) * 2.0 - 1.0);
                 var grid2 = smoothstep(drawWidth + gridAA, drawWidth - gridAA, gridUV);
@@ -293,6 +406,11 @@ export default class NxNDrawer {
                     binding: 1,
                     visibility: GPUShaderStage.FRAGMENT | GPUShaderStage.COMPUTE,
                     buffer: { type: "storage" }
+                },
+                {
+                    binding: 2,
+                    visibility: GPUShaderStage.VERTEX,
+                    buffer: { type: "read-only-storage" }
                 }
             ]
         });
@@ -351,17 +469,25 @@ export default class NxNDrawer {
     private static createCameraDataBuffer(): GPUBuffer {
         return device.createBuffer({
             size: 80,
-            usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.UNIFORM
+            usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST
         });
     }
 
-    private static createBindGroups(bindGroupLayout: GPUBindGroupLayout, cameraDataBuffer: GPUBuffer, stickerBuffer: GPUBuffer): GPUBindGroup[] {
+    private static createBlockDataBuffer(): GPUBuffer {
+        return device.createBuffer({
+            size: 24,
+            usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST
+        });
+    }
+
+    private static createBindGroups(bindGroupLayout: GPUBindGroupLayout, cameraDataBuffer: GPUBuffer, stickerBuffer: GPUBuffer, blockDataBuffer: GPUBuffer): GPUBindGroup[] {
         return [
             device.createBindGroup({
                 layout: bindGroupLayout,
                 entries: [
                     { binding: 0, resource: { buffer: cameraDataBuffer } },
-                    { binding: 1, resource: { buffer: stickerBuffer }}
+                    { binding: 1, resource: { buffer: stickerBuffer }},
+                    { binding: 2, resource: { buffer: blockDataBuffer }}
                 ]
             })
         ];
