@@ -69,6 +69,41 @@ export class Commutator implements IAlgMoveNode {
         return nodes;
     }
 
+    expandedMoves(): Move[] {
+        if (this.amount === 0) {
+            return [];
+        }
+
+        const expandedA = this.algA.expandedMoves();
+        const expandedB = this.algB.expandedMoves();
+        const invertedA: Move[] = [];
+        const invertedB: Move[] = [];
+
+        // Copy expandedA and expandedB into separate arrays and invert the sequences
+        for (let i = expandedA.length - 1; i >= 0; i--) {
+            invertedA.push(expandedA[i].copy().invert());
+        }
+        for (let i = expandedB.length - 1; i >= 0; i--) {
+            invertedB.push(expandedB[i].copy().invert());
+        }
+
+        let outArray: Move[];
+        if (this.amount > 0) {
+            // A B A' B'
+            outArray = expandedA.concat(expandedB, invertedA, invertedB);
+        } else {
+            // B A B' A'
+            outArray = expandedB.concat(expandedA, invertedB, invertedA);
+        }
+        
+        const length = outArray.length;
+        const nodes = arrayRepeat(outArray, Math.abs(this.amount));
+        for (let i = length; i < outArray.length; i++) {
+            outArray[i] = outArray[i].copy();
+        }
+        return nodes;
+    }
+
     invert(): Commutator {
         const swap = this.algA;
         this.algA = this.algB;

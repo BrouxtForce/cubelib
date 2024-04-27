@@ -14,6 +14,7 @@ export interface IAlgMoveNode {
 
     copy(): IAlgMoveNode;
     expanded(): (Move | IAlgNonMoveNode)[];
+    expandedMoves(): Move[];
     invert(): IAlgMoveNode;
     simplify(): IAlgMoveNode;
     toString(): string;
@@ -113,6 +114,34 @@ export class Alg implements IAlgMoveNode {
         }
 
         return expandedNodes;
+    }
+
+    expandedMoves(): Move[] {
+        if (this.amount === 0) {
+            return [];
+        }
+
+        const expandedMoves: Move[] = [];
+
+        for (const node of this.nodes) {
+            if (node.type === "Whitespace" || node.type === "Comment") {
+                continue;
+            }
+            expandedMoves.push(...node.expandedMoves());
+        }
+
+        if (this.amount < 0) {
+            expandedMoves.reverse();
+            expandedMoves.forEach(move => move.invert());
+        }
+
+        const length = expandedMoves.length;
+        arrayRepeat(expandedMoves, Math.abs(this.amount));
+        for (let i = length; i < expandedMoves.length; i++) {
+            expandedMoves[i] = expandedMoves[i].copy();
+        }
+
+        return expandedMoves;
     }
 
     invert(): Alg {

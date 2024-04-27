@@ -70,6 +70,28 @@ export class Alg {
         }
         return expandedNodes;
     }
+    expandedMoves() {
+        if (this.amount === 0) {
+            return [];
+        }
+        const expandedMoves = [];
+        for (const node of this.nodes) {
+            if (node.type === "Whitespace" || node.type === "Comment") {
+                continue;
+            }
+            expandedMoves.push(...node.expandedMoves());
+        }
+        if (this.amount < 0) {
+            expandedMoves.reverse();
+            expandedMoves.forEach(move => move.invert());
+        }
+        const length = expandedMoves.length;
+        arrayRepeat(expandedMoves, Math.abs(this.amount));
+        for (let i = length; i < expandedMoves.length; i++) {
+            expandedMoves[i] = expandedMoves[i].copy();
+        }
+        return expandedMoves;
+    }
     invert() {
         for (const node of this.moveNodes) {
             node.invert();

@@ -1,5 +1,6 @@
 import { MoveIterator } from "./alg-iterator.js";
 import { SiGNTokenInputStream } from "./sign-tokens.js";
+import { mod } from "../utils.js";
 export class Move {
     type = "Move";
     face;
@@ -72,6 +73,9 @@ export class Move {
     expanded() {
         return [this.copy()];
     }
+    expandedMoves() {
+        return [this.copy()];
+    }
     invert() {
         this.amount *= -1;
         return this;
@@ -114,6 +118,12 @@ export class Move {
             this.amount = -Math.sign(this.amount);
         }
         return this;
+    }
+    equal(move) {
+        return mod(this.amount, 4) === mod(move.amount, 4) &&
+            this.face === move.face &&
+            this.shallow === move.shallow &&
+            this.deep === move.deep;
     }
     forward() {
         return { [Symbol.iterator]: () => new MoveIterator(this) };

@@ -1,6 +1,7 @@
 import type { IAlgMoveNode } from "./alg.js";
 import { MoveIterator } from "./alg-iterator.js";
 import { SiGNTokenInputStream } from "./sign-tokens.js";
+import { mod } from "../utils.js";
 
 export class Move implements IAlgMoveNode {
     public readonly type = "Move" as const;
@@ -106,6 +107,10 @@ export class Move implements IAlgMoveNode {
         return [this.copy()];
     }
 
+    expandedMoves(): Move[] {
+        return [this.copy()];
+    }
+
     invert(): Move {
         this.amount *= -1;
         return this;
@@ -164,6 +169,13 @@ export class Move implements IAlgMoveNode {
         }
 
         return this;
+    }
+
+    equal(move: Move): boolean {
+        return mod(this.amount, 4) === mod(move.amount, 4) &&
+               this.face === move.face &&
+               this.shallow === move.shallow &&
+               this.deep === move.deep;
     }
 
     forward() {

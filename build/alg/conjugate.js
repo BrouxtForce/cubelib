@@ -44,6 +44,31 @@ export class Conjugate {
         }
         return nodes;
     }
+    expandedMoves() {
+        const expandedA = this.algA.expandedMoves();
+        const expandedB = this.algB.expandedMoves();
+        const invertedA = [];
+        for (let i = expandedA.length - 1; i >= 0; i--) {
+            invertedA.push(expandedA[i].copy().invert());
+            ;
+        }
+        if (this.amount < 0) {
+            for (let i = 0; i < expandedB.length; i++) {
+                const node = expandedB[i];
+                if (node.type === "Move") {
+                    node.invert();
+                }
+            }
+            expandedB.reverse();
+        }
+        const nodes = expandedA.concat(expandedB, invertedA);
+        const length = nodes.length;
+        arrayRepeat(nodes, Math.abs(this.amount));
+        for (let i = length; i < nodes.length; i++) {
+            nodes[i] = nodes[i].copy();
+        }
+        return nodes;
+    }
     invert() {
         this.algB.invert();
         return this;

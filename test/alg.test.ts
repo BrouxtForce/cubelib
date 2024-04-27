@@ -6,6 +6,12 @@ import { Move } from "../src/alg/move";
 import { Commutator } from "../src/alg/commutator";
 import { Conjugate } from "../src/alg/conjugate";
 
+function algIsIdentical(a: Alg, b: Alg): boolean {
+    const expandedA = a.expandedMoves();
+    const expandedB = b.expandedMoves();
+    return expandedA.every((move, i) => move.equal(expandedB[i]));
+}
+
 test("Alg iterator", () => {
     const forward = "U F x R B L y D z M E S";
     const backward = "S' E' M' z' D' y' L' B' R' x' F' U'";
@@ -104,13 +110,24 @@ test("Alg invert", () => {
     expect(i).toBe(expected.length);
 });
 
-test("Alg expand inverse", () => {
+test("Alg expanded inverse", () => {
     const commutator = "[D : [R' D R, U]']'";
 
     const alg = Alg.fromString(commutator);
-    const expandedNodes: Move[] = alg.expanded().filter(node => node.type === "Move") as Move[];
+    const expandedNodes: Move[] = alg.expandedMoves();
 
-    const expected = "D R' D R U R' D' R U' D'".split(" ");
+    const expected = "D R' D R U R' D' R U' D'";
+
+    expect(expandedNodes.join(" ")).toBe(expected);
+});
+
+test("Alg expanded repeats", () => {
+    const commutator = "(R U, R' U')3";
+
+    const alg = Alg.fromString(commutator);
+    const expandedNodes: Move[] = alg.expandedMoves();
+
+    const expected = "R U R' U' U' R' U R R U R' U' U' R' U R R U R' U' U' R' U R".split(" ");
 
     expect(expandedNodes.length).toBe(expected.length);
     for (let i = 0; i < expandedNodes.length; i++) {
@@ -118,16 +135,17 @@ test("Alg expand inverse", () => {
     }
 });
 
-test("Alg expand repeats", () => {
-    const commutator = "(R U, R' U')3";
+test("Alg.expanded matches Alg.expandedMoves", () => {
+    const testAlgs = [
+        "[R U: [L' D2, B Fw]2]3'",
+        "(R2 U' F' L2 D Bw')5' R2 U F"
+    ].map(alg => Alg.fromString(alg));
 
-    const alg = Alg.fromString(commutator);
-    const expandedNodes: Move[] = alg.expanded().filter(node => node.type === "Move") as Move[];
-
-    const expected = "R U R' U' U' R' U R R U R' U' U' R' U R R U R' U' U' R' U R".split(" ");
-
-    expect(expandedNodes.length).toBe(expected.length);
-    for (let i = 0; i < expandedNodes.length; i++) {
-        expect(expandedNodes[i].toString()).toBe(expected[i]);
+    for (const testAlg of testAlgs) {
+        expect(
+            testAlg.expanded().filter(node => node.type === "Move").join(" ")
+        ).toBe(
+            testAlg.expandedMoves().join(" ")
+        );
     }
 });

@@ -53,6 +53,34 @@ export class Commutator {
         }
         return nodes;
     }
+    expandedMoves() {
+        if (this.amount === 0) {
+            return [];
+        }
+        const expandedA = this.algA.expandedMoves();
+        const expandedB = this.algB.expandedMoves();
+        const invertedA = [];
+        const invertedB = [];
+        for (let i = expandedA.length - 1; i >= 0; i--) {
+            invertedA.push(expandedA[i].copy().invert());
+        }
+        for (let i = expandedB.length - 1; i >= 0; i--) {
+            invertedB.push(expandedB[i].copy().invert());
+        }
+        let outArray;
+        if (this.amount > 0) {
+            outArray = expandedA.concat(expandedB, invertedA, invertedB);
+        }
+        else {
+            outArray = expandedB.concat(expandedA, invertedB, invertedA);
+        }
+        const length = outArray.length;
+        const nodes = arrayRepeat(outArray, Math.abs(this.amount));
+        for (let i = length; i < outArray.length; i++) {
+            outArray[i] = outArray[i].copy();
+        }
+        return nodes;
+    }
     invert() {
         const swap = this.algA;
         this.algA = this.algB;

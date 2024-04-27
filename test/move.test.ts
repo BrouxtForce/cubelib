@@ -56,3 +56,13 @@ test("Wide moves", () => {
     expect(move.shallow).toBe(1);
     expect(move.deep).toBe(2);
 });
+
+test("Move.equal()", () => {
+    expect(Move.fromString("U5").equal(Move.fromString("U"))).toBe(true);
+    expect(Move.fromString("2D3").equal(Move.fromString("2-2D'"))).toBe(true);
+    expect(Move.fromString("3Bw6").equal(Move.fromString("1-3Bw2"))).toBe(true);
+
+    expect(Move.fromString("L4").equal(Move.fromString("L'"))).toBe(false);
+    expect(Move.fromString("2F3").equal(Move.fromString("1-2F'"))).toBe(false);
+    expect(Move.fromString("3Rw6").equal(Move.fromString("3-3Rw2"))).toBe(false);
+});

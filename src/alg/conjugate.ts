@@ -62,6 +62,39 @@ export class Conjugate implements IAlgMoveNode {
         return nodes;
     }
 
+    expandedMoves(): Move[] {
+        const expandedA = this.algA.expandedMoves();
+        const expandedB = this.algB.expandedMoves();
+        const invertedA: Move[] = [];
+
+        // Copy expandedA into a separate array and invert its sequence
+        for (let i = expandedA.length - 1; i >= 0; i--) {
+            invertedA.push(expandedA[i].copy().invert());;
+        }
+
+        // If this conjugate is inverted, then apply the following transformation:
+        // A : B -> A : B'
+        // A B A' -> A B' A'
+        if (this.amount < 0) {
+            for (let i = 0; i < expandedB.length; i++) {
+                const node = expandedB[i];
+                if (node.type === "Move") {
+                    node.invert();
+                }
+            }
+            expandedB.reverse();
+        }
+
+        // Return the concatenated arrays in order of A B A' (or A B' A' if expandedB has been inverted)
+        const nodes = expandedA.concat(expandedB, invertedA);
+        const length = nodes.length;
+        arrayRepeat(nodes, Math.abs(this.amount));
+        for (let i = length; i < nodes.length; i++) {
+            nodes[i] = nodes[i].copy();
+        }
+        return nodes;
+    }
+
     invert(): Conjugate {
         this.algB.invert();
         return this;
