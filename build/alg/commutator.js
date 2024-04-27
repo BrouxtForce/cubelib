@@ -15,12 +15,12 @@ export class Commutator {
     copy() {
         return new Commutator(this.algA.copy(), this.algB.copy(), this.amount, this.isGrouping);
     }
-    expand() {
+    expanded() {
         if (this.amount === 0) {
             return [];
         }
-        const expandedA = this.algA.expand();
-        const expandedB = this.algB.expand();
+        const expandedA = this.algA.expanded();
+        const expandedB = this.algB.expanded();
         const invertedA = [];
         const invertedB = [];
         for (let i = expandedA.length - 1; i >= 0; i--) {
@@ -29,7 +29,7 @@ export class Commutator {
                 invertedA.push(node.copy().invert());
                 continue;
             }
-            invertedA.push(node);
+            invertedA.push(node.copy());
         }
         for (let i = expandedB.length - 1; i >= 0; i--) {
             const node = expandedB[i];
@@ -37,7 +37,7 @@ export class Commutator {
                 invertedB.push(node.copy().invert());
                 continue;
             }
-            invertedB.push(node);
+            invertedB.push(node.copy());
         }
         let outArray;
         if (this.amount > 0) {
@@ -46,7 +46,12 @@ export class Commutator {
         else {
             outArray = expandedB.concat(expandedA, invertedB, invertedA);
         }
-        return arrayRepeat(outArray, Math.abs(this.amount));
+        const length = outArray.length;
+        const nodes = arrayRepeat(outArray, Math.abs(this.amount));
+        for (let i = length; i < outArray.length; i++) {
+            outArray[i] = outArray[i].copy();
+        }
+        return nodes;
     }
     invert() {
         const swap = this.algA;
@@ -57,7 +62,10 @@ export class Commutator {
     toString() {
         const outString = `[${this.algA.toString()},${this.algB.toString()}]`;
         if (this.isGrouping) {
-            return `[${outString}]`;
+            if (Math.abs(this.amount) !== 1) {
+                return `[${outString}]${this.amount}${this.amount < 0 ? "'" : ""}`;
+            }
+            return `[${outString}]${this.amount < 0 ? "'" : ""}`;
         }
         return outString;
     }

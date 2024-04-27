@@ -1,6 +1,7 @@
 import type { Alg, AlgNonMoveNode, IAlgMoveNode } from "./alg";
 import type { Move } from "./move";
 import { ConjugateIterator } from "./alg-iterator.js";
+import { arrayRepeat } from "../utils.js";
 
 export class Conjugate implements IAlgMoveNode {
     public readonly type = "Conjugate" as const;
@@ -23,9 +24,9 @@ export class Conjugate implements IAlgMoveNode {
         return new Conjugate(this.algA.copy(), this.algB.copy(), this.amount, this.isGrouping);
     }
 
-    expand(): (Move | AlgNonMoveNode)[] {
-        const expandedA = this.algA.expand();
-        const expandedB = this.algB.expand();
+    expanded(): (Move | AlgNonMoveNode)[] {
+        const expandedA = this.algA.expanded();
+        const expandedB = this.algB.expanded();
         const invertedA: (Move | AlgNonMoveNode)[] = [];
 
         // Copy expandedA into a separate array and invert its sequence
@@ -35,7 +36,7 @@ export class Conjugate implements IAlgMoveNode {
                 invertedA.push(node.copy().invert());
                 continue;
             }
-            invertedA.push(node);
+            invertedA.push(node.copy());
         }
 
         // If this conjugate is inverted, then apply the following transformation:
@@ -45,14 +46,20 @@ export class Conjugate implements IAlgMoveNode {
             for (let i = 0; i < expandedB.length; i++) {
                 const node = expandedB[i];
                 if (node.type === "Move") {
-                    expandedB[i] = node.copy().invert();
+                    node.invert();
                 }
             }
             expandedB.reverse();
         }
 
         // Return the concatenated arrays in order of A B A' (or A B' A' if expandedB has been inverted)
-        return expandedA.concat(expandedB, invertedA);
+        const nodes = expandedA.concat(expandedB, invertedA);
+        const length = nodes.length;
+        arrayRepeat(nodes, Math.abs(this.amount));
+        for (let i = length; i < nodes.length; i++) {
+            nodes[i] = nodes[i].copy();
+        }
+        return nodes;
     }
 
     invert(): Conjugate {
@@ -63,7 +70,10 @@ export class Conjugate implements IAlgMoveNode {
     toString(): string {
         const outString = `${this.algA.toString()}:${this.algB.toString()}`;
         if (this.isGrouping) {
-            return `[${outString}]`;
+            if (Math.abs(this.amount) !== 1) {
+                return `[${outString}]${this.amount}${this.amount < 0 ? "'" : ""}`
+            }
+            return `[${outString}]${this.amount < 0 ? "'" : ""}`;
         }
         return outString;
     }

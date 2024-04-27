@@ -69,8 +69,8 @@ export class Move {
     copy() {
         return new Move(this.face, this.shallow, this.deep, this.amount);
     }
-    expand() {
-        return [this];
+    expanded() {
+        return [this.copy()];
     }
     invert() {
         this.amount *= -1;

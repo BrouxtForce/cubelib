@@ -13,7 +13,7 @@ export interface IAlgMoveNode {
     amount: number;
 
     copy(): IAlgMoveNode;
-    expand(): (Move | IAlgNonMoveNode)[];
+    expanded(): (Move | IAlgNonMoveNode)[];
     invert(): IAlgMoveNode;
     simplify(): IAlgMoveNode;
     toString(): string;
@@ -82,7 +82,7 @@ export class Alg implements IAlgMoveNode {
         return new Alg(copiedNodes, this.amount, this.isGrouping);
     }
 
-    expand(): (Move | AlgNonMoveNode)[] {
+    expanded(): (Move | AlgNonMoveNode)[] {
         if (this.amount === 0) {
             return [];
         }
@@ -94,7 +94,7 @@ export class Alg implements IAlgMoveNode {
                 expandedNodes.push(node);
                 continue;
             }
-            expandedNodes.push(...node.copy().expand());
+            expandedNodes.push(...node.expanded());
         }
 
         if (this.amount < 0) {
@@ -106,7 +106,11 @@ export class Alg implements IAlgMoveNode {
             }
         }
 
+        const length = expandedNodes.length;
         arrayRepeat(expandedNodes, Math.abs(this.amount));
+        for (let i = length; i < expandedNodes.length; i++) {
+            expandedNodes[i] = expandedNodes[i].copy();
+        }
 
         return expandedNodes;
     }

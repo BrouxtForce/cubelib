@@ -1,4 +1,5 @@
 import { ConjugateIterator } from "./alg-iterator.js";
+import { arrayRepeat } from "../utils.js";
 export class Conjugate {
     type = "Conjugate";
     algA;
@@ -14,9 +15,9 @@ export class Conjugate {
     copy() {
         return new Conjugate(this.algA.copy(), this.algB.copy(), this.amount, this.isGrouping);
     }
-    expand() {
-        const expandedA = this.algA.expand();
-        const expandedB = this.algB.expand();
+    expanded() {
+        const expandedA = this.algA.expanded();
+        const expandedB = this.algB.expanded();
         const invertedA = [];
         for (let i = expandedA.length - 1; i >= 0; i--) {
             const node = expandedA[i];
@@ -24,18 +25,24 @@ export class Conjugate {
                 invertedA.push(node.copy().invert());
                 continue;
             }
-            invertedA.push(node);
+            invertedA.push(node.copy());
         }
         if (this.amount < 0) {
             for (let i = 0; i < expandedB.length; i++) {
                 const node = expandedB[i];
                 if (node.type === "Move") {
-                    expandedB[i] = node.copy().invert();
+                    node.invert();
                 }
             }
             expandedB.reverse();
         }
-        return expandedA.concat(expandedB, invertedA);
+        const nodes = expandedA.concat(expandedB, invertedA);
+        const length = nodes.length;
+        arrayRepeat(nodes, Math.abs(this.amount));
+        for (let i = length; i < nodes.length; i++) {
+            nodes[i] = nodes[i].copy();
+        }
+        return nodes;
     }
     invert() {
         this.algB.invert();
@@ -44,7 +51,10 @@ export class Conjugate {
     toString() {
         const outString = `${this.algA.toString()}:${this.algB.toString()}`;
         if (this.isGrouping) {
-            return `[${outString}]`;
+            if (Math.abs(this.amount) !== 1) {
+                return `[${outString}]${this.amount}${this.amount < 0 ? "'" : ""}`;
+            }
+            return `[${outString}]${this.amount < 0 ? "'" : ""}`;
         }
         return outString;
     }

@@ -24,13 +24,13 @@ export class Commutator implements IAlgMoveNode {
         return new Commutator(this.algA.copy(), this.algB.copy(), this.amount, this.isGrouping);
     }
 
-    expand(): (Move | AlgNonMoveNode)[] {
+    expanded(): (Move | AlgNonMoveNode)[] {
         if (this.amount === 0) {
             return [];
         }
 
-        const expandedA = this.algA.expand();
-        const expandedB = this.algB.expand();
+        const expandedA = this.algA.expanded();
+        const expandedB = this.algB.expanded();
         const invertedA: (Move | AlgNonMoveNode)[] = [];
         const invertedB: (Move | AlgNonMoveNode)[] = [];
 
@@ -41,7 +41,7 @@ export class Commutator implements IAlgMoveNode {
                 invertedA.push(node.copy().invert());
                 continue;
             }
-            invertedA.push(node);
+            invertedA.push(node.copy());
         }
         for (let i = expandedB.length - 1; i >= 0; i--) {
             const node = expandedB[i];
@@ -49,7 +49,7 @@ export class Commutator implements IAlgMoveNode {
                 invertedB.push(node.copy().invert());
                 continue;
             }
-            invertedB.push(node);
+            invertedB.push(node.copy());
         }
 
         let outArray: (Move | AlgNonMoveNode)[];
@@ -60,8 +60,13 @@ export class Commutator implements IAlgMoveNode {
             // B A B' A'
             outArray = expandedB.concat(expandedA, invertedB, invertedA);
         }
-
-        return arrayRepeat(outArray, Math.abs(this.amount));
+        
+        const length = outArray.length;
+        const nodes = arrayRepeat(outArray, Math.abs(this.amount));
+        for (let i = length; i < outArray.length; i++) {
+            outArray[i] = outArray[i].copy();
+        }
+        return nodes;
     }
 
     invert(): Commutator {
@@ -75,7 +80,10 @@ export class Commutator implements IAlgMoveNode {
     toString(): string {
         const outString = `[${this.algA.toString()},${this.algB.toString()}]`;
         if (this.isGrouping) {
-            return `[${outString}]`;
+            if (Math.abs(this.amount) !== 1) {
+                return `[${outString}]${this.amount}${this.amount < 0 ? "'" : ""}`
+            }
+            return `[${outString}]${this.amount < 0 ? "'" : ""}`;
         }
         return outString;
     }

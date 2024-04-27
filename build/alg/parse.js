@@ -37,7 +37,7 @@ class TokenStream {
 }
 const variableMap = new Map();
 const errors = [];
-function parseExpression(stream, root = false) {
+function parseExpression(stream, root = false, paren = false) {
     let leftNodes = [];
     while (true) {
         const token = stream.next();
@@ -86,7 +86,8 @@ function parseExpression(stream, root = false) {
                 }
                 case "(":
                 case "[": {
-                    const group = parseExpression(stream);
+                    const group = parseExpression(stream, false, true);
+                    group.isGrouping = true;
                     if (group) {
                         leftNodes.push(group);
                     }
@@ -118,7 +119,7 @@ function parseExpression(stream, root = false) {
                         });
                     }
                     stream.prev();
-                    return new Alg(leftNodes, token.amount);
+                    return new Alg(leftNodes, paren ? token.amount : 1);
                 default:
                     errors.push({
                         message: `Bug: Unknown punctuation '${token.value}'`,

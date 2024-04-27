@@ -102,8 +102,8 @@ export class Move implements IAlgMoveNode {
         return new Move(this.face, this.shallow, this.deep, this.amount);
     }
 
-    expand(): Move[] {
-        return [this];
+    expanded(): Move[] {
+        return [this.copy()];
     }
 
     invert(): Move {

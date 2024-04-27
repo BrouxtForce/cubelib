@@ -43,7 +43,7 @@ export class Alg {
         }
         return new Alg(copiedNodes, this.amount, this.isGrouping);
     }
-    expand() {
+    expanded() {
         if (this.amount === 0) {
             return [];
         }
@@ -53,7 +53,7 @@ export class Alg {
                 expandedNodes.push(node);
                 continue;
             }
-            expandedNodes.push(...node.copy().expand());
+            expandedNodes.push(...node.expanded());
         }
         if (this.amount < 0) {
             expandedNodes.reverse();
@@ -63,7 +63,11 @@ export class Alg {
                 }
             }
         }
+        const length = expandedNodes.length;
         arrayRepeat(expandedNodes, Math.abs(this.amount));
+        for (let i = length; i < expandedNodes.length; i++) {
+            expandedNodes[i] = expandedNodes[i].copy();
+        }
         return expandedNodes;
     }
     invert() {

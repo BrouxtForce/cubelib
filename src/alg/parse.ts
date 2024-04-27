@@ -49,7 +49,7 @@ interface ParseError {
 const variableMap = new Map<string, Alg>();
 const errors: ParseError[] = [];
 
-function parseExpression(stream: TokenStream, root: boolean = false): Alg {
+function parseExpression(stream: TokenStream, root: boolean = false, paren: boolean = false): Alg {
     let leftNodes: AlgMoveNode[] = [];
 
     while (true) {
@@ -100,7 +100,8 @@ function parseExpression(stream: TokenStream, root: boolean = false): Alg {
                     break;
                 }
                 case "(": case "[": {
-                    const group = parseExpression(stream);
+                    const group = parseExpression(stream, false, true);
+                    group.isGrouping = true;
                     if (group) {
                         leftNodes.push(group);
                     }
@@ -135,7 +136,7 @@ function parseExpression(stream: TokenStream, root: boolean = false): Alg {
                         });
                     }
                     stream.prev();
-                    return new Alg(leftNodes, token.amount);
+                    return new Alg(leftNodes, paren ? token.amount : 1);
                 default:
                     errors.push({
                         message: `Bug: Unknown punctuation '${token.value}'`,

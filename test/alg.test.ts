@@ -108,7 +108,7 @@ test("Alg expand inverse", () => {
     const commutator = "[D : [R' D R, U]']'";
 
     const alg = Alg.fromString(commutator);
-    const expandedNodes: Move[] = alg.expand().filter(node => node.type === "Move") as Move[];
+    const expandedNodes: Move[] = alg.expanded().filter(node => node.type === "Move") as Move[];
 
     const expected = "D R' D R U R' D' R U' D'".split(" ");
 
@@ -122,7 +122,7 @@ test("Alg expand repeats", () => {
     const commutator = "(R U, R' U')3";
 
     const alg = Alg.fromString(commutator);
-    const expandedNodes: Move[] = alg.expand().filter(node => node.type === "Move") as Move[];
+    const expandedNodes: Move[] = alg.expanded().filter(node => node.type === "Move") as Move[];
 
     const expected = "R U R' U' U' R' U R R U R' U' U' R' U R R U R' U' U' R' U R".split(" ");
 
