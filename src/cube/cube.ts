@@ -1,4 +1,5 @@
 import type { AlgMoveNode } from "../alg/alg.js";
+import type { Move } from "../alg/move.js"
 import { assert } from "../utils.js"
 
 export enum Face {
@@ -817,11 +818,19 @@ export class Cube {
             } else if ("xyz".indexOf(move.face) > -1) {
                 let faceNum = stringToFace("RUF"["xyz".indexOf(move.face)]);
                 this.move(faceNum, move.amount, 1, this.layerCount);
-                // let oppositeFaceNum = stringToFace("LDB"["xyz".indexOf(move.face)]);
-                // this.move(oppositeFaceNum, -move.amount, 1, 0);
             } else {
                 console.error(`Move ${move.face} not supported.`);
             }
         }
+    }
+
+    executeUntil(alg: AlgMoveNode, numMoves: number): Move | null {
+        for (const move of alg) {
+            if (numMoves-- <= 0) {
+                return move;
+            }
+            this.execute(move);
+        }
+        return null;
     }
 }

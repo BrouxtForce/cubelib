@@ -7,6 +7,7 @@ export class Move {
     shallow = 1;
     deep = 1;
     amount;
+    length = 1;
     constructor(face, shallow, deep, amount) {
         this.face = face;
         this.shallow = shallow;

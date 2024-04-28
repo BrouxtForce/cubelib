@@ -664,4 +664,13 @@ export class Cube {
             }
         }
     }
+    executeUntil(alg, numMoves) {
+        for (const move of alg) {
+            if (numMoves-- <= 0) {
+                return move;
+            }
+            this.execute(move);
+        }
+        return null;
+    }
 }

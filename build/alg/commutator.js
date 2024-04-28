@@ -6,11 +6,13 @@ export class Commutator {
     algB;
     isGrouping;
     amount;
+    length;
     constructor(algA, algB, amount = 1, isGrouping = true) {
         this.algA = algA;
         this.algB = algB;
         this.amount = amount;
         this.isGrouping = isGrouping;
+        this.length = 2 * (this.algA.length + this.algB.length);
     }
     copy() {
         return new Commutator(this.algA.copy(), this.algB.copy(), this.amount, this.isGrouping);

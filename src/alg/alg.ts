@@ -11,6 +11,7 @@ export interface IAlgMoveNode {
     name?: string;
     type: string;
     amount: number;
+    length: number;
 
     copy(): IAlgMoveNode;
     expanded(): (Move | IAlgNonMoveNode)[];
@@ -40,6 +41,7 @@ export class Alg implements IAlgMoveNode {
 
     public readonly nodes: AlgNode[];
     public readonly moveNodes: AlgMoveNode[];
+    public readonly length: number;
 
     public isGrouping: boolean;
 
@@ -50,6 +52,7 @@ export class Alg implements IAlgMoveNode {
         this.moveNodes = [];
         this.amount = amount;
         this.isGrouping = isGrouping;
+        this.length = 0;
 
         for (const node of nodes) {
             switch (node.type) {
@@ -58,6 +61,7 @@ export class Alg implements IAlgMoveNode {
                 case "Commutator":
                 case "Conjugate":
                     this.moveNodes.push(node);
+                    this.length += node.length;
                     break;
             }
         }

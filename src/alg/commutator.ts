@@ -13,11 +13,14 @@ export class Commutator implements IAlgMoveNode {
 
     public amount: number;
 
+    public readonly length: number;
+
     constructor(algA: Alg, algB: Alg, amount: number = 1, isGrouping: boolean = true) {
         this.algA = algA;
         this.algB = algB;
         this.amount = amount;
         this.isGrouping = isGrouping;
+        this.length = 2 * (this.algA.length + this.algB.length);
     }
 
     copy(): Commutator {

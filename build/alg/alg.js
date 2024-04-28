@@ -7,6 +7,7 @@ export class Alg {
     type = "Alg";
     nodes;
     moveNodes;
+    length;
     isGrouping;
     amount;
     constructor(nodes, amount = 1, isGrouping = false) {
@@ -14,6 +15,7 @@ export class Alg {
         this.moveNodes = [];
         this.amount = amount;
         this.isGrouping = isGrouping;
+        this.length = 0;
         for (const node of nodes) {
             switch (node.type) {
                 case "Alg":
@@ -21,6 +23,7 @@ export class Alg {
                 case "Commutator":
                 case "Conjugate":
                     this.moveNodes.push(node);
+                    this.length += node.length;
                     break;
             }
         }

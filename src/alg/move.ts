@@ -11,6 +11,8 @@ export class Move implements IAlgMoveNode {
     public deep: number = 1;
     public amount: number;
 
+    public readonly length: number = 1;
+
     constructor(face: string, shallow: number, deep: number, amount: number) {
         this.face = face;
         this.shallow = shallow;
