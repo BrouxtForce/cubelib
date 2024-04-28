@@ -1,3 +1,4 @@
 import { AlgTextarea } from "./templates/alg-textarea.js";
 import { AlgInput } from "./templates/alg-input.js";
-export { AlgTextarea, AlgInput };
+import { PuzzleViewer } from "./templates/puzzle-viewer.js";
+export { AlgTextarea, AlgInput, PuzzleViewer };

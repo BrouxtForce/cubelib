@@ -1,5 +1,6 @@
 import device from "./device.js";
 import { matrixMult, createPerspectiveMatrix, transpose, createTranslationMatrix, matrixRotationX, matrixRotationY, createScaleMatrix } from "../math.js";
+import { assert } from "../../utils.js";
 export default class NxNDrawer {
     layerCount;
     canvas;
@@ -34,7 +35,6 @@ export default class NxNDrawer {
         this.clearAnimation();
     }
     render() {
-        this.resize(this.canvas.clientWidth, this.canvas.clientHeight);
         const commandEncoder = device.createCommandEncoder({ label: "Draw NxN" });
         this.renderPassDescriptor.colorAttachments[0].view = this.context.getCurrentTexture().createView();
         const pass = commandEncoder.beginRenderPass(this.renderPassDescriptor);
@@ -131,8 +131,7 @@ export default class NxNDrawer {
         attachment.view = this.depthTexture.createView();
     }
     static initCanvasContext(canvas) {
-        canvas.width = canvas.clientWidth;
-        canvas.height = canvas.clientHeight;
+        assert(canvas.width !== 0 && canvas.height !== 0);
         const context = canvas.getContext("webgpu");
         if (!context) {
             throw new Error("Failed to initialize WebGPU canvas context");

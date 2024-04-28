@@ -2,6 +2,7 @@ import type { Cube } from "../../cube/cube.js";
 import type { Move } from "../../alg/move.js";
 import device from "./device.js";
 import { matrixMult, createPerspectiveMatrix, transpose, createTranslationMatrix, matrixRotationX, matrixRotationY, createScaleMatrix } from "../math.js";
+import { assert } from "../../utils.js";
 
 export default class NxNDrawer {
     public readonly layerCount: number;
@@ -42,8 +43,6 @@ export default class NxNDrawer {
     }
 
     render(): void {
-        this.resize(this.canvas.clientWidth, this.canvas.clientHeight);
-
         const commandEncoder = device.createCommandEncoder({ label: "Draw NxN" });
 
         // @ts-expect-error
@@ -153,7 +152,7 @@ export default class NxNDrawer {
         this.cameraDataBuffer.destroy();
     }
 
-    private resize(width: number, height: number): void {
+    resize(width: number, height: number): void {
         if (this.canvas.width === width && this.canvas.height === height) {
             return;
         }
@@ -168,8 +167,7 @@ export default class NxNDrawer {
     }
 
     private static initCanvasContext(canvas: HTMLCanvasElement): [GPUCanvasContext, GPUTextureFormat] {
-        canvas.width = canvas.clientWidth;
-        canvas.height = canvas.clientHeight;
+        assert(canvas.width !== 0 && canvas.height !== 0);
 
         const context = canvas.getContext("webgpu");
         if (!context) {
