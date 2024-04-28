@@ -1,6 +1,4 @@
 import type { Alg } from "../alg/alg.js";
-import type { Commutator } from "../alg/commutator.js";
-import type { Conjugate } from "../alg/conjugate.js";
 import { Cube } from "./cube.js";
 import { assert, mod } from "../utils.js";
 

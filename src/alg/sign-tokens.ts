@@ -3,20 +3,20 @@
 */
 
 export class CharacterInputStream {
-    private input: string;
+    #input: string;
 
     public pos: number = 0;
     public line: number = 1;
     public col: number = 0;
 
     constructor(input: string) {
-        this.input = input;
+        this.#input = input;
     }
 
-    get string(): string { return this.input; }
+    get string(): string { return this.#input; }
 
     next(): string {
-        let char = this.input.charAt(this.pos);
+        let char = this.#input.charAt(this.pos);
         this.pos++;
         if (char === "\n") {
             this.line++;
@@ -27,15 +27,15 @@ export class CharacterInputStream {
         return char;
     }
     peek(): string {
-        return this.input.charAt(this.pos);
+        return this.#input.charAt(this.pos);
     }
     skip(length: number): void {
-        for (let i = 0; i < length && this.pos < this.input.length; i++) {
+        for (let i = 0; i < length && this.pos < this.#input.length; i++) {
             this.next();
         }
     }
     match(str: string): boolean {
-        return this.input.substring(this.pos, this.pos + str.length) === str;
+        return this.#input.substring(this.pos, this.pos + str.length) === str;
     }
     eof(): boolean {
         return this.peek() === "";
@@ -58,7 +58,7 @@ export interface SiGNToken {
 export class SiGNTokenInputStream {
     public input: CharacterInputStream;
 
-    private variableSet: Set<string> = new Set();
+    #variableSet: Set<string> = new Set();
 
     constructor(input: string) {
         this.input = new CharacterInputStream(input);
@@ -227,7 +227,7 @@ export class SiGNTokenInputStream {
         // if the variable has already been declared or if the next relevant token is a '='.
         if (this.isVariable(char)) {
             const variable = this.peekVariable();
-            if (this.variableSet.has(variable)) {
+            if (this.#variableSet.has(variable)) {
                 // Read over the variable
                 this.input.skip(variable.length);
 
@@ -258,7 +258,7 @@ export class SiGNTokenInputStream {
                     continue;
                 }
                 if (char === "=") {
-                    this.variableSet.add(variable);
+                    this.#variableSet.add(variable);
                     this.input.skip(variable.length);
                     return {
                         type: "variable",

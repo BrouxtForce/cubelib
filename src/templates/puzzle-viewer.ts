@@ -9,86 +9,86 @@ export class PuzzleViewer extends HTMLElement {
 
     public ease: (t: number) => number;
 
-    private readonly sliderNode: HTMLInputElement;
-    private readonly playButton: HTMLButtonElement;
+    readonly #sliderNode: HTMLInputElement;
+    readonly #playButton: HTMLButtonElement;
     
-    private readonly canvas: HTMLCanvasElement;
-    private drawer: NxNDrawer;
+    readonly #canvas: HTMLCanvasElement;
+    #drawer: NxNDrawer;
 
-    private width: number;
-    private height: number;
+    #width: number;
+    #height: number;
 
-    private rotationX: number = 0;
-    private rotationY: number = 0;
-    private mouseIsDown: boolean = false;
+    #rotationX: number = 0;
+    #rotationY: number = 0;
+    #mouseIsDown: boolean = false;
 
-    private isPlaying: boolean = false;
-    private playSpeed: number = 0.001;
+    #isPlaying: boolean = false;
+    #playSpeed: number = 0.001;
 
-    private shouldUpdateCube: boolean = false;
+    #shouldUpdateCube: boolean = false;
 
     constructor() {
         super();
 
-        this.sliderNode = document.createElement("input");
-        this.sliderNode.type = "range";
-        this.sliderNode.min = "0";
-        this.sliderNode.max = "1";
-        this.sliderNode.step = "0.0001";
-        this.sliderNode.value = "1";
-        this.canvas = document.createElement("canvas");
+        this.#sliderNode = document.createElement("input");
+        this.#sliderNode.type = "range";
+        this.#sliderNode.min = "0";
+        this.#sliderNode.max = "1";
+        this.#sliderNode.step = "0.0001";
+        this.#sliderNode.value = "1";
+        this.#canvas = document.createElement("canvas");
 
-        this.playButton = document.createElement("button");
-        this.playButton.textContent = "Play";
+        this.#playButton = document.createElement("button");
+        this.#playButton.textContent = "Play";
 
-        this.width = this.canvas.width;
-        this.height = this.canvas.height;
+        this.#width = this.#canvas.width;
+        this.#height = this.#canvas.height;
 
         this.cube = new Cube(3);
         this.alg = new Alg([]);
 
         this.ease = (t: number) => t * t * (3 - 2 * t);
 
-        this.drawer = new NxNDrawer(this.canvas, 3);
-        this.drawer.reset();
+        this.#drawer = new NxNDrawer(this.#canvas, 3);
+        this.#drawer.reset();
 
         const resizeObserver = new ResizeObserver(() => {
-            this.requestUpdate();
+            this.#requestUpdate();
         });
         resizeObserver.observe(this);
 
-        this.canvas.addEventListener("mousemove", event => {
-            if (this.mouseIsDown) {
-                this.rotationX -= event.movementY * 0.005;
-                this.rotationY -= event.movementX * 0.005;
-                this.requestUpdate();
+        this.#canvas.addEventListener("mousemove", event => {
+            if (this.#mouseIsDown) {
+                this.#rotationX -= event.movementY * 0.005;
+                this.#rotationY -= event.movementX * 0.005;
+                this.#requestUpdate();
             }
         });
-        this.canvas.addEventListener("mousedown", () => { this.mouseIsDown = true; });
-        this.canvas.addEventListener("mouseup",   () => { this.mouseIsDown = false; });
+        this.#canvas.addEventListener("mousedown", () => { this.#mouseIsDown = true; });
+        this.#canvas.addEventListener("mouseup",   () => { this.#mouseIsDown = false; });
 
-        this.sliderNode.addEventListener("input", () => {
-            this.shouldUpdateCube = true;
-            this.requestUpdate();
+        this.#sliderNode.addEventListener("input", () => {
+            this.#shouldUpdateCube = true;
+            this.#requestUpdate();
         });
 
-        this.playButton.addEventListener("click", () => {
-            this.isPlaying = !this.isPlaying;
-            if (this.sliderNode.value === "1") {
-                this.sliderNode.value = "0";
+        this.#playButton.addEventListener("click", () => {
+            this.#isPlaying = !this.#isPlaying;
+            if (this.#sliderNode.value === "1") {
+                this.#sliderNode.value = "0";
             }
-            this.requestUpdate();
+            this.#requestUpdate();
         });
 
-        this.requestUpdate();
+        this.#requestUpdate();
     }
 
     connectedCallback(): void {
         const bottomWrapper = document.createElement("div");
         bottomWrapper.className = "bottom-wrapper";
-        bottomWrapper.append(this.sliderNode, this.playButton);
+        bottomWrapper.append(this.#sliderNode, this.#playButton);
 
-        this.append(this.canvas, bottomWrapper);
+        this.append(this.#canvas, bottomWrapper);
 
         // Embed the CSS if it hasn't been embedded yet
         const STYLE_ID = "alg-textarea-style";
@@ -130,73 +130,73 @@ export class PuzzleViewer extends HTMLElement {
                 const size = Number(newValue);
                 if (size > 0 && Number.isInteger(size) && size != this.cube.getLayerCount()) {
                     this.cube = new Cube(size);
-                    this.shouldUpdateCube = true;
+                    this.#shouldUpdateCube = true;
                 }
                 break;
             }
             case "alg":
                 this.alg = Alg.fromString(newValue);
-                this.shouldUpdateCube = true;
+                this.#shouldUpdateCube = true;
                 break;
         }
-        this.requestUpdate();
+        this.#requestUpdate();
     }
 
     update(): void {
-        this.resize(this.canvas.clientWidth, this.canvas.clientHeight);
-        if (this.cube.getLayerCount() != this.drawer.layerCount) {
-            this.drawer.destroy();
-            this.drawer = new NxNDrawer(this.canvas, this.cube.getLayerCount());
+        this.#resize(this.#canvas.clientWidth, this.#canvas.clientHeight);
+        if (this.cube.getLayerCount() != this.#drawer.layerCount) {
+            this.#drawer.destroy();
+            this.#drawer = new NxNDrawer(this.#canvas, this.cube.getLayerCount());
         }
-        if (this.shouldUpdateCube) {
+        if (this.#shouldUpdateCube) {
             this.cube.reset();
 
-            if (this.isPlaying) {
-                const newValue = Math.min(Number(this.sliderNode.value) + this.playSpeed, 1);
+            if (this.#isPlaying) {
+                const newValue = Math.min(Number(this.#sliderNode.value) + this.#playSpeed, 1);
                 if (newValue === 1) {
-                    this.isPlaying = false;
+                    this.#isPlaying = false;
                 }
-                this.sliderNode.value = newValue.toString();
+                this.#sliderNode.value = newValue.toString();
             }
 
-            const sliderValue = Math.max(0, Math.min(Number(this.sliderNode.value), 1));
+            const sliderValue = Math.max(0, Math.min(Number(this.#sliderNode.value), 1));
             const movesToExecute = Math.floor(sliderValue * this.alg.length);
 
             const move = this.cube.executeUntil(this.alg, movesToExecute);
-            this.drawer.set(this.cube);
+            this.#drawer.set(this.cube);
             if (move !== null) {
                 const t = sliderValue * this.alg.length - movesToExecute;
-                this.drawer.animateMove(move, this.ease(t));
+                this.#drawer.animateMove(move, this.ease(t));
             } else {
-                this.drawer.clearAnimation();
+                this.#drawer.clearAnimation();
             }
         }
         this.render();
-        if (this.isPlaying) {
-            this.requestUpdate();
+        if (this.#isPlaying) {
+            this.#requestUpdate();
         }
     }
     
-    private updateAnimationFrameHandle: number = 0;
-    private requestUpdate(): void {
-        window.cancelAnimationFrame(this.updateAnimationFrameHandle);
-        this.updateAnimationFrameHandle = window.requestAnimationFrame(this.update.bind(this));
+    #updateAnimationFrameHandle: number = 0;
+    #requestUpdate(): void {
+        window.cancelAnimationFrame(this.#updateAnimationFrameHandle);
+        this.#updateAnimationFrameHandle = window.requestAnimationFrame(this.update.bind(this));
     }
 
     render(): void {
-        this.drawer.setCameraTransform([0, 0, -0.4], this.rotationX, this.rotationY);
-        this.drawer.render();
+        this.#drawer.setCameraTransform([0, 0, -0.4], this.#rotationX, this.#rotationY);
+        this.#drawer.render();
     }
 
-    private resize(width: number, height: number) {
-        if (this.width === width && this.height === height) {
+    #resize(width: number, height: number) {
+        if (this.#width === width && this.#height === height) {
             return;
         }
 
-        this.width = width;
-        this.height = height;
+        this.#width = width;
+        this.#height = height;
         // Also resizes canvas
-        this.drawer.resize(width, height);
+        this.#drawer.resize(width, height);
     }
 }
 

@@ -1,4 +1,3 @@
-import { Alg } from "../alg/alg.js";
 import { Cube } from "../cube/cube.js";
 
 /**

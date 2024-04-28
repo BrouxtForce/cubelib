@@ -66,12 +66,12 @@ function rotateIndexCcw(index: number, size: number): number {
 }
 
 export class Cube {
-    private layerCount: number;
+    #layerCount: number;
     public stickers: Face[][];
 
     constructor(layerCount: number) {
         console.assert(Number.isInteger(layerCount) && layerCount > 1);
-        this.layerCount = layerCount;
+        this.#layerCount = layerCount;
 
         let stickersPerFace = layerCount * layerCount;
         this.stickers = Array(6);
@@ -95,7 +95,7 @@ export class Cube {
     }
     toString(): string {
         const stringArray = [];
-        const sqLayerCount = this.layerCount * this.layerCount;
+        const sqLayerCount = this.#layerCount * this.#layerCount;
         for (let i = 0; i < 6; i++) {
             for (let j = 0; j < sqLayerCount; j++) {
                 stringArray.push(faceToString(this.stickers[i][j]));
@@ -104,10 +104,10 @@ export class Cube {
         return stringArray.join("");
     }
     getLayerCount(): number {
-        return this.layerCount;
+        return this.#layerCount;
     }
     solve(): void {
-        let stickersPerFace = this.layerCount * this.layerCount;
+        let stickersPerFace = this.#layerCount * this.#layerCount;
         for (let i = 0; i < 6; i++) {
             for (let j = 0; j < stickersPerFace; j++) {
                 this.stickers[i][j] = i;
@@ -115,7 +115,7 @@ export class Cube {
         }
     }
     solved(): boolean {
-        let stickersPerFace = this.layerCount * this.layerCount;
+        let stickersPerFace = this.#layerCount * this.#layerCount;
         for (let i = 0; i < 6; i++) {
             let faceColor = this.stickers[i][0];
             for (let j = 1; j < stickersPerFace; j++) {
@@ -127,7 +127,7 @@ export class Cube {
         return true;
     }
 
-    private static memo(numPieces: number, buffer: number, cycleBreakOrder: number[], getBaseIndex: (piece: number) => number, getPiece: (piece: number, solve?: boolean) => number, swapPiece?: (piece: number) => void): number[] {
+    static #memo(numPieces: number, buffer: number, cycleBreakOrder: number[], getBaseIndex: (piece: number) => number, getPiece: (piece: number, solve?: boolean) => number, swapPiece?: (piece: number) => void): number[] {
         // Remove solved pieces and the buffer from the cycle break order without modifying the array passed in
         cycleBreakOrder = cycleBreakOrder.filter(piece => piece !== getPiece(piece, false) && getBaseIndex(piece) !== getBaseIndex(buffer));
 
@@ -190,7 +190,7 @@ export class Cube {
     }
 
     memoEdges(buffer: number, cycleBreakOrder: number[]): number[] {
-        const edges = this.getEdgeIndices();
+        const edges = this.#getEdgeIndices();
 
         const getBaseIndex = (index: number): number => {
             return Math.floor(index / 2);
@@ -200,10 +200,10 @@ export class Cube {
             return (targetEdge - targetEdge % 2) + (targetEdge + target) % 2;
         };
 
-        return Cube.memo(edges.length, buffer, cycleBreakOrder, getBaseIndex, getPiece);
+        return Cube.#memo(edges.length, buffer, cycleBreakOrder, getBaseIndex, getPiece);
     }
     
-    private static getEdgeBaseIndex(edge: number[]): number {
+    static #getEdgeBaseIndex(edge: number[]): number {
         const edgeHash = edge.reduce((acc, val) => acc | (1 << val), 0);
         switch (edgeHash) {
             case 0b010001: return 0;
@@ -222,8 +222,8 @@ export class Cube {
         }
     }
 
-    private getEdgeIndices(): number[] {
-        const edges = this.getEdges(Math.floor(this.layerCount / 2));
+    #getEdgeIndices(): number[] {
+        const edges = this.#getEdges(Math.floor(this.#layerCount / 2));
         const indices = Array<number>(edges.length);
 
         for (let i = 0; i < edges.length; i++) {
@@ -238,7 +238,7 @@ export class Cube {
                 flipped = !(edge[0] === Face.F || edge[0] === Face.B);
             }
 
-            const baseIndex = Cube.getEdgeBaseIndex(edge);
+            const baseIndex = Cube.#getEdgeBaseIndex(edge);
             indices[i] = baseIndex * 2 + Number(flipped);
         }
 
@@ -246,15 +246,15 @@ export class Cube {
     }
 
     memoWings(wingIndex: number, buffer: number, cycleBreakOrder: number[]): number[] {
-        const wings = this.getWingIndices(wingIndex);
+        const wings = this.#getWingIndices(wingIndex);
 
         const getBaseIndex = (index: number): number => index;
         const getPiece = (target: number): number => wings[target];
 
-        return Cube.memo(wings.length, buffer, cycleBreakOrder, getBaseIndex, getPiece);
+        return Cube.#memo(wings.length, buffer, cycleBreakOrder, getBaseIndex, getPiece);
     }
 
-    private static getWingBaseIndex(wing: number[]): number {
+    static #getWingBaseIndex(wing: number[]): number {
         const wingHash = (1 << wing[0]) | (1 << (wing[1] + 6));
         switch (wingHash) {
             case 0b010000000001: return 0;
@@ -285,8 +285,8 @@ export class Cube {
         }
     }
 
-    private getWingIndices(wingIndex: number): number[] {
-        const wings = this.getWings(wingIndex);
+    #getWingIndices(wingIndex: number): number[] {
+        const wings = this.#getWings(wingIndex);
         const indices = Array<number>(wings.length);
 
         for (let i = 0; i < wings.length; i++) {
@@ -299,14 +299,14 @@ export class Cube {
                 wing[1] = swap;
             }
 
-            indices[i] = Cube.getWingBaseIndex(wing);
+            indices[i] = Cube.#getWingBaseIndex(wing);
         }
 
         return indices;
     }
 
     memoCorners(buffer: number, cycleBreakOrder: number[]): number[] {
-        const corners = this.getCornerIndices();
+        const corners = this.#getCornerIndices();
 
         const getBaseIndex = (index: number): number => {
             return Math.floor(index / 3);
@@ -316,10 +316,10 @@ export class Cube {
             return (targetCorner - targetCorner % 3) + (targetCorner + target) % 3;
         };
 
-        return Cube.memo(corners.length, buffer, cycleBreakOrder, getBaseIndex, getPiece);
+        return Cube.#memo(corners.length, buffer, cycleBreakOrder, getBaseIndex, getPiece);
     }
 
-    private static getCornerBaseIndex(triplet: number[]): number {
+    static #getCornerBaseIndex(triplet: number[]): number {
         const tripletHash = triplet.reduce((acc, val) => acc | (1 << val), 0);
         switch (tripletHash) {
             case 0b010011: return 0;
@@ -334,8 +334,8 @@ export class Cube {
         }
     }
 
-    private getCornerIndices(): number[] {
-        const corners = this.getCorners();
+    #getCornerIndices(): number[] {
+        const corners = this.#getCorners();
         const indices = Array<number>(corners.length);
         
         for (let i = 0; i < corners.length; i++) {
@@ -353,7 +353,7 @@ export class Cube {
                 throw new Error(`Invalid corner triplet: [${corner.join(", ")}]`);
             }
             
-            const baseIndex = Cube.getCornerBaseIndex(corner);
+            const baseIndex = Cube.#getCornerBaseIndex(corner);
             let index = baseIndex * 3 + topColorIndex;
 
             indices[i] = index;
@@ -363,7 +363,7 @@ export class Cube {
     }
 
     memoCenters(centerIndex: number, buffer: number, cycleBreakOrder: number[]): number[] {
-        const centers = this.getCenterIndices(centerIndex);
+        const centers = this.#getCenterIndices(centerIndex);
         const mutableCenters = centers.slice();
 
         const getColor = (index: number): number => Math.floor(index / 4);
@@ -424,7 +424,7 @@ export class Cube {
         };
 
         
-        const memo = Cube.memo(centers.length, buffer, cycleBreakOrder, getBaseIndex, getPiece, swapPiece);
+        const memo = Cube.#memo(centers.length, buffer, cycleBreakOrder, getBaseIndex, getPiece, swapPiece);
         
         console.log(mutableCenters.map(val => debugString[val]).join(" "));
         return memo;
@@ -440,8 +440,8 @@ export class Cube {
      * will not produce unnecessary algs from the memo function, centers that are solved
      * will be given the solved index.
      */
-    private getCenterIndices(centerIndex: number): number[] {
-        const centers = this.getCenters(centerIndex);
+    #getCenterIndices(centerIndex: number): number[] {
+        const centers = this.#getCenters(centerIndex);
         const indices = Array<number | undefined>(centers.length);
         const takenIndices = Array<boolean>(centers.length).fill(false);
 
@@ -487,28 +487,28 @@ export class Cube {
         return indices as number[];
     }
 
-    private getCenters(index: number): Face[] {
+    #getCenters(index: number): Face[] {
         const centers: Face[] = [];
 
         for (let face = 0; face < 6; face++) {
             for (let i = 0; i < 4; i++) {
                 centers.push(this.stickers[face][index]);
 
-                index = rotateIndexCw(index, this.layerCount);
+                index = rotateIndexCw(index, this.#layerCount);
             }
         }
 
         return centers;
     }
 
-    private getEdges(index: number): Face[][] {
+    #getEdges(index: number): Face[][] {
         const edges: Face[] = [];
 
         const faces = [Face.U, Face.L, Face.F, Face.R, Face.B, Face.D];
         for (const face of faces) {
             for (let i = 0; i < 4; i++) {
                 edges.push(this.stickers[face][index]);
-                index = rotateIndexCw(index, this.layerCount);
+                index = rotateIndexCw(index, this.#layerCount);
             }
         }
 
@@ -526,18 +526,18 @@ export class Cube {
         ];
     }
 
-    private getWings(indexA: number): Face[][] {
+    #getWings(indexA: number): Face[][] {
         const wings: Face[] = [];
 
-        let indexB = this.layerCount - indexA - 1;
+        let indexB = this.#layerCount - indexA - 1;
 
         const faces = [Face.U, Face.L, Face.F, Face.R, Face.B, Face.D];
         for (const face of faces) {
             for (let i = 0; i < 4; i++) {
                 wings.push(this.stickers[face][indexA]);
                 wings.push(this.stickers[face][indexB]);
-                indexA = rotateIndexCw(indexA, this.layerCount);
-                indexB = rotateIndexCw(indexB, this.layerCount);
+                indexA = rotateIndexCw(indexA, this.#layerCount);
+                indexB = rotateIndexCw(indexB, this.#layerCount);
             }
         }
 
@@ -555,7 +555,7 @@ export class Cube {
         ];
     }
 
-    private getCorners(): Face[][] {
+    #getCorners(): Face[][] {
         const corners: Face[] = [];
         
         const faces = [Face.U, Face.L, Face.F, Face.R, Face.B, Face.D];
@@ -563,7 +563,7 @@ export class Cube {
         for (const face of faces) {
             for (let i = 0; i < 4; i++) {
                 corners.push(this.stickers[face][index]);
-                index = rotateIndexCw(index, this.layerCount);
+                index = rotateIndexCw(index, this.#layerCount);
             }
         }
 
@@ -580,7 +580,7 @@ export class Cube {
         ];
     }
 
-    private faceHtml(face: Face): HTMLElement {
+    #faceHtml(face: Face): HTMLElement {
         const nodes: HTMLElement[] = [];
         for (const faceColor of this.stickers[face]) {
             const node = document.createElement("div");
@@ -595,25 +595,25 @@ export class Cube {
 
         return faceNode;
     }
-    private emptyFace(): HTMLElement {
+    #emptyFace(): HTMLElement {
         const faceNode = document.createElement("div");
         faceNode.classList.add("face");
         return faceNode;
     }
     html(node: HTMLElement): void {
         node.classList.add("cube");
-        node.style.setProperty("--layer-count", this.layerCount.toString());
+        node.style.setProperty("--layer-count", this.#layerCount.toString());
         node.replaceChildren(
-            this.emptyFace(),
-            this.faceHtml(Face.U),
-            this.emptyFace(),
-            this.emptyFace(),
-            this.faceHtml(Face.L),
-            this.faceHtml(Face.F),
-            this.faceHtml(Face.R),
-            this.faceHtml(Face.B),
-            this.emptyFace(),
-            this.faceHtml(Face.D)
+            this.#emptyFace(),
+            this.#faceHtml(Face.U),
+            this.#emptyFace(),
+            this.#emptyFace(),
+            this.#faceHtml(Face.L),
+            this.#faceHtml(Face.F),
+            this.#faceHtml(Face.R),
+            this.#faceHtml(Face.B),
+            this.#emptyFace(),
+            this.#faceHtml(Face.D)
         );
     }
 
@@ -625,7 +625,7 @@ export class Cube {
      * 
      * Direction numerical values are one to one with Face
      */
-    private static getAdjacentFaces(face: Face): { face: Face, direction: number }[] {
+    static #getAdjacentFaces(face: Face): { face: Face, direction: number }[] {
         enum Dir {
             U = Face.U,
             R = Face.R,
@@ -654,59 +654,59 @@ export class Cube {
                 return [];
         }
     }
-    private cycleFaceCw(face: Face): void {
+    #cycleFaceCw(face: Face): void {
         let faceArray = this.stickers[face];
         let copyArray = faceArray.slice();
 
         for (let i = 0; i < faceArray.length; i++) {
-            faceArray[i] = copyArray[rotateIndexCcw(i, this.layerCount)];
+            faceArray[i] = copyArray[rotateIndexCcw(i, this.#layerCount)];
         }
     }
-    private cycleFaceCcw(face: Face): void {
+    #cycleFaceCcw(face: Face): void {
         let faceArray = this.stickers[face];
         let copyArray = faceArray.slice();
 
         for (let i = 0; i < faceArray.length; i++) {
-            faceArray[i] = copyArray[rotateIndexCw(i, this.layerCount)];
+            faceArray[i] = copyArray[rotateIndexCw(i, this.#layerCount)];
         }
     }
-    private cycleFace(face: Face, counterclockwise: boolean): void {
+    #cycleFace(face: Face, counterclockwise: boolean): void {
         if (counterclockwise) {
-            this.cycleFaceCcw(face);
+            this.#cycleFaceCcw(face);
         } else {
-            this.cycleFaceCw(face);
+            this.#cycleFaceCw(face);
         }
     }
     /**
      * Returns indices for a thread on a specific face at the specific depth
      */
-    private faceThread(direction: Face, depth: number): number[] {
+    #faceThread(direction: Face, depth: number): number[] {
         const array: number[] = [];
         switch (direction) {
             case Face.U: {
-                let startIndex = depth * this.layerCount;
-                for (let i = 0; i < this.layerCount; i++) {
+                let startIndex = depth * this.#layerCount;
+                for (let i = 0; i < this.#layerCount; i++) {
                     array.push(startIndex + i);
                 }
                 return array;
             }
             case Face.R: {
-                let startIndex = this.layerCount - depth - 1;
-                for (let i = 0; i < this.layerCount; i++) {
-                    array.push(startIndex + this.layerCount * i);
+                let startIndex = this.#layerCount - depth - 1;
+                for (let i = 0; i < this.#layerCount; i++) {
+                    array.push(startIndex + this.#layerCount * i);
                 }
                 return array;
             }
             case Face.L: {
                 let startIndex = depth;
-                for (let i = this.layerCount - 1; i >= 0; i--) {
-                    array.push(startIndex + this.layerCount * i);
+                for (let i = this.#layerCount - 1; i >= 0; i--) {
+                    array.push(startIndex + this.#layerCount * i);
                 }
                 return array;
             }
             case Face.D: {
-                let startIndex = (this.layerCount - depth) * this.layerCount - this.layerCount;
-                for (let i = this.layerCount - 1; i >= 0; i--) {
+                let startIndex = (this.#layerCount - depth) * this.#layerCount - this.#layerCount;
+                for (let i = this.#layerCount - 1; i >= 0; i--) {
                     array.push(startIndex + i);
                 }
                 return array;
@@ -716,12 +716,12 @@ export class Cube {
                 return [];
         }
     }
-    private cycleThreadCcw(face: Face, depth: number): void {
-        const adjFaces = Cube.getAdjacentFaces(face);
+    #cycleThreadCcw(face: Face, depth: number): void {
+        const adjFaces = Cube.#getAdjacentFaces(face);
         const faceIndices = [];
 
         for (const adjFace of adjFaces) {
-            faceIndices.push(this.faceThread(adjFace.direction, depth));
+            faceIndices.push(this.#faceThread(adjFace.direction, depth));
         }
 
         let firstCopy = [];
@@ -744,16 +744,16 @@ export class Cube {
             }
         }
     }
-    private cycleThreadCw(face: Face, depth: number): void {
+    #cycleThreadCw(face: Face, depth: number): void {
         for (let i = 0; i < 3; i++) {
-            this.cycleThreadCcw(face, depth);
+            this.#cycleThreadCcw(face, depth);
         }
     }
-    private cycleThread(face: Face, depth: number, counterclockwise: boolean): void {
+    #cycleThread(face: Face, depth: number, counterclockwise: boolean): void {
         if (counterclockwise) {
-            this.cycleThreadCcw(face, depth);
+            this.#cycleThreadCcw(face, depth);
         } else {
-            this.cycleThreadCw(face, depth);
+            this.#cycleThreadCw(face, depth);
         }
     }
 
@@ -773,33 +773,33 @@ export class Cube {
         counterclockwise = (amount === 3) !== counterclockwise;
         let double = amount === 2;
 
-        shallow = Math.min(shallow, this.layerCount);
-        deep = Math.min(deep, this.layerCount);
+        shallow = Math.min(shallow, this.#layerCount);
+        deep = Math.min(deep, this.#layerCount);
 
         if (!double) {
             if (shallow === 1) {
-                this.cycleFace(face, counterclockwise);
+                this.#cycleFace(face, counterclockwise);
             }
-            if (deep >= this.layerCount) {
-                this.cycleFace(oppositeFace(face), !counterclockwise);
+            if (deep >= this.#layerCount) {
+                this.#cycleFace(oppositeFace(face), !counterclockwise);
             }
             // shallow - 1 to start indexing depth at 0 instead of 1
             for (let i = shallow - 1; i < deep; i++) {
-                this.cycleThread(face, i, counterclockwise);
+                this.#cycleThread(face, i, counterclockwise);
             }
         } else {
             if (shallow === 1) {
-                this.cycleFaceCw(face);
-                this.cycleFaceCw(face);
+                this.#cycleFaceCw(face);
+                this.#cycleFaceCw(face);
             }
-            if (deep >= this.layerCount) {
+            if (deep >= this.#layerCount) {
                 let opposite = oppositeFace(face);
-                this.cycleFaceCw(opposite);
-                this.cycleFaceCw(opposite);
+                this.#cycleFaceCw(opposite);
+                this.#cycleFaceCw(opposite);
             }
             for (let i = shallow - 1; i < deep; i++) {
-                this.cycleThreadCw(face, i);
-                this.cycleThreadCw(face, i);
+                this.#cycleThreadCw(face, i);
+                this.#cycleThreadCw(face, i);
             }
         }
     }
@@ -808,16 +808,16 @@ export class Cube {
             if ("UFRBLD".indexOf(move.face) > -1) {
                 this.move(stringToFace(move.face), move.amount, move.shallow, move.deep);
             } else if ("MES".indexOf(move.face) > -1) {
-                if (this.layerCount % 2 === 0) continue;
+                if (this.#layerCount % 2 === 0) continue;
                 let faceNum = stringToFace("LDF"["MES".indexOf(move.face)]);
-                let depth = (this.layerCount - 1) / 2 + 1;
+                let depth = (this.#layerCount - 1) / 2 + 1;
                 this.move(faceNum, move.amount, depth, depth);
             } else if ("mes".indexOf(move.face) > -1) {
                 let faceNum = stringToFace("LDF"["mes".indexOf(move.face)]);
-                this.move(faceNum, move.amount, 2, this.layerCount - 1);
+                this.move(faceNum, move.amount, 2, this.#layerCount - 1);
             } else if ("xyz".indexOf(move.face) > -1) {
                 let faceNum = stringToFace("RUF"["xyz".indexOf(move.face)]);
-                this.move(faceNum, move.amount, 1, this.layerCount);
+                this.move(faceNum, move.amount, 1, this.#layerCount);
             } else {
                 console.error(`Move ${move.face} not supported.`);
             }

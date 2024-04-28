@@ -4,39 +4,40 @@ import device from "./device.js";
 import { matrixMult, createPerspectiveMatrix, transpose, createTranslationMatrix, matrixRotationX, matrixRotationY, createScaleMatrix } from "../math.js";
 import { assert } from "../../utils.js";
 
+// TODO: Save somse state across multiple NxNDrawers
 export default class NxNDrawer {
     public readonly layerCount: number;
 
-    private readonly canvas: HTMLCanvasElement;
-    private readonly context: GPUCanvasContext;
-    private depthTexture: GPUTexture;
-    private readonly renderPassDescriptor: GPURenderPassDescriptor;
-    private readonly shaderModule: GPUShaderModule;
-    private readonly renderPipeline: GPURenderPipeline;
-    private readonly computePipeline: GPUComputePipeline;
-    private readonly stickerBuffer: GPUBuffer;
-    private readonly cameraDataBuffer: GPUBuffer;
-    private readonly blockDataBuffer: GPUBuffer;
-    private numBlocks: number = 1;
-    private readonly bindGroups: GPUBindGroup[];
+    readonly #canvas: HTMLCanvasElement;
+    readonly #context: GPUCanvasContext;
+    #depthTexture: GPUTexture;
+    readonly #renderPassDescriptor: GPURenderPassDescriptor;
+    readonly #shaderModule: GPUShaderModule;
+    readonly #renderPipeline: GPURenderPipeline;
+    readonly #computePipeline: GPUComputePipeline;
+    readonly #stickerBuffer: GPUBuffer;
+    readonly #cameraDataBuffer: GPUBuffer;
+    readonly #blockDataBuffer: GPUBuffer;
+    #numBlocks: number = 1;
+    readonly #bindGroups: GPUBindGroup[];
 
     constructor(canvas: HTMLCanvasElement, layerCount: number) {
         this.layerCount = layerCount;
 
-        this.canvas = canvas;
+        this.#canvas = canvas;
         let preferredFormat: GPUTextureFormat;
-        [this.context, preferredFormat] = NxNDrawer.initCanvasContext(canvas);
-        this.depthTexture = NxNDrawer.createDepthTexture(canvas.width, canvas.height);
-        this.renderPassDescriptor = NxNDrawer.createRenderPassDescriptor(this.depthTexture);
-        this.shaderModule = NxNDrawer.createShaderModule(layerCount);
-        const bindGroupLayout = NxNDrawer.createBindGroupLayout();
-        const piplineLayout = NxNDrawer.createPipelineLayout(bindGroupLayout);
-        this.renderPipeline = NxNDrawer.createRenderPipeline(this.shaderModule, piplineLayout, preferredFormat, this.depthTexture.format);
-        this.computePipeline = NxNDrawer.createComputePipeline(this.shaderModule, piplineLayout);
-        this.stickerBuffer = NxNDrawer.createStickerBuffer(layerCount);
-        this.cameraDataBuffer = NxNDrawer.createCameraDataBuffer();
-        this.blockDataBuffer = NxNDrawer.createBlockDataBuffer();
-        this.bindGroups = NxNDrawer.createBindGroups(bindGroupLayout, this.cameraDataBuffer, this.stickerBuffer, this.blockDataBuffer);
+        [this.#context, preferredFormat] = NxNDrawer.#initCanvasContext(canvas);
+        this.#depthTexture = NxNDrawer.#createDepthTexture(canvas.width, canvas.height);
+        this.#renderPassDescriptor = NxNDrawer.#createRenderPassDescriptor(this.#depthTexture);
+        this.#shaderModule = NxNDrawer.#createShaderModule(layerCount);
+        const bindGroupLayout = NxNDrawer.#createBindGroupLayout();
+        const piplineLayout = NxNDrawer.#createPipelineLayout(bindGroupLayout);
+        this.#renderPipeline = NxNDrawer.#createRenderPipeline(this.#shaderModule, piplineLayout, preferredFormat, this.#depthTexture.format);
+        this.#computePipeline = NxNDrawer.#createComputePipeline(this.#shaderModule, piplineLayout);
+        this.#stickerBuffer = NxNDrawer.#createStickerBuffer(layerCount);
+        this.#cameraDataBuffer = NxNDrawer.#createCameraDataBuffer();
+        this.#blockDataBuffer = NxNDrawer.#createBlockDataBuffer();
+        this.#bindGroups = NxNDrawer.#createBindGroups(bindGroupLayout, this.#cameraDataBuffer, this.#stickerBuffer, this.#blockDataBuffer);
 
         this.reset();
         this.clearAnimation();
@@ -46,14 +47,14 @@ export default class NxNDrawer {
         const commandEncoder = device.createCommandEncoder({ label: "Draw NxN" });
 
         // @ts-expect-error
-        this.renderPassDescriptor.colorAttachments[0].view = this.context.getCurrentTexture().createView();
+        this.#renderPassDescriptor.colorAttachments[0].view = this.#context.getCurrentTexture().createView();
 
-        const pass = commandEncoder.beginRenderPass(this.renderPassDescriptor);
-        pass.setPipeline(this.renderPipeline);
-        for (let i = 0; i < this.bindGroups.length; i++) {
-            pass.setBindGroup(i, this.bindGroups[i]);
+        const pass = commandEncoder.beginRenderPass(this.#renderPassDescriptor);
+        pass.setPipeline(this.#renderPipeline);
+        for (let i = 0; i < this.#bindGroups.length; i++) {
+            pass.setBindGroup(i, this.#bindGroups[i]);
         }
-        pass.draw(4, 6 * this.numBlocks);
+        pass.draw(4, 6 * this.#numBlocks);
         pass.end();
 
         device.queue.submit([commandEncoder.finish()]);
@@ -63,11 +64,11 @@ export default class NxNDrawer {
         const commandEncoder = device.createCommandEncoder({ label: "Reset NxN" });
 
         const pass = commandEncoder.beginComputePass();
-        pass.setPipeline(this.computePipeline);
-        for (let i = 0; i < this.bindGroups.length; i++) {
-            pass.setBindGroup(i, this.bindGroups[i]);
+        pass.setPipeline(this.#computePipeline);
+        for (let i = 0; i < this.#bindGroups.length; i++) {
+            pass.setBindGroup(i, this.#bindGroups[i]);
         }
-        pass.dispatchWorkgroups(Math.ceil(this.stickerBuffer.size / 256));
+        pass.dispatchWorkgroups(Math.ceil(this.#stickerBuffer.size / 256));
         pass.end();
 
         device.queue.submit([commandEncoder.finish()]);
@@ -78,16 +79,16 @@ export default class NxNDrawer {
             matrixMult(matrixRotationY(rotationY), matrixRotationX(rotationX)),
             createTranslationMatrix(position)
         ));
-        const projMatrix = createPerspectiveMatrix(2, this.canvas.width / this.canvas.height, 0.01);
+        const projMatrix = createPerspectiveMatrix(2, this.#canvas.width / this.#canvas.height, 0.01);
 
         const viewProjMatrix = new Float32Array(16);
         viewProjMatrix.set(matrixMult(viewMatrix, transpose(projMatrix)));
 
-        device.queue.writeBuffer(this.cameraDataBuffer, 0, viewProjMatrix);
+        device.queue.writeBuffer(this.#cameraDataBuffer, 0, viewProjMatrix);
     }
 
     set(cube: Cube): void {
-        const arrayBuffer = new ArrayBuffer(this.stickerBuffer.size);
+        const arrayBuffer = new ArrayBuffer(this.#stickerBuffer.size);
         const view = new Uint32Array(arrayBuffer);
 
         let index = 0;
@@ -104,10 +105,10 @@ export default class NxNDrawer {
             }
         }
 
-        device.queue.writeBuffer(this.stickerBuffer, 0, arrayBuffer);
+        device.queue.writeBuffer(this.#stickerBuffer, 0, arrayBuffer);
     }
 
-    private static makeBlock(rotation: number, scale: number, translation: number, axis: number): number[] {
+    static #makeBlock(rotation: number, scale: number, translation: number, axis: number): number[] {
         if (scale <= 0) return [];
         return [rotation | (scale << 16), translation | (axis << 16)];
     }
@@ -126,47 +127,47 @@ export default class NxNDrawer {
         const data: number[] = [];
         const rotation = mod(Math.floor(0xffff * t * move.amount / 4), 0xffff);
         if (move.shallow === 1) {
-            data.push(...NxNDrawer.makeBlock(rotation, move.deep, this.layerCount - move.deep, face));
-            data.push(...NxNDrawer.makeBlock(0, this.layerCount - move.deep, 0, face));
+            data.push(...NxNDrawer.#makeBlock(rotation, move.deep, this.layerCount - move.deep, face));
+            data.push(...NxNDrawer.#makeBlock(0, this.layerCount - move.deep, 0, face));
         } else {
-            data.push(...NxNDrawer.makeBlock(0, move.shallow - 1, this.layerCount - move.shallow + 1, face));
-            data.push(...NxNDrawer.makeBlock(rotation, move.deep - move.shallow + 1, this.layerCount - move.deep, face));
-            data.push(...NxNDrawer.makeBlock(0, this.layerCount - move.deep, 0, face));
+            data.push(...NxNDrawer.#makeBlock(0, move.shallow - 1, this.layerCount - move.shallow + 1, face));
+            data.push(...NxNDrawer.#makeBlock(rotation, move.deep - move.shallow + 1, this.layerCount - move.deep, face));
+            data.push(...NxNDrawer.#makeBlock(0, this.layerCount - move.deep, 0, face));
         }
-        this.numBlocks = data.length / 2;
+        this.#numBlocks = data.length / 2;
 
-        device.queue.writeBuffer(this.blockDataBuffer, 0, new Uint32Array(data));
+        device.queue.writeBuffer(this.#blockDataBuffer, 0, new Uint32Array(data));
     }
 
     clearAnimation(): void {
-        const data = new Uint32Array(NxNDrawer.makeBlock(0, this.layerCount, 0, 0));
-        this.numBlocks = 1;
+        const data = new Uint32Array(NxNDrawer.#makeBlock(0, this.layerCount, 0, 0));
+        this.#numBlocks = 1;
 
-        device.queue.writeBuffer(this.blockDataBuffer, 0, new Uint32Array(data));
+        device.queue.writeBuffer(this.#blockDataBuffer, 0, new Uint32Array(data));
     }
 
     destroy(): void {
-        this.context.unconfigure();
-        this.depthTexture.destroy();
-        this.stickerBuffer.destroy();
-        this.cameraDataBuffer.destroy();
+        this.#context.unconfigure();
+        this.#depthTexture.destroy();
+        this.#stickerBuffer.destroy();
+        this.#cameraDataBuffer.destroy();
     }
 
     resize(width: number, height: number): void {
-        if (this.canvas.width === width && this.canvas.height === height) {
+        if (this.#canvas.width === width && this.#canvas.height === height) {
             return;
         }
 
-        this.canvas.width = width;
-        this.canvas.height = height;
+        this.#canvas.width = width;
+        this.#canvas.height = height;
 
-        this.depthTexture.destroy();
-        this.depthTexture = NxNDrawer.createDepthTexture(width, height);
-        const attachment = this.renderPassDescriptor.depthStencilAttachment as GPURenderPassDepthStencilAttachment;
-        attachment.view = this.depthTexture.createView();
+        this.#depthTexture.destroy();
+        this.#depthTexture = NxNDrawer.#createDepthTexture(width, height);
+        const attachment = this.#renderPassDescriptor.depthStencilAttachment as GPURenderPassDepthStencilAttachment;
+        attachment.view = this.#depthTexture.createView();
     }
 
-    private static initCanvasContext(canvas: HTMLCanvasElement): [GPUCanvasContext, GPUTextureFormat] {
+    static #initCanvasContext(canvas: HTMLCanvasElement): [GPUCanvasContext, GPUTextureFormat] {
         assert(canvas.width !== 0 && canvas.height !== 0);
 
         const context = canvas.getContext("webgpu");
@@ -180,7 +181,7 @@ export default class NxNDrawer {
         return [context, preferredFormat];
     }
 
-    private static createDepthTexture(width: number, height: number): GPUTexture {
+    static #createDepthTexture(width: number, height: number): GPUTexture {
         return device.createTexture({
             size: { width, height },
             format: "depth16unorm",
@@ -189,7 +190,7 @@ export default class NxNDrawer {
         });
     }
 
-    private static createRenderPassDescriptor(depthTexture: GPUTexture): GPURenderPassDescriptor {
+    static #createRenderPassDescriptor(depthTexture: GPUTexture): GPURenderPassDescriptor {
         return {
             label: "Draw NxN Render Pass Descriptor",
             colorAttachments: [{
@@ -207,8 +208,8 @@ export default class NxNDrawer {
         };
     }
 
-    private static createShaderModule(layerCount: number): GPUShaderModule {
-        const stickerBufferLength = NxNDrawer.getStickerBufferByteLength(layerCount) / 4;
+    static #createShaderModule(layerCount: number): GPUShaderModule {
+        const stickerBufferLength = NxNDrawer.#getStickerBufferByteLength(layerCount) / 4;
         const source = `
             struct CameraData {
                 viewProjMatrix: mat4x4f,
@@ -392,7 +393,7 @@ export default class NxNDrawer {
         });
     }
 
-    private static createBindGroupLayout(): GPUBindGroupLayout {
+    static #createBindGroupLayout(): GPUBindGroupLayout {
         return device.createBindGroupLayout({
             entries: [
                 {
@@ -414,11 +415,11 @@ export default class NxNDrawer {
         });
     }
 
-    private static createPipelineLayout(bindGroupLayout: GPUBindGroupLayout): GPUPipelineLayout {
+    static #createPipelineLayout(bindGroupLayout: GPUBindGroupLayout): GPUPipelineLayout {
         return device.createPipelineLayout({ bindGroupLayouts: [bindGroupLayout] });
     }
 
-    private static createRenderPipeline(module: GPUShaderModule, pipelineLayout: GPUPipelineLayout, format: GPUTextureFormat, depthTextureFormat: GPUTextureFormat): GPURenderPipeline {
+    static #createRenderPipeline(module: GPUShaderModule, pipelineLayout: GPUPipelineLayout, format: GPUTextureFormat, depthTextureFormat: GPUTextureFormat): GPURenderPipeline {
         return device.createRenderPipeline({
             label: "Draw Puzzle Render Pipeline",
             layout: pipelineLayout,
@@ -442,7 +443,7 @@ export default class NxNDrawer {
         });
     }
 
-    private static createComputePipeline(module: GPUShaderModule, pipelineLayout: GPUPipelineLayout): GPUComputePipeline {
+    static #createComputePipeline(module: GPUShaderModule, pipelineLayout: GPUPipelineLayout): GPUComputePipeline {
         return device.createComputePipeline({
             layout: pipelineLayout,
             compute: {
@@ -452,33 +453,33 @@ export default class NxNDrawer {
         });
     }
 
-    private static getStickerBufferByteLength(layerCount: number): number {
+    static #getStickerBufferByteLength(layerCount: number): number {
         return Math.ceil(6 * layerCount * layerCount / 10) * 4;
     }
 
-    private static createStickerBuffer(layerCount: number): GPUBuffer {
+    static #createStickerBuffer(layerCount: number): GPUBuffer {
         return device.createBuffer({
             label: "Sticker Buffer",
-            size: NxNDrawer.getStickerBufferByteLength(layerCount),
+            size: NxNDrawer.#getStickerBufferByteLength(layerCount),
             usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST
         });
     }
 
-    private static createCameraDataBuffer(): GPUBuffer {
+    static #createCameraDataBuffer(): GPUBuffer {
         return device.createBuffer({
             size: 80,
             usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST
         });
     }
 
-    private static createBlockDataBuffer(): GPUBuffer {
+    static #createBlockDataBuffer(): GPUBuffer {
         return device.createBuffer({
             size: 24,
             usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST
         });
     }
 
-    private static createBindGroups(bindGroupLayout: GPUBindGroupLayout, cameraDataBuffer: GPUBuffer, stickerBuffer: GPUBuffer, blockDataBuffer: GPUBuffer): GPUBindGroup[] {
+    static #createBindGroups(bindGroupLayout: GPUBindGroupLayout, cameraDataBuffer: GPUBuffer, stickerBuffer: GPUBuffer, blockDataBuffer: GPUBuffer): GPUBindGroup[] {
         return [
             device.createBindGroup({
                 layout: bindGroupLayout,

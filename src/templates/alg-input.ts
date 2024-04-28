@@ -60,47 +60,47 @@ function setSelectionRange(node: HTMLElement, start: number, end: number) {
 }
 
 export class AlgInput extends HTMLElement {
-    private textInput: HTMLDivElement;
-    private errorDiv: HTMLDivElement;
-    private placeholderDiv: HTMLDivElement;
-    private rowsRulerDiv: HTMLElement;
+    #textInput: HTMLDivElement;
+    #errorDiv: HTMLDivElement;
+    #placeholderDiv: HTMLDivElement;
+    #rowsRulerDiv: HTMLElement;
 
-    private animationFrame: number = 0;
+    #animationFrame: number = 0;
 
     constructor() {
         super();
 
-        this.textInput = document.createElement("div");
-        this.textInput.className = "text-input";
+        this.#textInput = document.createElement("div");
+        this.#textInput.className = "text-input";
 
-        this.textInput.contentEditable = "true";
+        this.#textInput.contentEditable = "true";
 
-        this.textInput.spellcheck = false;
+        this.#textInput.spellcheck = false;
 
-        this.textInput.addEventListener("beforeinput", this.inputCallback);
+        this.#textInput.addEventListener("beforeinput", this.#inputCallback);
 
-        this.errorDiv = document.createElement("div");
-        this.errorDiv.className = "error-message";
+        this.#errorDiv = document.createElement("div");
+        this.#errorDiv.className = "error-message";
 
-        this.placeholderDiv = document.createElement("div");
-        this.placeholderDiv.className = "placeholder";
-        this.placeholderDiv.textContent = "Click here to add moves";
+        this.#placeholderDiv = document.createElement("div");
+        this.#placeholderDiv.className = "placeholder";
+        this.#placeholderDiv.textContent = "Click here to add moves";
 
-        this.rowsRulerDiv = document.createElement("div");
-        this.rowsRulerDiv.classList.add("text-input", "rows-ruler");
+        this.#rowsRulerDiv = document.createElement("div");
+        this.#rowsRulerDiv.classList.add("text-input", "rows-ruler");
     }
 
-    get value(): string { return this.textInput.textContent ?? ""; }
+    get value(): string { return this.#textInput.textContent ?? ""; }
     set value(value: string) {
-        this.textInput.textContent = value;
-        this.textInput.dispatchEvent(new InputEvent("input"));
+        this.#textInput.textContent = value;
+        this.#textInput.dispatchEvent(new InputEvent("input"));
     }
 
     connectedCallback() {
-        this.appendChild(this.rowsRulerDiv);
-        this.appendChild(this.placeholderDiv);
-        this.appendChild(this.textInput);
-        this.appendChild(this.errorDiv);
+        this.appendChild(this.#rowsRulerDiv);
+        this.appendChild(this.#placeholderDiv);
+        this.appendChild(this.#textInput);
+        this.appendChild(this.#errorDiv);
 
         // Embed the CSS if it hasn't already been embedded
         const STYLE_ID = "alg-input-style"
@@ -196,8 +196,8 @@ export class AlgInput extends HTMLElement {
             case "min-rows":
                 const calcMinHeight = () => {
                     let count = Number.parseInt(newValue);
-                    this.rowsRulerDiv.textContent = Array(count).fill("\n").join("");
-                    this.textInput.style.minHeight = this.rowsRulerDiv.clientHeight + "px";
+                    this.#rowsRulerDiv.textContent = Array(count).fill("\n").join("");
+                    this.#textInput.style.minHeight = this.#rowsRulerDiv.clientHeight + "px";
                 };
                 if (document.readyState !== "complete") {
                     window.addEventListener("load", calcMinHeight);
@@ -208,18 +208,18 @@ export class AlgInput extends HTMLElement {
         }
     }
 
-    private inputCallback = async (event: InputEvent) => {
+    #inputCallback = async (event: InputEvent) => {
         console.time("alg-input.oninput");
         event.preventDefault();
 
         const staticEditedRange = (event as InputEvent).getTargetRanges()[0];        
 
-        let input = this.textInput.textContent ?? "";
+        let input = this.#textInput.textContent ?? "";
 
-        if (input === "" || (this.textInput.childNodes.length === 1 && this.textInput.firstChild?.textContent === "\n")) {
-            this.placeholderDiv.style.display = "";
+        if (input === "" || (this.#textInput.childNodes.length === 1 && this.#textInput.firstChild?.textContent === "\n")) {
+            this.#placeholderDiv.style.display = "";
         } else {
-            this.placeholderDiv.style.display = "none";
+            this.#placeholderDiv.style.display = "none";
         }
 
         try {
@@ -245,7 +245,7 @@ export class AlgInput extends HTMLElement {
             let text = event.data ?? "";
             switch (event.inputType) {
                 case "insertText": {
-                    if (startContainer === this.textInput) {
+                    if (startContainer === this.#textInput) {
                         let containerContent = startContainer.textContent ?? "";
 
                         containerContent =
@@ -316,20 +316,20 @@ export class AlgInput extends HTMLElement {
                 case "insertParagraph": {
                     // Two BRs should be inserted if there are no BRs in the textInput
                     let shouldInsertTwo = true;
-                    for (const node of this.textInput.children) {
+                    for (const node of this.#textInput.children) {
                         if (node.tagName === "BR") {
                             shouldInsertTwo = false;
                             break;
                         }
                     }
 
-                    if (startContainer === this.textInput) {
+                    if (startContainer === this.#textInput) {
                         console.log(1);
 
                         if (shouldInsertTwo) {
-                            this.textInput.prepend(document.createElement("br"));
+                            this.#textInput.prepend(document.createElement("br"));
                         }
-                        this.textInput.prepend(document.createElement("br"));
+                        this.#textInput.prepend(document.createElement("br"));
 
                     } else if (startContainer === endContainer) {
                         console.log(2);
@@ -343,10 +343,10 @@ export class AlgInput extends HTMLElement {
                         startContainer.textContent = prefix;
                         copyContainer.textContent = suffix;
 
-                        this.textInput.insertBefore(copyContainer, startContainer.nextSibling);
-                        this.textInput.insertBefore(document.createElement("br"), startContainer.nextSibling);
+                        this.#textInput.insertBefore(copyContainer, startContainer.nextSibling);
+                        this.#textInput.insertBefore(document.createElement("br"), startContainer.nextSibling);
                         if (shouldInsertTwo) {
-                            this.textInput.insertBefore(document.createElement("br"), startContainer.nextSibling);
+                            this.#textInput.insertBefore(document.createElement("br"), startContainer.nextSibling);
                         }
 
                     } else {
@@ -396,16 +396,16 @@ export class AlgInput extends HTMLElement {
 
             // this.textInput.replaceChildren(...tokenNodes);
 
-            this.errorDiv.style.display = "";
+            this.#errorDiv.style.display = "";
         } catch (error) {
-            this.errorDiv.textContent = error as string;
-            this.errorDiv.style.display = "block";
+            this.#errorDiv.textContent = error as string;
+            this.#errorDiv.style.display = "block";
         }
 
         console.timeEnd("alg-input.oninput");
     }
 
-    private styleSiGNTokens(tokens: SiGNToken[]): (string | HTMLElement)[] {
+    #styleSiGNTokens(tokens: SiGNToken[]): (string | HTMLElement)[] {
         let out: (string | HTMLElement)[] = [];
 
         let prevContent: string = "";

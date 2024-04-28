@@ -1,39 +1,39 @@
-import { Alg, AlgMoveNode, AlgNode } from "./alg.js";
+import { Alg, AlgMoveNode } from "./alg.js";
 import { Commutator } from "./commutator.js";
 import { Conjugate } from "./conjugate.js";
 import { Move } from "./move.js";
 import { SiGNTokenInputStream, type SiGNToken } from "./sign-tokens.js";
 
 class TokenStream {
-    private readonly tokens: SiGNToken[];
-    private index: number;
+    readonly #tokens: SiGNToken[];
+    #index: number;
 
     constructor(tokens: SiGNToken[]) {
-        this.tokens = tokens;
-        this.index = 0;
+        this.#tokens = tokens;
+        this.#index = 0;
     }
 
     next(): SiGNToken | null {
-        return this.tokens[this.index++] ?? null;
+        return this.#tokens[this.#index++] ?? null;
     }
     prev(): void {
-        this.index--;
+        this.#index--;
     }
     current(): SiGNToken | null {
-        return this.tokens[this.index - 1] ?? null;
+        return this.#tokens[this.#index - 1] ?? null;
     }
     peek(): SiGNToken | null {
-        return this.tokens[this.index] ?? null;
+        return this.#tokens[this.#index] ?? null;
     }
     peekRelevant(): SiGNToken | null {
-        for (let i = this.index; i < this.tokens.length; i++) {
-            switch (this.tokens[i].type) {
+        for (let i = this.#index; i < this.#tokens.length; i++) {
+            switch (this.#tokens[i].type) {
                 case "blockComment":
                 case "lineComment":
                 case "whitespace":
                     continue;
             }
-            return this.tokens[i];
+            return this.#tokens[i];
         }
         return null;
     }
