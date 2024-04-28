@@ -5,7 +5,7 @@ import { matrixMult, createPerspectiveMatrix, transpose, createTranslationMatrix
 import { assert } from "../../utils.js";
 
 // TODO: Save somse state across multiple NxNDrawers
-export default class NxNDrawer {
+export class NxNDrawer {
     public readonly layerCount: number;
 
     readonly #canvas: HTMLCanvasElement;

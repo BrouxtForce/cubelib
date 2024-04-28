@@ -1,2 +1,3 @@
 .DS_STORE
 *.tsbuildinfo
+.hugo_build.lock

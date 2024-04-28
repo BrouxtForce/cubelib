@@ -1,7 +1,7 @@
 import device from "./device.js";
 import { matrixMult, createPerspectiveMatrix, transpose, createTranslationMatrix, matrixRotationX, matrixRotationY, createScaleMatrix } from "../math.js";
 import { assert } from "../../utils.js";
-export default class NxNDrawer {
+export class NxNDrawer {
     layerCount;
     #canvas;
     #context;

@@ -1,4 +1,4 @@
-import NxNDrawer from "../graphics/webgpu/nxn-drawer.js";
+import { NxNDrawer } from "../graphics/webgpu/nxn-drawer.js";
 import { Cube } from "../cube/cube.js";
 import { Alg } from "../alg/alg.js";
 export class PuzzleViewer extends HTMLElement {

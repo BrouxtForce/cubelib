@@ -1,0 +1,12 @@
+baseURL = 'https://example.org/'
+languageCode = 'en-us'
+title = 'Cubelib Documentation'
+theme = "hugo-book"
+minify = true
+
+markup.goldmark.renderer.unsafe = true
+
+disableKinds = ['taxonomy']
+
+[params]
+BookSearch = false

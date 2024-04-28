@@ -36,6 +36,7 @@ export type AlgMoveNode = Move | Commutator | Conjugate | Alg;
 export type AlgNonMoveNode = Comment | Whitespace;
 export type AlgNode = AlgMoveNode | AlgNonMoveNode;
 
+/** @module Something */
 export class Alg implements IAlgMoveNode {
     public readonly type = "Alg" as const;
 
