@@ -49,36 +49,36 @@ function setSelectionRange(node, start, end) {
     selection.addRange(range);
 }
 export class AlgInput extends HTMLElement {
-    textInput;
-    errorDiv;
-    placeholderDiv;
-    rowsRulerDiv;
-    animationFrame = 0;
+    #textInput;
+    #errorDiv;
+    #placeholderDiv;
+    #rowsRulerDiv;
+    #animationFrame = 0;
     constructor() {
         super();
-        this.textInput = document.createElement("div");
-        this.textInput.className = "text-input";
-        this.textInput.contentEditable = "true";
-        this.textInput.spellcheck = false;
-        this.textInput.addEventListener("beforeinput", this.inputCallback);
-        this.errorDiv = document.createElement("div");
-        this.errorDiv.className = "error-message";
-        this.placeholderDiv = document.createElement("div");
-        this.placeholderDiv.className = "placeholder";
-        this.placeholderDiv.textContent = "Click here to add moves";
-        this.rowsRulerDiv = document.createElement("div");
-        this.rowsRulerDiv.classList.add("text-input", "rows-ruler");
+        this.#textInput = document.createElement("div");
+        this.#textInput.className = "text-input";
+        this.#textInput.contentEditable = "true";
+        this.#textInput.spellcheck = false;
+        this.#textInput.addEventListener("beforeinput", this.#inputCallback);
+        this.#errorDiv = document.createElement("div");
+        this.#errorDiv.className = "error-message";
+        this.#placeholderDiv = document.createElement("div");
+        this.#placeholderDiv.className = "placeholder";
+        this.#placeholderDiv.textContent = "Click here to add moves";
+        this.#rowsRulerDiv = document.createElement("div");
+        this.#rowsRulerDiv.classList.add("text-input", "rows-ruler");
     }
-    get value() { return this.textInput.textContent ?? ""; }
+    get value() { return this.#textInput.textContent ?? ""; }
     set value(value) {
-        this.textInput.textContent = value;
-        this.textInput.dispatchEvent(new InputEvent("input"));
+        this.#textInput.textContent = value;
+        this.#textInput.dispatchEvent(new InputEvent("input"));
     }
     connectedCallback() {
-        this.appendChild(this.rowsRulerDiv);
-        this.appendChild(this.placeholderDiv);
-        this.appendChild(this.textInput);
-        this.appendChild(this.errorDiv);
+        this.appendChild(this.#rowsRulerDiv);
+        this.appendChild(this.#placeholderDiv);
+        this.appendChild(this.#textInput);
+        this.appendChild(this.#errorDiv);
         const STYLE_ID = "alg-input-style";
         if (!document.querySelector(`style#${STYLE_ID}`)) {
             const style = document.createElement("style");
@@ -170,8 +170,8 @@ export class AlgInput extends HTMLElement {
             case "min-rows":
                 const calcMinHeight = () => {
                     let count = Number.parseInt(newValue);
-                    this.rowsRulerDiv.textContent = Array(count).fill("\n").join("");
-                    this.textInput.style.minHeight = this.rowsRulerDiv.clientHeight + "px";
+                    this.#rowsRulerDiv.textContent = Array(count).fill("\n").join("");
+                    this.#textInput.style.minHeight = this.#rowsRulerDiv.clientHeight + "px";
                 };
                 if (document.readyState !== "complete") {
                     window.addEventListener("load", calcMinHeight);
@@ -182,16 +182,16 @@ export class AlgInput extends HTMLElement {
                 break;
         }
     }
-    inputCallback = async (event) => {
+    #inputCallback = async (event) => {
         console.time("alg-input.oninput");
         event.preventDefault();
         const staticEditedRange = event.getTargetRanges()[0];
-        let input = this.textInput.textContent ?? "";
-        if (input === "" || (this.textInput.childNodes.length === 1 && this.textInput.firstChild?.textContent === "\n")) {
-            this.placeholderDiv.style.display = "";
+        let input = this.#textInput.textContent ?? "";
+        if (input === "" || (this.#textInput.childNodes.length === 1 && this.#textInput.firstChild?.textContent === "\n")) {
+            this.#placeholderDiv.style.display = "";
         }
         else {
-            this.placeholderDiv.style.display = "none";
+            this.#placeholderDiv.style.display = "none";
         }
         try {
             let startContainer = staticEditedRange.startContainer;
@@ -206,7 +206,7 @@ export class AlgInput extends HTMLElement {
             let text = event.data ?? "";
             switch (event.inputType) {
                 case "insertText": {
-                    if (startContainer === this.textInput) {
+                    if (startContainer === this.#textInput) {
                         let containerContent = startContainer.textContent ?? "";
                         containerContent =
                             containerContent.slice(0, staticEditedRange.startOffset) +
@@ -259,18 +259,18 @@ export class AlgInput extends HTMLElement {
                 }
                 case "insertParagraph": {
                     let shouldInsertTwo = true;
-                    for (const node of this.textInput.children) {
+                    for (const node of this.#textInput.children) {
                         if (node.tagName === "BR") {
                             shouldInsertTwo = false;
                             break;
                         }
                     }
-                    if (startContainer === this.textInput) {
+                    if (startContainer === this.#textInput) {
                         console.log(1);
                         if (shouldInsertTwo) {
-                            this.textInput.prepend(document.createElement("br"));
+                            this.#textInput.prepend(document.createElement("br"));
                         }
-                        this.textInput.prepend(document.createElement("br"));
+                        this.#textInput.prepend(document.createElement("br"));
                     }
                     else if (startContainer === endContainer) {
                         console.log(2);
@@ -280,10 +280,10 @@ export class AlgInput extends HTMLElement {
                         const copyContainer = startContainer.cloneNode();
                         startContainer.textContent = prefix;
                         copyContainer.textContent = suffix;
-                        this.textInput.insertBefore(copyContainer, startContainer.nextSibling);
-                        this.textInput.insertBefore(document.createElement("br"), startContainer.nextSibling);
+                        this.#textInput.insertBefore(copyContainer, startContainer.nextSibling);
+                        this.#textInput.insertBefore(document.createElement("br"), startContainer.nextSibling);
                         if (shouldInsertTwo) {
-                            this.textInput.insertBefore(document.createElement("br"), startContainer.nextSibling);
+                            this.#textInput.insertBefore(document.createElement("br"), startContainer.nextSibling);
                         }
                     }
                     else {
@@ -311,15 +311,15 @@ export class AlgInput extends HTMLElement {
                     console.error(`Unknown input type: '${event.inputType}'`);
             }
             selection.collapse(selectionNode, selectionOffset);
-            this.errorDiv.style.display = "";
+            this.#errorDiv.style.display = "";
         }
         catch (error) {
-            this.errorDiv.textContent = error;
-            this.errorDiv.style.display = "block";
+            this.#errorDiv.textContent = error;
+            this.#errorDiv.style.display = "block";
         }
         console.timeEnd("alg-input.oninput");
     };
-    styleSiGNTokens(tokens) {
+    #styleSiGNTokens(tokens) {
         let out = [];
         let prevContent = "";
         let prevClassName = "";

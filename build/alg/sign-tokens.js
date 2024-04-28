@@ -1,14 +1,14 @@
 export class CharacterInputStream {
-    input;
+    #input;
     pos = 0;
     line = 1;
     col = 0;
     constructor(input) {
-        this.input = input;
+        this.#input = input;
     }
-    get string() { return this.input; }
+    get string() { return this.#input; }
     next() {
-        let char = this.input.charAt(this.pos);
+        let char = this.#input.charAt(this.pos);
         this.pos++;
         if (char === "\n") {
             this.line++;
@@ -20,15 +20,15 @@ export class CharacterInputStream {
         return char;
     }
     peek() {
-        return this.input.charAt(this.pos);
+        return this.#input.charAt(this.pos);
     }
     skip(length) {
-        for (let i = 0; i < length && this.pos < this.input.length; i++) {
+        for (let i = 0; i < length && this.pos < this.#input.length; i++) {
             this.next();
         }
     }
     match(str) {
-        return this.input.substring(this.pos, this.pos + str.length) === str;
+        return this.#input.substring(this.pos, this.pos + str.length) === str;
     }
     eof() {
         return this.peek() === "";
@@ -39,7 +39,7 @@ export class CharacterInputStream {
 }
 export class SiGNTokenInputStream {
     input;
-    variableSet = new Set();
+    #variableSet = new Set();
     constructor(input) {
         this.input = new CharacterInputStream(input);
     }
@@ -186,7 +186,7 @@ export class SiGNTokenInputStream {
         }
         if (this.isVariable(char)) {
             const variable = this.peekVariable();
-            if (this.variableSet.has(variable)) {
+            if (this.#variableSet.has(variable)) {
                 this.input.skip(variable.length);
                 let amount = 1;
                 if (this.isNumber(this.input.peek())) {
@@ -210,7 +210,7 @@ export class SiGNTokenInputStream {
                     continue;
                 }
                 if (char === "=") {
-                    this.variableSet.add(variable);
+                    this.#variableSet.add(variable);
                     this.input.skip(variable.length);
                     return {
                         type: "variable",
