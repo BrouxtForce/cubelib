@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>FastLSE on Cubelib Documentation</title><link>https://example.org/docs/api/namespaces/fastlse/</link><description>Recent content in FastLSE on Cubelib Documentation</description><generator>Hugo</generator><language>en-us</language><atom:link href="https://example.org/docs/api/namespaces/fastlse/index.xml" rel="self" type="application/rss+xml"/><item><title>clearTable</title><link>https://example.org/docs/api/namespaces/fastlse/functions/cleartable/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://example.org/docs/api/namespaces/fastlse/functions/cleartable/</guid><description>API Reference • Docs
+API Reference / FastLSE / clearTable
+Function: clearTable() # clearTable(): void
+Returns # void
+Source # solver/fast-lse.ts:233</description></item><item><title>getRandomState</title><link>https://example.org/docs/api/namespaces/fastlse/functions/getrandomstate/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://example.org/docs/api/namespaces/fastlse/functions/getrandomstate/</guid><description>API Reference • Docs
+API Reference / FastLSE / getRandomState
+Function: getRandomState() # getRandomState(): LSEState
+Returns # LSEState
+Source # solver/fast-lse.ts:452</description></item><item><title>initTable</title><link>https://example.org/docs/api/namespaces/fastlse/functions/inittable/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://example.org/docs/api/namespaces/fastlse/functions/inittable/</guid><description>API Reference • Docs
+API Reference / FastLSE / initTable
+Function: initTable() # initTable(): void
+Returns # void
+Source # solver/fast-lse.ts:224</description></item><item><title>move</title><link>https://example.org/docs/api/namespaces/fastlse/functions/move/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://example.org/docs/api/namespaces/fastlse/functions/move/</guid><description>API Reference • Docs
+API Reference / FastLSE / move
+Function: move() # move(state, move): LSEState
+Parameters # • state: number
+• move: LSEMove
+Returns # LSEState
+Source # solver/fast-lse.ts:117</description></item><item><title>search</title><link>https://example.org/docs/api/namespaces/fastlse/functions/search/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://example.org/docs/api/namespaces/fastlse/functions/search/</guid><description>API Reference • Docs
+API Reference / FastLSE / search
+Function: search() # search(state, isSolved, depth, mMove, solution, solutions): void
+Parameters # • state: number
+• isSolved
+• depth: number
+• mMove: boolean
+• solution: number[]
+• solutions: string[]
+Returns # void
+Source # solver/fast-lse.ts:241</description></item><item><title>solve</title><link>https://example.org/docs/api/namespaces/fastlse/functions/solve/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://example.org/docs/api/namespaces/fastlse/functions/solve/</guid><description>API Reference • Docs
+API Reference / FastLSE / solve
+Function: solve() # solve(state, depth): string[]
+Parameters # • state: number
+• depth: number
+Returns # string[]
+Source # solver/fast-lse.ts:274</description></item><item><title>SOLVED_STATE</title><link>https://example.org/docs/api/namespaces/fastlse/variables/solved_state/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://example.org/docs/api/namespaces/fastlse/variables/solved_state/</guid><description>API Reference • Docs
+API Reference / FastLSE / SOLVED_STATE
+Variable: SOLVED_STATE # const SOLVED_STATE: LSEState = 0x543210
+Source # solver/fast-lse.ts:22</description></item><item><title>solveEOLR</title><link>https://example.org/docs/api/namespaces/fastlse/functions/solveeolr/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://example.org/docs/api/namespaces/fastlse/functions/solveeolr/</guid><description>API Reference • Docs
+API Reference / FastLSE / solveEOLR
+Function: solveEOLR() # solveEOLR(state, depth): string[]
+Parameters # • state: number
+• depth: number
+Returns # string[]
+Source # solver/fast-lse.ts:358</description></item><item><title>stateToString</title><link>https://example.org/docs/api/namespaces/fastlse/functions/statetostring/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://example.org/docs/api/namespaces/fastlse/functions/statetostring/</guid><description>API Reference • Docs
+API Reference / FastLSE / stateToString
+Function: stateToString() # stateToString(state): string
+Parameters # • state: number
+Returns # string
+Source # solver/fast-lse.ts:388</description></item><item><title>stringToLseMove</title><link>https://example.org/docs/api/namespaces/fastlse/functions/stringtolsemove/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://example.org/docs/api/namespaces/fastlse/functions/stringtolsemove/</guid><description>API Reference • Docs
+API Reference / FastLSE / stringToLseMove
+Function: stringToLseMove() # stringToLseMove(move): LSEMove
+Parameters # • move: string
+Returns # LSEMove
+Source # solver/fast-lse.ts:54</description></item></channel></rss>

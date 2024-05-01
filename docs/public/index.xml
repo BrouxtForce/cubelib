@@ -1,4 +1,232 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Cubelib Documentation</title><link>https://example.org/</link><description>Recent content on Cubelib Documentation</description><generator>Hugo</generator><language>en-us</language><atom:link href="https://example.org/index.xml" rel="self" type="application/rss+xml"/><item><title/><link>https://example.org/docs/puzzles/cube/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://example.org/docs/puzzles/cube/</guid><description>Cube # TODO</description></item><item><title/><link>https://example.org/docs/alg/notation/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://example.org/docs/alg/notation/</guid><description>Notation # This page covers all of the notation that this library currently supports, which mostly matches up with alg.cubing.net and alpha.twizzle.net.
 SiGN Notation # The standard notation that is used by the majority of the cubing community is what&amp;rsquo;s known as SiGN Notation.
 Basic Moves # The basic moves are as follows:
-The standard face turns, including U, L, F, B, R, and D Slice turns, including M, E, and S Rotations, including x, y, and z These turns will not be explained here, and if you need to brush up on any of the aforementioned turns, please refer to this (or this or this, for SiGN notation, but it doesn&amp;rsquo;t fully match with what I&amp;rsquo;m covering here).</description></item><item><title>CacheCube</title><link>https://example.org/docs/puzzles/cache-cube/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://example.org/docs/puzzles/cache-cube/</guid><description>CacheCube # TODO</description></item></channel></rss>
+The standard face turns, including U, L, F, B, R, and D Slice turns, including M, E, and S Rotations, including x, y, and z These turns will not be explained here, and if you need to brush up on any of the aforementioned turns, please refer to this (or this or this, for SiGN notation, but it doesn&amp;rsquo;t fully match with what I&amp;rsquo;m covering here).</description></item><item><title>Alg</title><link>https://example.org/docs/api/classes/alg/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://example.org/docs/api/classes/alg/</guid><description>API Reference • Docs
+API Reference / Alg
+Class: Alg # Implements # IAlgMoveNode Constructors # new Alg() # new Alg(nodes, amount, isGrouping): Alg
+Parameters # • nodes: AlgNode[]
+• amount: number= 1
+• isGrouping: boolean= false
+Returns # Alg
+Source # alg/alg.ts:51
+Properties # amount # amount: number
+Implementation of # IAlgMoveNode.amount
+Source # alg/alg.ts:49
+isGrouping # isGrouping: boolean
+Source # alg/alg.ts:47
+length # readonly length: number
+Implementation of # IAlgMoveNode.</description></item><item><title>AlgInput</title><link>https://example.org/docs/api/classes/alginput/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://example.org/docs/api/classes/alginput/</guid><description>API Reference • Docs
+API Reference / AlgInput
+Class: AlgInput # Extends # HTMLElement Constructors # new AlgInput() # new AlgInput(): AlgInput
+Returns # AlgInput
+Overrides # HTMLElement.constructor
+Source # templates/alg-input.ts:70
+Accessors # value # get value(): string
+set value(value): void
+Parameters # • value: string
+Returns # string
+Source # templates/alg-input.ts:93
+observedAttributes # get static observedAttributes(): string[]
+Returns # string[]
+Source # templates/alg-input.ts:191
+Methods # attributeChangedCallback() # attributeChangedCallback(name, oldValue, newValue): void</description></item><item><title>AlgTextarea</title><link>https://example.org/docs/api/classes/algtextarea/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://example.org/docs/api/classes/algtextarea/</guid><description>API Reference • Docs
+API Reference / AlgTextarea
+Class: AlgTextarea # Extends # HTMLElement Constructors # new AlgTextarea() # new AlgTextarea(): AlgTextarea
+Returns # AlgTextarea
+Overrides # HTMLElement.constructor
+Source # templates/alg-textarea.ts:10
+Accessors # value # get value(): string
+set value(value): void
+Parameters # • value: string
+Returns # string
+Source # templates/alg-textarea.ts:47
+observedAttributes # get static observedAttributes(): string[]
+Returns # string[]
+Source # templates/alg-textarea.ts:100
+Methods # attributeChangedCallback() # attributeChangedCallback(name, oldValue, newValue): void</description></item><item><title>CacheCube</title><link>https://example.org/docs/api/classes/cachecube/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://example.org/docs/api/classes/cachecube/</guid><description>API Reference • Docs
+API Reference / CacheCube
+Class: CacheCube # Constructors # new CacheCube() # new CacheCube(layerCount): CacheCube
+Parameters # • layerCount: number
+Returns # CacheCube
+Source # cube/cache-cube.ts:12
+Properties # cube # readonly cube: Cube
+Source # cube/cache-cube.ts:7
+layerCount # readonly layerCount: number
+Source # cube/cache-cube.ts:6
+stickersPerFace # readonly stickersPerFace: number
+Source # cube/cache-cube.ts:8
+Methods # execute() # execute(alg): void
+Parameters # • alg: Alg
+Returns # void</description></item><item><title>CacheCube</title><link>https://example.org/docs/puzzles/cache-cube/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://example.org/docs/puzzles/cache-cube/</guid><description>CacheCube # TODO</description></item><item><title>clearTable</title><link>https://example.org/docs/api/namespaces/fastlse/functions/cleartable/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://example.org/docs/api/namespaces/fastlse/functions/cleartable/</guid><description>API Reference • Docs
+API Reference / FastLSE / clearTable
+Function: clearTable() # clearTable(): void
+Returns # void
+Source # solver/fast-lse.ts:233</description></item><item><title>Comment</title><link>https://example.org/docs/api/classes/comment/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://example.org/docs/api/classes/comment/</guid><description>API Reference • Docs
+API Reference / Comment
+Class: Comment # Implements # IAlgNonMoveNode Constructors # new Comment() # new Comment(comment, commentType): Comment
+Parameters # • comment: string
+• commentType: &amp;quot;lineComment&amp;quot; | &amp;quot;blockComment&amp;quot;
+Returns # Comment
+Source # alg/comment.ts:9
+Properties # commentType # commentType: &amp;quot;lineComment&amp;quot; | &amp;quot;blockComment&amp;quot;
+Source # alg/comment.ts:7
+type # readonly type: &amp;quot;Comment&amp;quot;
+Implementation of # IAlgNonMoveNode.type
+Source # alg/comment.ts:4
+value # value: string
+Source # alg/comment.ts:6
+Methods # copy() # copy(): Comment</description></item><item><title>Commutator</title><link>https://example.org/docs/api/classes/commutator/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://example.org/docs/api/classes/commutator/</guid><description>API Reference • Docs
+API Reference / Commutator
+Class: Commutator # Implements # IAlgMoveNode Constructors # new Commutator() # new Commutator(algA, algB, amount, isGrouping): Commutator
+Parameters # • algA: Alg
+• algB: Alg
+• amount: number= 1
+• isGrouping: boolean= true
+Returns # Commutator
+Source # alg/commutator.ts:18
+Properties # algA # algA: Alg
+Source # alg/commutator.ts:9
+algB # algB: Alg
+Source # alg/commutator.ts:10
+amount # amount: number
+Implementation of # IAlgMoveNode.</description></item><item><title>Conjugate</title><link>https://example.org/docs/api/classes/conjugate/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://example.org/docs/api/classes/conjugate/</guid><description>API Reference • Docs
+API Reference / Conjugate
+Class: Conjugate # Implements # IAlgMoveNode Constructors # new Conjugate() # new Conjugate(algA, algB, amount, isGrouping): Conjugate
+Parameters # • algA: Alg
+• algB: Alg
+• amount: number= 1
+• isGrouping: boolean= true
+Returns # Conjugate
+Source # alg/conjugate.ts:18
+Properties # algA # algA: Alg
+Source # alg/conjugate.ts:9
+algB # algB: Alg
+Source # alg/conjugate.ts:10
+amount # amount: number
+Implementation of # IAlgMoveNode.</description></item><item><title>Cube</title><link>https://example.org/docs/api/classes/cube/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://example.org/docs/api/classes/cube/</guid><description>API Reference • Docs
+API Reference / Cube
+Class: Cube # Constructors # new Cube() # new Cube(layerCount): Cube
+Parameters # • layerCount: number
+Returns # Cube
+Source # cube/cube.ts:72
+Properties # stickers # stickers: Face[][]
+Source # cube/cube.ts:70
+Methods # execute() # execute(alg): void
+Parameters # • alg: AlgMoveNode
+Returns # void
+Source # cube/cube.ts:806
+executeUntil() # executeUntil(alg, numMoves): null | Move
+Parameters # • alg: AlgMoveNode
+• numMoves: number</description></item><item><title>getRandomState</title><link>https://example.org/docs/api/namespaces/fastlse/functions/getrandomstate/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://example.org/docs/api/namespaces/fastlse/functions/getrandomstate/</guid><description>API Reference • Docs
+API Reference / FastLSE / getRandomState
+Function: getRandomState() # getRandomState(): LSEState
+Returns # LSEState
+Source # solver/fast-lse.ts:452</description></item><item><title>initTable</title><link>https://example.org/docs/api/namespaces/fastlse/functions/inittable/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://example.org/docs/api/namespaces/fastlse/functions/inittable/</guid><description>API Reference • Docs
+API Reference / FastLSE / initTable
+Function: initTable() # initTable(): void
+Returns # void
+Source # solver/fast-lse.ts:224</description></item><item><title>move</title><link>https://example.org/docs/api/namespaces/fastlse/functions/move/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://example.org/docs/api/namespaces/fastlse/functions/move/</guid><description>API Reference • Docs
+API Reference / FastLSE / move
+Function: move() # move(state, move): LSEState
+Parameters # • state: number
+• move: LSEMove
+Returns # LSEState
+Source # solver/fast-lse.ts:117</description></item><item><title>Move</title><link>https://example.org/docs/api/classes/move/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://example.org/docs/api/classes/move/</guid><description>API Reference • Docs
+API Reference / Move
+Class: Move # Implements # IAlgMoveNode Constructors # new Move() # new Move(face, shallow, deep, amount): Move
+Parameters # • face: string
+• shallow: number
+• deep: number
+• amount: number
+Returns # Move
+Source # alg/move.ts:16
+Properties # amount # amount: number
+Implementation of # IAlgMoveNode.amount
+Source # alg/move.ts:12
+deep # deep: number = 1
+Source # alg/move.ts:11
+face # face: string</description></item><item><title>NxNDrawer</title><link>https://example.org/docs/api/classes/nxndrawer/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://example.org/docs/api/classes/nxndrawer/</guid><description>API Reference • Docs
+API Reference / NxNDrawer
+Class: NxNDrawer # Constructors # new NxNDrawer() # new NxNDrawer(canvas, layerCount): NxNDrawer
+Parameters # • canvas: HTMLCanvasElement
+• layerCount: number
+Returns # NxNDrawer
+Source # graphics/webgpu/nxn-drawer.ts:24
+Properties # layerCount # readonly layerCount: number
+Source # graphics/webgpu/nxn-drawer.ts:9
+Methods # animateMove() # animateMove(move, t): void
+Parameters # • move: Move
+• t: number
+Returns # void
+Source # graphics/webgpu/nxn-drawer.ts:117
+clearAnimation() # clearAnimation(): void
+Returns # void</description></item><item><title>PuzzleViewer</title><link>https://example.org/docs/api/classes/puzzleviewer/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://example.org/docs/api/classes/puzzleviewer/</guid><description>API Reference • Docs
+API Reference / PuzzleViewer
+Class: PuzzleViewer # Extends # HTMLElement Constructors # new PuzzleViewer() # new PuzzleViewer(): PuzzleViewer
+Returns # PuzzleViewer
+Overrides # HTMLElement.constructor
+Source # templates/puzzle-viewer.ts:30
+Properties # alg # alg: Alg
+Source # templates/puzzle-viewer.ts:8
+cube # cube: Cube
+Source # templates/puzzle-viewer.ts:7
+ease() # ease: (t) =&amp;gt; number
+Parameters # • t: number
+Returns # number
+Source # templates/puzzle-viewer.ts:10
+Accessors # observedAttributes # get static observedAttributes(): string[]</description></item><item><title>randomMove</title><link>https://example.org/docs/api/namespaces/scramble/functions/randommove/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://example.org/docs/api/namespaces/scramble/functions/randommove/</guid><description>API Reference • Docs
+API Reference / Scramble / randomMove
+Function: randomMove() # randomMove(puzzleSize, moveCount?): string
+Parameters # • puzzleSize: number
+• moveCount?: number
+Returns # string
+Source # scramble.ts:18</description></item><item><title>search</title><link>https://example.org/docs/api/namespaces/fastlse/functions/search/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://example.org/docs/api/namespaces/fastlse/functions/search/</guid><description>API Reference • Docs
+API Reference / FastLSE / search
+Function: search() # search(state, isSolved, depth, mMove, solution, solutions): void
+Parameters # • state: number
+• isSolved
+• depth: number
+• mMove: boolean
+• solution: number[]
+• solutions: string[]
+Returns # void
+Source # solver/fast-lse.ts:241</description></item><item><title>solve</title><link>https://example.org/docs/api/namespaces/fastlse/functions/solve/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://example.org/docs/api/namespaces/fastlse/functions/solve/</guid><description>API Reference • Docs
+API Reference / FastLSE / solve
+Function: solve() # solve(state, depth): string[]
+Parameters # • state: number
+• depth: number
+Returns # string[]
+Source # solver/fast-lse.ts:274</description></item><item><title>SOLVED_STATE</title><link>https://example.org/docs/api/namespaces/fastlse/variables/solved_state/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://example.org/docs/api/namespaces/fastlse/variables/solved_state/</guid><description>API Reference • Docs
+API Reference / FastLSE / SOLVED_STATE
+Variable: SOLVED_STATE # const SOLVED_STATE: LSEState = 0x543210
+Source # solver/fast-lse.ts:22</description></item><item><title>solveEOLR</title><link>https://example.org/docs/api/namespaces/fastlse/functions/solveeolr/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://example.org/docs/api/namespaces/fastlse/functions/solveeolr/</guid><description>API Reference • Docs
+API Reference / FastLSE / solveEOLR
+Function: solveEOLR() # solveEOLR(state, depth): string[]
+Parameters # • state: number
+• depth: number
+Returns # string[]
+Source # solver/fast-lse.ts:358</description></item><item><title>stateToString</title><link>https://example.org/docs/api/namespaces/fastlse/functions/statetostring/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://example.org/docs/api/namespaces/fastlse/functions/statetostring/</guid><description>API Reference • Docs
+API Reference / FastLSE / stateToString
+Function: stateToString() # stateToString(state): string
+Parameters # • state: number
+Returns # string
+Source # solver/fast-lse.ts:388</description></item><item><title>stringToLseMove</title><link>https://example.org/docs/api/namespaces/fastlse/functions/stringtolsemove/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://example.org/docs/api/namespaces/fastlse/functions/stringtolsemove/</guid><description>API Reference • Docs
+API Reference / FastLSE / stringToLseMove
+Function: stringToLseMove() # stringToLseMove(move): LSEMove
+Parameters # • move: string
+Returns # LSEMove
+Source # solver/fast-lse.ts:54</description></item><item><title>Whitespace</title><link>https://example.org/docs/api/classes/whitespace/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://example.org/docs/api/classes/whitespace/</guid><description>API Reference • Docs
+API Reference / Whitespace
+Class: Whitespace # Implements # IAlgNonMoveNode Constructors # new Whitespace() # new Whitespace(whitespace): Whitespace
+Parameters # • whitespace: string
+Returns # Whitespace
+Source # alg/whitespace.ts:8
+Properties # type # readonly type: &amp;quot;Whitespace&amp;quot;
+Implementation of # IAlgNonMoveNode.type
+Source # alg/whitespace.ts:4
+value # value: string
+Source # alg/whitespace.ts:6
+Methods # copy() # copy(): Whitespace
+Returns # Whitespace
+Implementation of # IAlgNonMoveNode.copy
+Source # alg/whitespace.ts:12</description></item></channel></rss>

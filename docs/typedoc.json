@@ -1,0 +1,10 @@
+{
+    "name": "API Reference",
+    "entryPoints": ["../src/index.ts"],
+    "out": "./content/docs/api",
+    "plugin": ["typedoc-plugin-markdown"],
+    "excludePrivate": true,
+    "excludeExternals": true,
+    "excludeInternal": true,
+    "publicPath": "/docs/api"
+}

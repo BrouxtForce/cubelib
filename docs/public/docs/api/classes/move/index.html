@@ -1,0 +1,105 @@
+<!doctype html><html lang=en-us dir=ltr><head><meta charset=UTF-8><meta name=viewport content="width=device-width,initial-scale=1"><meta name=description content="API Reference • Docs
+API Reference / Move
+Class: Move # Implements # IAlgMoveNode Constructors # new Move() # new Move(face, shallow, deep, amount): Move
+Parameters # • face: string
+• shallow: number
+• deep: number
+• amount: number
+Returns # Move
+Source # alg/move.ts:16
+Properties # amount # amount: number
+Implementation of # IAlgMoveNode.amount
+Source # alg/move.ts:12
+deep # deep: number = 1
+Source # alg/move.ts:11
+face # face: string"><meta name=theme-color media="(prefers-color-scheme: light)" content="#ffffff"><meta name=theme-color media="(prefers-color-scheme: dark)" content="#343a40"><meta name=color-scheme content="light dark"><meta property="og:url" content="https://example.org/docs/api/classes/move/"><meta property="og:site_name" content="Cubelib Documentation"><meta property="og:title" content="Move"><meta property="og:description" content="API Reference • Docs
+API Reference / Move
+Class: Move # Implements # IAlgMoveNode Constructors # new Move() # new Move(face, shallow, deep, amount): Move
+Parameters # • face: string
+• shallow: number
+• deep: number
+• amount: number
+Returns # Move
+Source # alg/move.ts:16
+Properties # amount # amount: number
+Implementation of # IAlgMoveNode.amount
+Source # alg/move.ts:12
+deep # deep: number = 1
+Source # alg/move.ts:11
+face # face: string"><meta property="og:locale" content="en-us"><meta property="og:type" content="article"><meta property="article:section" content="docs"><title>Move | Cubelib Documentation</title>
+<link rel=manifest href=/manifest.json><link rel=icon href=/favicon.png><link rel=canonical href=https://example.org/docs/api/classes/move/><link rel=stylesheet href=/book.min.309b7ed028807cdb68d8d61e26d609f48369c098dbf5e4d8c0dcf4cdf49feafc.css integrity="sha256-MJt+0CiAfNto2NYeJtYJ9INpwJjb9eTYwNz0zfSf6vw=" crossorigin=anonymous></head><body dir=ltr><input type=checkbox class="hidden toggle" id=menu-control>
+<input type=checkbox class="hidden toggle" id=toc-control><main class="container flex"><aside class=book-menu><div class=book-menu-content><nav><h2 class=book-brand><a class="flex align-center" href=/><span>Cubelib Documentation</span></a></h2><ul><li><a href=/docs/alg/>Alg</a><ul><li><a href=/docs/alg/notation/>Notation</a></li></ul></li><li><a href=/docs/puzzles/>Puzzles</a><ul><li><a href=/docs/puzzles/cube/>Cube</a></li><li><a href=/docs/puzzles/cache-cube/>CacheCube</a></li></ul></li><li><a href=/docs/api/>API Reference</a><ul><li><a href=/docs/api/classes/alg/>Alg</a></li><li><a href=/docs/api/classes/alginput/>AlgInput</a></li><li><a href=/docs/api/classes/algtextarea/>AlgTextarea</a></li><li><a href=/docs/api/classes/cachecube/>CacheCube</a></li><li><a href=/docs/api/classes/comment/>Comment</a></li><li><a href=/docs/api/classes/commutator/>Commutator</a></li><li><a href=/docs/api/classes/conjugate/>Conjugate</a></li><li><a href=/docs/api/classes/cube/>Cube</a></li><li><a href=/docs/api/namespaces/fastlse/>FastLSE</a><ul><li><a href=/docs/api/namespaces/fastlse/functions/cleartable/>clearTable</a></li><li><a href=/docs/api/namespaces/fastlse/functions/getrandomstate/>getRandomState</a></li><li><a href=/docs/api/namespaces/fastlse/functions/inittable/>initTable</a></li><li><a href=/docs/api/namespaces/fastlse/functions/move/>move</a></li><li><a href=/docs/api/namespaces/fastlse/functions/search/>search</a></li><li><a href=/docs/api/namespaces/fastlse/functions/solve/>solve</a></li><li><a href=/docs/api/namespaces/fastlse/variables/solved_state/>SOLVED_STATE</a></li><li><a href=/docs/api/namespaces/fastlse/functions/solveeolr/>solveEOLR</a></li><li><a href=/docs/api/namespaces/fastlse/functions/statetostring/>stateToString</a></li><li><a href=/docs/api/namespaces/fastlse/functions/stringtolsemove/>stringToLseMove</a></li></ul></li><li><a href=/docs/api/classes/move/ class=active>Move</a></li><li><a href=/docs/api/classes/nxndrawer/>NxNDrawer</a></li><li><a href=/docs/api/classes/puzzleviewer/>PuzzleViewer</a></li><li><a href=/docs/api/namespaces/scramble/>Scramble</a><ul><li><a href=/docs/api/namespaces/scramble/functions/randommove/>randomMove</a></li></ul></li><li><a href=/docs/api/classes/whitespace/>Whitespace</a></li></ul></li></ul></nav><script>(function(){var e=document.querySelector("aside .book-menu-content");addEventListener("beforeunload",function(){localStorage.setItem("menu.scrollTop",e.scrollTop)}),e.scrollTop=localStorage.getItem("menu.scrollTop")})()</script></div></aside><div class=book-page><header class=book-header><div class="flex align-center justify-between"><label for=menu-control><img src=/svg/menu.svg class=book-icon alt=Menu>
+</label><strong>Move</strong>
+<label for=toc-control><img src=/svg/toc.svg class=book-icon alt="Table of Contents"></label></div><aside class="hidden clearfix"><nav id=TableOfContents><ul><li><a href=#implements>Implements</a></li><li><a href=#constructors>Constructors</a><ul><li><a href=#new-move>new Move()</a></li></ul></li><li><a href=#properties>Properties</a><ul><li><a href=#amount>amount</a></li><li><a href=#deep>deep</a></li><li><a href=#face>face</a></li><li><a href=#length>length</a></li><li><a href=#shallow>shallow</a></li><li><a href=#type>type</a></li></ul></li><li><a href=#methods>Methods</a><ul><li><a href=#iterator><code>[iterator]</code>()</a></li><li><a href=#copy>copy()</a></li><li><a href=#equal>equal()</a></li><li><a href=#expanded>expanded()</a></li><li><a href=#expandedmoves>expandedMoves()</a></li><li><a href=#forward>forward()</a></li><li><a href=#invert>invert()</a></li><li><a href=#reverse>reverse()</a></li><li><a href=#simplify>simplify()</a></li><li><a href=#tostring>toString()</a></li><li><a href=#fromstring>fromString()</a></li></ul></li></ul></nav></aside></header><article class="markdown book-article"><p><a href=/docs/api/>API Reference</a> • Docs</p><hr><p><a href=/docs/api/>API Reference</a> / Move</p><h1 id=class-move>Class: Move
+<a class=anchor href=#class-move>#</a></h1><h2 id=implements>Implements
+<a class=anchor href=#implements>#</a></h2><ul><li><code>IAlgMoveNode</code></li></ul><h2 id=constructors>Constructors
+<a class=anchor href=#constructors>#</a></h2><h3 id=new-move>new Move()
+<a class=anchor href=#new-move>#</a></h3><blockquote><p><strong>new Move</strong>(<code>face</code>, <code>shallow</code>, <code>deep</code>, <code>amount</code>): <a href=/docs/api/classes/Move><code>Move</code></a></p></blockquote><h4 id=parameters>Parameters
+<a class=anchor href=#parameters>#</a></h4><p>• <strong>face</strong>: <code>string</code></p><p>• <strong>shallow</strong>: <code>number</code></p><p>• <strong>deep</strong>: <code>number</code></p><p>• <strong>amount</strong>: <code>number</code></p><h4 id=returns>Returns
+<a class=anchor href=#returns>#</a></h4><p><a href=/docs/api/classes/Move><code>Move</code></a></p><h4 id=source>Source
+<a class=anchor href=#source>#</a></h4><p><a href=https://github.com/BrouxtForce/cubelib/blob/72117884834c9a330d7870c13642ec7c97dbc128/src/alg/move.ts#L16>alg/move.ts:16</a></p><h2 id=properties>Properties
+<a class=anchor href=#properties>#</a></h2><h3 id=amount>amount
+<a class=anchor href=#amount>#</a></h3><blockquote><p><strong>amount</strong>: <code>number</code></p></blockquote><h4 id=implementation-of>Implementation of
+<a class=anchor href=#implementation-of>#</a></h4><p><code>IAlgMoveNode.amount</code></p><h4 id=source-1>Source
+<a class=anchor href=#source-1>#</a></h4><p><a href=https://github.com/BrouxtForce/cubelib/blob/72117884834c9a330d7870c13642ec7c97dbc128/src/alg/move.ts#L12>alg/move.ts:12</a></p><hr><h3 id=deep>deep
+<a class=anchor href=#deep>#</a></h3><blockquote><p><strong>deep</strong>: <code>number</code> = <code>1</code></p></blockquote><h4 id=source-2>Source
+<a class=anchor href=#source-2>#</a></h4><p><a href=https://github.com/BrouxtForce/cubelib/blob/72117884834c9a330d7870c13642ec7c97dbc128/src/alg/move.ts#L11>alg/move.ts:11</a></p><hr><h3 id=face>face
+<a class=anchor href=#face>#</a></h3><blockquote><p><strong>face</strong>: <code>string</code></p></blockquote><h4 id=source-3>Source
+<a class=anchor href=#source-3>#</a></h4><p><a href=https://github.com/BrouxtForce/cubelib/blob/72117884834c9a330d7870c13642ec7c97dbc128/src/alg/move.ts#L9>alg/move.ts:9</a></p><hr><h3 id=length>length
+<a class=anchor href=#length>#</a></h3><blockquote><p><code>readonly</code> <strong>length</strong>: <code>number</code> = <code>1</code></p></blockquote><h4 id=implementation-of-1>Implementation of
+<a class=anchor href=#implementation-of-1>#</a></h4><p><code>IAlgMoveNode.length</code></p><h4 id=source-4>Source
+<a class=anchor href=#source-4>#</a></h4><p><a href=https://github.com/BrouxtForce/cubelib/blob/72117884834c9a330d7870c13642ec7c97dbc128/src/alg/move.ts#L14>alg/move.ts:14</a></p><hr><h3 id=shallow>shallow
+<a class=anchor href=#shallow>#</a></h3><blockquote><p><strong>shallow</strong>: <code>number</code> = <code>1</code></p></blockquote><h4 id=source-5>Source
+<a class=anchor href=#source-5>#</a></h4><p><a href=https://github.com/BrouxtForce/cubelib/blob/72117884834c9a330d7870c13642ec7c97dbc128/src/alg/move.ts#L10>alg/move.ts:10</a></p><hr><h3 id=type>type
+<a class=anchor href=#type>#</a></h3><blockquote><p><code>readonly</code> <strong>type</strong>: <code>"Move"</code></p></blockquote><h4 id=implementation-of-2>Implementation of
+<a class=anchor href=#implementation-of-2>#</a></h4><p><code>IAlgMoveNode.type</code></p><h4 id=source-6>Source
+<a class=anchor href=#source-6>#</a></h4><p><a href=https://github.com/BrouxtForce/cubelib/blob/72117884834c9a330d7870c13642ec7c97dbc128/src/alg/move.ts#L7>alg/move.ts:7</a></p><h2 id=methods>Methods
+<a class=anchor href=#methods>#</a></h2><h3 id=iterator><code>[iterator]</code>()
+<a class=anchor href=#iterator>#</a></h3><blockquote><p><strong>[iterator]</strong>(): <code>MoveIterator</code></p></blockquote><h4 id=returns-1>Returns
+<a class=anchor href=#returns-1>#</a></h4><p><code>MoveIterator</code></p><h4 id=implementation-of-3>Implementation of
+<a class=anchor href=#implementation-of-3>#</a></h4><p><code>IAlgMoveNode.[iterator]</code></p><h4 id=source-7>Source
+<a class=anchor href=#source-7>#</a></h4><p><a href=https://github.com/BrouxtForce/cubelib/blob/72117884834c9a330d7870c13642ec7c97dbc128/src/alg/move.ts#L189>alg/move.ts:189</a></p><hr><h3 id=copy>copy()
+<a class=anchor href=#copy>#</a></h3><blockquote><p><strong>copy</strong>(): <a href=/docs/api/classes/Move><code>Move</code></a></p></blockquote><h4 id=returns-2>Returns
+<a class=anchor href=#returns-2>#</a></h4><p><a href=/docs/api/classes/Move><code>Move</code></a></p><h4 id=implementation-of-4>Implementation of
+<a class=anchor href=#implementation-of-4>#</a></h4><p><code>IAlgMoveNode.copy</code></p><h4 id=source-8>Source
+<a class=anchor href=#source-8>#</a></h4><p><a href=https://github.com/BrouxtForce/cubelib/blob/72117884834c9a330d7870c13642ec7c97dbc128/src/alg/move.ts#L104>alg/move.ts:104</a></p><hr><h3 id=equal>equal()
+<a class=anchor href=#equal>#</a></h3><blockquote><p><strong>equal</strong>(<code>move</code>): <code>boolean</code></p></blockquote><h4 id=parameters-1>Parameters
+<a class=anchor href=#parameters-1>#</a></h4><p>• <strong>move</strong>: <a href=/docs/api/classes/Move><code>Move</code></a></p><h4 id=returns-3>Returns
+<a class=anchor href=#returns-3>#</a></h4><p><code>boolean</code></p><h4 id=source-9>Source
+<a class=anchor href=#source-9>#</a></h4><p><a href=https://github.com/BrouxtForce/cubelib/blob/72117884834c9a330d7870c13642ec7c97dbc128/src/alg/move.ts#L176>alg/move.ts:176</a></p><hr><h3 id=expanded>expanded()
+<a class=anchor href=#expanded>#</a></h3><blockquote><p><strong>expanded</strong>(): <a href=/docs/api/classes/Move><code>Move</code></a>[]</p></blockquote><h4 id=returns-4>Returns
+<a class=anchor href=#returns-4>#</a></h4><p><a href=/docs/api/classes/Move><code>Move</code></a>[]</p><h4 id=implementation-of-5>Implementation of
+<a class=anchor href=#implementation-of-5>#</a></h4><p><code>IAlgMoveNode.expanded</code></p><h4 id=source-10>Source
+<a class=anchor href=#source-10>#</a></h4><p><a href=https://github.com/BrouxtForce/cubelib/blob/72117884834c9a330d7870c13642ec7c97dbc128/src/alg/move.ts#L108>alg/move.ts:108</a></p><hr><h3 id=expandedmoves>expandedMoves()
+<a class=anchor href=#expandedmoves>#</a></h3><blockquote><p><strong>expandedMoves</strong>(): <a href=/docs/api/classes/Move><code>Move</code></a>[]</p></blockquote><h4 id=returns-5>Returns
+<a class=anchor href=#returns-5>#</a></h4><p><a href=/docs/api/classes/Move><code>Move</code></a>[]</p><h4 id=implementation-of-6>Implementation of
+<a class=anchor href=#implementation-of-6>#</a></h4><p><code>IAlgMoveNode.expandedMoves</code></p><h4 id=source-11>Source
+<a class=anchor href=#source-11>#</a></h4><p><a href=https://github.com/BrouxtForce/cubelib/blob/72117884834c9a330d7870c13642ec7c97dbc128/src/alg/move.ts#L112>alg/move.ts:112</a></p><hr><h3 id=forward>forward()
+<a class=anchor href=#forward>#</a></h3><blockquote><p><strong>forward</strong>(): <code>object</code></p></blockquote><h4 id=returns-6>Returns
+<a class=anchor href=#returns-6>#</a></h4><p><code>object</code></p><h5 id=iterator-1><a href>iterator</a>
+<a class=anchor href=#iterator-1>#</a></h5><blockquote><p><strong>[iterator]</strong>: () => <code>MoveIterator</code></p></blockquote><h6 id=returns-7>Returns
+<a class=anchor href=#returns-7>#</a></h6><p><code>MoveIterator</code></p><h4 id=implementation-of-7>Implementation of
+<a class=anchor href=#implementation-of-7>#</a></h4><p><code>IAlgMoveNode.forward</code></p><h4 id=source-12>Source
+<a class=anchor href=#source-12>#</a></h4><p><a href=https://github.com/BrouxtForce/cubelib/blob/72117884834c9a330d7870c13642ec7c97dbc128/src/alg/move.ts#L183>alg/move.ts:183</a></p><hr><h3 id=invert>invert()
+<a class=anchor href=#invert>#</a></h3><blockquote><p><strong>invert</strong>(): <a href=/docs/api/classes/Move><code>Move</code></a></p></blockquote><h4 id=returns-8>Returns
+<a class=anchor href=#returns-8>#</a></h4><p><a href=/docs/api/classes/Move><code>Move</code></a></p><h4 id=implementation-of-8>Implementation of
+<a class=anchor href=#implementation-of-8>#</a></h4><p><code>IAlgMoveNode.invert</code></p><h4 id=source-13>Source
+<a class=anchor href=#source-13>#</a></h4><p><a href=https://github.com/BrouxtForce/cubelib/blob/72117884834c9a330d7870c13642ec7c97dbc128/src/alg/move.ts#L116>alg/move.ts:116</a></p><hr><h3 id=reverse>reverse()
+<a class=anchor href=#reverse>#</a></h3><blockquote><p><strong>reverse</strong>(): <code>object</code></p></blockquote><h4 id=returns-9>Returns
+<a class=anchor href=#returns-9>#</a></h4><p><code>object</code></p><h5 id=iterator-2><a href>iterator</a>
+<a class=anchor href=#iterator-2>#</a></h5><blockquote><p><strong>[iterator]</strong>: () => <code>MoveIterator</code></p></blockquote><h6 id=returns-10>Returns
+<a class=anchor href=#returns-10>#</a></h6><p><code>MoveIterator</code></p><h4 id=implementation-of-9>Implementation of
+<a class=anchor href=#implementation-of-9>#</a></h4><p><code>IAlgMoveNode.reverse</code></p><h4 id=source-14>Source
+<a class=anchor href=#source-14>#</a></h4><p><a href=https://github.com/BrouxtForce/cubelib/blob/72117884834c9a330d7870c13642ec7c97dbc128/src/alg/move.ts#L186>alg/move.ts:186</a></p><hr><h3 id=simplify>simplify()
+<a class=anchor href=#simplify>#</a></h3><blockquote><p><strong>simplify</strong>(): <code>IAlgMoveNode</code></p></blockquote><h4 id=returns-11>Returns
+<a class=anchor href=#returns-11>#</a></h4><p><code>IAlgMoveNode</code></p><h4 id=implementation-of-10>Implementation of
+<a class=anchor href=#implementation-of-10>#</a></h4><p><code>IAlgMoveNode.simplify</code></p><h4 id=source-15>Source
+<a class=anchor href=#source-15>#</a></h4><p><a href=https://github.com/BrouxtForce/cubelib/blob/72117884834c9a330d7870c13642ec7c97dbc128/src/alg/move.ts#L166>alg/move.ts:166</a></p><hr><h3 id=tostring>toString()
+<a class=anchor href=#tostring>#</a></h3><blockquote><p><strong>toString</strong>(): <code>string</code></p></blockquote><h4 id=returns-12>Returns
+<a class=anchor href=#returns-12>#</a></h4><p><code>string</code></p><h4 id=implementation-of-11>Implementation of
+<a class=anchor href=#implementation-of-11>#</a></h4><p><code>IAlgMoveNode.toString</code></p><h4 id=source-16>Source
+<a class=anchor href=#source-16>#</a></h4><p><a href=https://github.com/BrouxtForce/cubelib/blob/72117884834c9a330d7870c13642ec7c97dbc128/src/alg/move.ts#L121>alg/move.ts:121</a></p><hr><h3 id=fromstring>fromString()
+<a class=anchor href=#fromstring>#</a></h3><blockquote><p><code>static</code> <strong>fromString</strong>(<code>moveString</code>): <a href=/docs/api/classes/Move><code>Move</code></a></p></blockquote><h4 id=parameters-2>Parameters
+<a class=anchor href=#parameters-2>#</a></h4><p>• <strong>moveString</strong>: <code>string</code></p><h4 id=returns-13>Returns
+<a class=anchor href=#returns-13>#</a></h4><p><a href=/docs/api/classes/Move><code>Move</code></a></p><h4 id=source-17>Source
+<a class=anchor href=#source-17>#</a></h4><p><a href=https://github.com/BrouxtForce/cubelib/blob/72117884834c9a330d7870c13642ec7c97dbc128/src/alg/move.ts#L25>alg/move.ts:25</a></p></article><footer class=book-footer><div class="flex flex-wrap justify-between"></div><script>(function(){function e(e){const t=window.getSelection(),n=document.createRange();n.selectNodeContents(e),t.removeAllRanges(),t.addRange(n)}document.querySelectorAll("pre code").forEach(t=>{t.addEventListener("click",function(){if(window.getSelection().toString())return;e(t.parentElement),navigator.clipboard&&navigator.clipboard.writeText(t.parentElement.textContent)})})})()</script></footer><div class=book-comments></div><label for=menu-control class="hidden book-menu-overlay"></label></div><aside class=book-toc><div class=book-toc-content><nav id=TableOfContents><ul><li><a href=#implements>Implements</a></li><li><a href=#constructors>Constructors</a><ul><li><a href=#new-move>new Move()</a></li></ul></li><li><a href=#properties>Properties</a><ul><li><a href=#amount>amount</a></li><li><a href=#deep>deep</a></li><li><a href=#face>face</a></li><li><a href=#length>length</a></li><li><a href=#shallow>shallow</a></li><li><a href=#type>type</a></li></ul></li><li><a href=#methods>Methods</a><ul><li><a href=#iterator><code>[iterator]</code>()</a></li><li><a href=#copy>copy()</a></li><li><a href=#equal>equal()</a></li><li><a href=#expanded>expanded()</a></li><li><a href=#expandedmoves>expandedMoves()</a></li><li><a href=#forward>forward()</a></li><li><a href=#invert>invert()</a></li><li><a href=#reverse>reverse()</a></li><li><a href=#simplify>simplify()</a></li><li><a href=#tostring>toString()</a></li><li><a href=#fromstring>fromString()</a></li></ul></li></ul></nav></div></aside></main></body></html>

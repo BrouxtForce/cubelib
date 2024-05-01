@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>API Reference on Cubelib Documentation</title><link>https://example.org/docs/api/</link><description>Recent content in API Reference on Cubelib Documentation</description><generator>Hugo</generator><language>en-us</language><atom:link href="https://example.org/docs/api/index.xml" rel="self" type="application/rss+xml"/><item><title>Alg</title><link>https://example.org/docs/api/classes/alg/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://example.org/docs/api/classes/alg/</guid><description>API Reference • Docs
+API Reference / Alg
+Class: Alg # Implements # IAlgMoveNode Constructors # new Alg() # new Alg(nodes, amount, isGrouping): Alg
+Parameters # • nodes: AlgNode[]
+• amount: number= 1
+• isGrouping: boolean= false
+Returns # Alg
+Source # alg/alg.ts:51
+Properties # amount # amount: number
+Implementation of # IAlgMoveNode.amount
+Source # alg/alg.ts:49
+isGrouping # isGrouping: boolean
+Source # alg/alg.ts:47
+length # readonly length: number
+Implementation of # IAlgMoveNode.</description></item><item><title>AlgInput</title><link>https://example.org/docs/api/classes/alginput/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://example.org/docs/api/classes/alginput/</guid><description>API Reference • Docs
+API Reference / AlgInput
+Class: AlgInput # Extends # HTMLElement Constructors # new AlgInput() # new AlgInput(): AlgInput
+Returns # AlgInput
+Overrides # HTMLElement.constructor
+Source # templates/alg-input.ts:70
+Accessors # value # get value(): string
+set value(value): void
+Parameters # • value: string
+Returns # string
+Source # templates/alg-input.ts:93
+observedAttributes # get static observedAttributes(): string[]
+Returns # string[]
+Source # templates/alg-input.ts:191
+Methods # attributeChangedCallback() # attributeChangedCallback(name, oldValue, newValue): void</description></item><item><title>AlgTextarea</title><link>https://example.org/docs/api/classes/algtextarea/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://example.org/docs/api/classes/algtextarea/</guid><description>API Reference • Docs
+API Reference / AlgTextarea
+Class: AlgTextarea # Extends # HTMLElement Constructors # new AlgTextarea() # new AlgTextarea(): AlgTextarea
+Returns # AlgTextarea
+Overrides # HTMLElement.constructor
+Source # templates/alg-textarea.ts:10
+Accessors # value # get value(): string
+set value(value): void
+Parameters # • value: string
+Returns # string
+Source # templates/alg-textarea.ts:47
+observedAttributes # get static observedAttributes(): string[]
+Returns # string[]
+Source # templates/alg-textarea.ts:100
+Methods # attributeChangedCallback() # attributeChangedCallback(name, oldValue, newValue): void</description></item><item><title>CacheCube</title><link>https://example.org/docs/api/classes/cachecube/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://example.org/docs/api/classes/cachecube/</guid><description>API Reference • Docs
+API Reference / CacheCube
+Class: CacheCube # Constructors # new CacheCube() # new CacheCube(layerCount): CacheCube
+Parameters # • layerCount: number
+Returns # CacheCube
+Source # cube/cache-cube.ts:12
+Properties # cube # readonly cube: Cube
+Source # cube/cache-cube.ts:7
+layerCount # readonly layerCount: number
+Source # cube/cache-cube.ts:6
+stickersPerFace # readonly stickersPerFace: number
+Source # cube/cache-cube.ts:8
+Methods # execute() # execute(alg): void
+Parameters # • alg: Alg
+Returns # void</description></item><item><title>Comment</title><link>https://example.org/docs/api/classes/comment/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://example.org/docs/api/classes/comment/</guid><description>API Reference • Docs
+API Reference / Comment
+Class: Comment # Implements # IAlgNonMoveNode Constructors # new Comment() # new Comment(comment, commentType): Comment
+Parameters # • comment: string
+• commentType: &amp;quot;lineComment&amp;quot; | &amp;quot;blockComment&amp;quot;
+Returns # Comment
+Source # alg/comment.ts:9
+Properties # commentType # commentType: &amp;quot;lineComment&amp;quot; | &amp;quot;blockComment&amp;quot;
+Source # alg/comment.ts:7
+type # readonly type: &amp;quot;Comment&amp;quot;
+Implementation of # IAlgNonMoveNode.type
+Source # alg/comment.ts:4
+value # value: string
+Source # alg/comment.ts:6
+Methods # copy() # copy(): Comment</description></item><item><title>Commutator</title><link>https://example.org/docs/api/classes/commutator/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://example.org/docs/api/classes/commutator/</guid><description>API Reference • Docs
+API Reference / Commutator
+Class: Commutator # Implements # IAlgMoveNode Constructors # new Commutator() # new Commutator(algA, algB, amount, isGrouping): Commutator
+Parameters # • algA: Alg
+• algB: Alg
+• amount: number= 1
+• isGrouping: boolean= true
+Returns # Commutator
+Source # alg/commutator.ts:18
+Properties # algA # algA: Alg
+Source # alg/commutator.ts:9
+algB # algB: Alg
+Source # alg/commutator.ts:10
+amount # amount: number
+Implementation of # IAlgMoveNode.</description></item><item><title>Conjugate</title><link>https://example.org/docs/api/classes/conjugate/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://example.org/docs/api/classes/conjugate/</guid><description>API Reference • Docs
+API Reference / Conjugate
+Class: Conjugate # Implements # IAlgMoveNode Constructors # new Conjugate() # new Conjugate(algA, algB, amount, isGrouping): Conjugate
+Parameters # • algA: Alg
+• algB: Alg
+• amount: number= 1
+• isGrouping: boolean= true
+Returns # Conjugate
+Source # alg/conjugate.ts:18
+Properties # algA # algA: Alg
+Source # alg/conjugate.ts:9
+algB # algB: Alg
+Source # alg/conjugate.ts:10
+amount # amount: number
+Implementation of # IAlgMoveNode.</description></item><item><title>Cube</title><link>https://example.org/docs/api/classes/cube/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://example.org/docs/api/classes/cube/</guid><description>API Reference • Docs
+API Reference / Cube
+Class: Cube # Constructors # new Cube() # new Cube(layerCount): Cube
+Parameters # • layerCount: number
+Returns # Cube
+Source # cube/cube.ts:72
+Properties # stickers # stickers: Face[][]
+Source # cube/cube.ts:70
+Methods # execute() # execute(alg): void
+Parameters # • alg: AlgMoveNode
+Returns # void
+Source # cube/cube.ts:806
+executeUntil() # executeUntil(alg, numMoves): null | Move
+Parameters # • alg: AlgMoveNode
+• numMoves: number</description></item><item><title>Move</title><link>https://example.org/docs/api/classes/move/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://example.org/docs/api/classes/move/</guid><description>API Reference • Docs
+API Reference / Move
+Class: Move # Implements # IAlgMoveNode Constructors # new Move() # new Move(face, shallow, deep, amount): Move
+Parameters # • face: string
+• shallow: number
+• deep: number
+• amount: number
+Returns # Move
+Source # alg/move.ts:16
+Properties # amount # amount: number
+Implementation of # IAlgMoveNode.amount
+Source # alg/move.ts:12
+deep # deep: number = 1
+Source # alg/move.ts:11
+face # face: string</description></item><item><title>NxNDrawer</title><link>https://example.org/docs/api/classes/nxndrawer/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://example.org/docs/api/classes/nxndrawer/</guid><description>API Reference • Docs
+API Reference / NxNDrawer
+Class: NxNDrawer # Constructors # new NxNDrawer() # new NxNDrawer(canvas, layerCount): NxNDrawer
+Parameters # • canvas: HTMLCanvasElement
+• layerCount: number
+Returns # NxNDrawer
+Source # graphics/webgpu/nxn-drawer.ts:24
+Properties # layerCount # readonly layerCount: number
+Source # graphics/webgpu/nxn-drawer.ts:9
+Methods # animateMove() # animateMove(move, t): void
+Parameters # • move: Move
+• t: number
+Returns # void
+Source # graphics/webgpu/nxn-drawer.ts:117
+clearAnimation() # clearAnimation(): void
+Returns # void</description></item><item><title>PuzzleViewer</title><link>https://example.org/docs/api/classes/puzzleviewer/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://example.org/docs/api/classes/puzzleviewer/</guid><description>API Reference • Docs
+API Reference / PuzzleViewer
+Class: PuzzleViewer # Extends # HTMLElement Constructors # new PuzzleViewer() # new PuzzleViewer(): PuzzleViewer
+Returns # PuzzleViewer
+Overrides # HTMLElement.constructor
+Source # templates/puzzle-viewer.ts:30
+Properties # alg # alg: Alg
+Source # templates/puzzle-viewer.ts:8
+cube # cube: Cube
+Source # templates/puzzle-viewer.ts:7
+ease() # ease: (t) =&amp;gt; number
+Parameters # • t: number
+Returns # number
+Source # templates/puzzle-viewer.ts:10
+Accessors # observedAttributes # get static observedAttributes(): string[]</description></item><item><title>Whitespace</title><link>https://example.org/docs/api/classes/whitespace/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://example.org/docs/api/classes/whitespace/</guid><description>API Reference • Docs
+API Reference / Whitespace
+Class: Whitespace # Implements # IAlgNonMoveNode Constructors # new Whitespace() # new Whitespace(whitespace): Whitespace
+Parameters # • whitespace: string
+Returns # Whitespace
+Source # alg/whitespace.ts:8
+Properties # type # readonly type: &amp;quot;Whitespace&amp;quot;
+Implementation of # IAlgNonMoveNode.type
+Source # alg/whitespace.ts:4
+value # value: string
+Source # alg/whitespace.ts:6
+Methods # copy() # copy(): Whitespace
+Returns # Whitespace
+Implementation of # IAlgNonMoveNode.copy
+Source # alg/whitespace.ts:12</description></item></channel></rss>
