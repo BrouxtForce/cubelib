@@ -30,7 +30,7 @@ title: PuzzleViewer
 
 #### Source
 
-[templates/puzzle-viewer.ts:30](https://github.com/BrouxtForce/cubelib/blob/72117884834c9a330d7870c13642ec7c97dbc128/src/templates/puzzle-viewer.ts#L30)
+[templates/puzzle-viewer.ts:30](https://github.com/BrouxtForce/cubelib/blob/46235e0efd69874517537607aff50e6e913dc207/src/templates/puzzle-viewer.ts#L30)
 
 ## Properties
 
@@ -40,7 +40,7 @@ title: PuzzleViewer
 
 #### Source
 
-[templates/puzzle-viewer.ts:8](https://github.com/BrouxtForce/cubelib/blob/72117884834c9a330d7870c13642ec7c97dbc128/src/templates/puzzle-viewer.ts#L8)
+[templates/puzzle-viewer.ts:8](https://github.com/BrouxtForce/cubelib/blob/46235e0efd69874517537607aff50e6e913dc207/src/templates/puzzle-viewer.ts#L8)
 
 ***
 
@@ -50,7 +50,7 @@ title: PuzzleViewer
 
 #### Source
 
-[templates/puzzle-viewer.ts:7](https://github.com/BrouxtForce/cubelib/blob/72117884834c9a330d7870c13642ec7c97dbc128/src/templates/puzzle-viewer.ts#L7)
+[templates/puzzle-viewer.ts:7](https://github.com/BrouxtForce/cubelib/blob/46235e0efd69874517537607aff50e6e913dc207/src/templates/puzzle-viewer.ts#L7)
 
 ***
 
@@ -68,7 +68,7 @@ title: PuzzleViewer
 
 #### Source
 
-[templates/puzzle-viewer.ts:10](https://github.com/BrouxtForce/cubelib/blob/72117884834c9a330d7870c13642ec7c97dbc128/src/templates/puzzle-viewer.ts#L10)
+[templates/puzzle-viewer.ts:10](https://github.com/BrouxtForce/cubelib/blob/46235e0efd69874517537607aff50e6e913dc207/src/templates/puzzle-viewer.ts#L10)
 
 ## Accessors
 
@@ -82,7 +82,7 @@ title: PuzzleViewer
 
 #### Source
 
-[templates/puzzle-viewer.ts:123](https://github.com/BrouxtForce/cubelib/blob/72117884834c9a330d7870c13642ec7c97dbc128/src/templates/puzzle-viewer.ts#L123)
+[templates/puzzle-viewer.ts:123](https://github.com/BrouxtForce/cubelib/blob/46235e0efd69874517537607aff50e6e913dc207/src/templates/puzzle-viewer.ts#L123)
 
 ## Methods
 
@@ -104,7 +104,7 @@ title: PuzzleViewer
 
 #### Source
 
-[templates/puzzle-viewer.ts:127](https://github.com/BrouxtForce/cubelib/blob/72117884834c9a330d7870c13642ec7c97dbc128/src/templates/puzzle-viewer.ts#L127)
+[templates/puzzle-viewer.ts:127](https://github.com/BrouxtForce/cubelib/blob/46235e0efd69874517537607aff50e6e913dc207/src/templates/puzzle-viewer.ts#L127)
 
 ***
 
@@ -118,7 +118,7 @@ title: PuzzleViewer
 
 #### Source
 
-[templates/puzzle-viewer.ts:86](https://github.com/BrouxtForce/cubelib/blob/72117884834c9a330d7870c13642ec7c97dbc128/src/templates/puzzle-viewer.ts#L86)
+[templates/puzzle-viewer.ts:86](https://github.com/BrouxtForce/cubelib/blob/46235e0efd69874517537607aff50e6e913dc207/src/templates/puzzle-viewer.ts#L86)
 
 ***
 
@@ -132,7 +132,7 @@ title: PuzzleViewer
 
 #### Source
 
-[templates/puzzle-viewer.ts:186](https://github.com/BrouxtForce/cubelib/blob/72117884834c9a330d7870c13642ec7c97dbc128/src/templates/puzzle-viewer.ts#L186)
+[templates/puzzle-viewer.ts:186](https://github.com/BrouxtForce/cubelib/blob/46235e0efd69874517537607aff50e6e913dc207/src/templates/puzzle-viewer.ts#L186)
 
 ***
 
@@ -146,4 +146,4 @@ title: PuzzleViewer
 
 #### Source
 
-[templates/puzzle-viewer.ts:145](https://github.com/BrouxtForce/cubelib/blob/72117884834c9a330d7870c13642ec7c97dbc128/src/templates/puzzle-viewer.ts#L145)
+[templates/puzzle-viewer.ts:145](https://github.com/BrouxtForce/cubelib/blob/46235e0efd69874517537607aff50e6e913dc207/src/templates/puzzle-viewer.ts#L145)

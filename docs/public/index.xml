@@ -117,7 +117,12 @@ Returns # void
 Source # cube/cube.ts:806
 executeUntil() # executeUntil(alg, numMoves): null | Move
 Parameters # • alg: AlgMoveNode
-• numMoves: number</description></item><item><title>getRandomState</title><link>https://example.org/docs/api/namespaces/fastlse/functions/getrandomstate/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://example.org/docs/api/namespaces/fastlse/functions/getrandomstate/</guid><description>API Reference • Docs
+• numMoves: number</description></item><item><title>CubeTimer</title><link>https://example.org/docs/api/classes/cubetimer/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://example.org/docs/api/classes/cubetimer/</guid><description>API Reference • Docs
+API Reference / CubeTimer
+Class: CubeTimer # CubeTimer is a custom HTML element that implements a basic timer, fit with useful features that are expected in a modern speedcubing timer.
+Construction # To use CubeTimer, simply add the following to the desired HTML file:
+&amp;lt;cube-timer&amp;gt;&amp;lt;/cube-timer&amp;gt; The following attributes can be set (these are all set as strings, but represent the following data types):
+&amp;quot;inspection-time&amp;quot;: number &amp;quot;multiphase&amp;quot;: integer &amp;quot;timer-update&amp;quot;: number &amp;quot;trigger-key&amp;quot;: string (key) &amp;quot;use-milliseconds&amp;quot;: &amp;quot;true&amp;quot; or &amp;quot;false&amp;quot; &amp;quot;value&amp;quot;: number For example:</description></item><item><title>getRandomState</title><link>https://example.org/docs/api/namespaces/fastlse/functions/getrandomstate/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://example.org/docs/api/namespaces/fastlse/functions/getrandomstate/</guid><description>API Reference • Docs
 API Reference / FastLSE / getRandomState
 Function: getRandomState() # getRandomState(): LSEState
 Returns # LSEState

@@ -30,7 +30,7 @@ title: AlgTextarea
 
 #### Source
 
-[templates/alg-textarea.ts:10](https://github.com/BrouxtForce/cubelib/blob/72117884834c9a330d7870c13642ec7c97dbc128/src/templates/alg-textarea.ts#L10)
+[templates/alg-textarea.ts:10](https://github.com/BrouxtForce/cubelib/blob/46235e0efd69874517537607aff50e6e913dc207/src/templates/alg-textarea.ts#L10)
 
 ## Accessors
 
@@ -50,7 +50,7 @@ title: AlgTextarea
 
 #### Source
 
-[templates/alg-textarea.ts:47](https://github.com/BrouxtForce/cubelib/blob/72117884834c9a330d7870c13642ec7c97dbc128/src/templates/alg-textarea.ts#L47)
+[templates/alg-textarea.ts:47](https://github.com/BrouxtForce/cubelib/blob/46235e0efd69874517537607aff50e6e913dc207/src/templates/alg-textarea.ts#L47)
 
 ***
 
@@ -64,7 +64,7 @@ title: AlgTextarea
 
 #### Source
 
-[templates/alg-textarea.ts:100](https://github.com/BrouxtForce/cubelib/blob/72117884834c9a330d7870c13642ec7c97dbc128/src/templates/alg-textarea.ts#L100)
+[templates/alg-textarea.ts:100](https://github.com/BrouxtForce/cubelib/blob/46235e0efd69874517537607aff50e6e913dc207/src/templates/alg-textarea.ts#L100)
 
 ## Methods
 
@@ -86,7 +86,7 @@ title: AlgTextarea
 
 #### Source
 
-[templates/alg-textarea.ts:103](https://github.com/BrouxtForce/cubelib/blob/72117884834c9a330d7870c13642ec7c97dbc128/src/templates/alg-textarea.ts#L103)
+[templates/alg-textarea.ts:103](https://github.com/BrouxtForce/cubelib/blob/46235e0efd69874517537607aff50e6e913dc207/src/templates/alg-textarea.ts#L103)
 
 ***
 
@@ -100,4 +100,4 @@ title: AlgTextarea
 
 #### Source
 
-[templates/alg-textarea.ts:53](https://github.com/BrouxtForce/cubelib/blob/72117884834c9a330d7870c13642ec7c97dbc128/src/templates/alg-textarea.ts#L53)
+[templates/alg-textarea.ts:53](https://github.com/BrouxtForce/cubelib/blob/46235e0efd69874517537607aff50e6e913dc207/src/templates/alg-textarea.ts#L53)

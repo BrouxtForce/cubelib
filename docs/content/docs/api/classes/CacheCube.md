@@ -26,7 +26,7 @@ title: CacheCube
 
 #### Source
 
-[cube/cache-cube.ts:12](https://github.com/BrouxtForce/cubelib/blob/72117884834c9a330d7870c13642ec7c97dbc128/src/cube/cache-cube.ts#L12)
+[cube/cache-cube.ts:12](https://github.com/BrouxtForce/cubelib/blob/46235e0efd69874517537607aff50e6e913dc207/src/cube/cache-cube.ts#L12)
 
 ## Properties
 
@@ -36,7 +36,7 @@ title: CacheCube
 
 #### Source
 
-[cube/cache-cube.ts:7](https://github.com/BrouxtForce/cubelib/blob/72117884834c9a330d7870c13642ec7c97dbc128/src/cube/cache-cube.ts#L7)
+[cube/cache-cube.ts:7](https://github.com/BrouxtForce/cubelib/blob/46235e0efd69874517537607aff50e6e913dc207/src/cube/cache-cube.ts#L7)
 
 ***
 
@@ -46,7 +46,7 @@ title: CacheCube
 
 #### Source
 
-[cube/cache-cube.ts:6](https://github.com/BrouxtForce/cubelib/blob/72117884834c9a330d7870c13642ec7c97dbc128/src/cube/cache-cube.ts#L6)
+[cube/cache-cube.ts:6](https://github.com/BrouxtForce/cubelib/blob/46235e0efd69874517537607aff50e6e913dc207/src/cube/cache-cube.ts#L6)
 
 ***
 
@@ -56,7 +56,7 @@ title: CacheCube
 
 #### Source
 
-[cube/cache-cube.ts:8](https://github.com/BrouxtForce/cubelib/blob/72117884834c9a330d7870c13642ec7c97dbc128/src/cube/cache-cube.ts#L8)
+[cube/cache-cube.ts:8](https://github.com/BrouxtForce/cubelib/blob/46235e0efd69874517537607aff50e6e913dc207/src/cube/cache-cube.ts#L8)
 
 ## Methods
 
@@ -74,7 +74,7 @@ title: CacheCube
 
 #### Source
 
-[cube/cache-cube.ts:200](https://github.com/BrouxtForce/cubelib/blob/72117884834c9a330d7870c13642ec7c97dbc128/src/cube/cache-cube.ts#L200)
+[cube/cache-cube.ts:200](https://github.com/BrouxtForce/cubelib/blob/46235e0efd69874517537607aff50e6e913dc207/src/cube/cache-cube.ts#L200)
 
 ***
 
@@ -92,4 +92,4 @@ title: CacheCube
 
 #### Source
 
-[cube/cache-cube.ts:114](https://github.com/BrouxtForce/cubelib/blob/72117884834c9a330d7870c13642ec7c97dbc128/src/cube/cache-cube.ts#L114)
+[cube/cache-cube.ts:114](https://github.com/BrouxtForce/cubelib/blob/46235e0efd69874517537607aff50e6e913dc207/src/cube/cache-cube.ts#L114)

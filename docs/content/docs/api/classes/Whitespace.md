@@ -30,7 +30,7 @@ title: Whitespace
 
 #### Source
 
-[alg/whitespace.ts:8](https://github.com/BrouxtForce/cubelib/blob/72117884834c9a330d7870c13642ec7c97dbc128/src/alg/whitespace.ts#L8)
+[alg/whitespace.ts:8](https://github.com/BrouxtForce/cubelib/blob/46235e0efd69874517537607aff50e6e913dc207/src/alg/whitespace.ts#L8)
 
 ## Properties
 
@@ -44,7 +44,7 @@ title: Whitespace
 
 #### Source
 
-[alg/whitespace.ts:4](https://github.com/BrouxtForce/cubelib/blob/72117884834c9a330d7870c13642ec7c97dbc128/src/alg/whitespace.ts#L4)
+[alg/whitespace.ts:4](https://github.com/BrouxtForce/cubelib/blob/46235e0efd69874517537607aff50e6e913dc207/src/alg/whitespace.ts#L4)
 
 ***
 
@@ -54,7 +54,7 @@ title: Whitespace
 
 #### Source
 
-[alg/whitespace.ts:6](https://github.com/BrouxtForce/cubelib/blob/72117884834c9a330d7870c13642ec7c97dbc128/src/alg/whitespace.ts#L6)
+[alg/whitespace.ts:6](https://github.com/BrouxtForce/cubelib/blob/46235e0efd69874517537607aff50e6e913dc207/src/alg/whitespace.ts#L6)
 
 ## Methods
 
@@ -72,7 +72,7 @@ title: Whitespace
 
 #### Source
 
-[alg/whitespace.ts:12](https://github.com/BrouxtForce/cubelib/blob/72117884834c9a330d7870c13642ec7c97dbc128/src/alg/whitespace.ts#L12)
+[alg/whitespace.ts:12](https://github.com/BrouxtForce/cubelib/blob/46235e0efd69874517537607aff50e6e913dc207/src/alg/whitespace.ts#L12)
 
 ***
 
@@ -90,4 +90,4 @@ title: Whitespace
 
 #### Source
 
-[alg/whitespace.ts:16](https://github.com/BrouxtForce/cubelib/blob/72117884834c9a330d7870c13642ec7c97dbc128/src/alg/whitespace.ts#L16)
+[alg/whitespace.ts:16](https://github.com/BrouxtForce/cubelib/blob/46235e0efd69874517537607aff50e6e913dc207/src/alg/whitespace.ts#L16)

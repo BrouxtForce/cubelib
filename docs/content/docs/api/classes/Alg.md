@@ -34,7 +34,7 @@ title: Alg
 
 #### Source
 
-[alg/alg.ts:51](https://github.com/BrouxtForce/cubelib/blob/72117884834c9a330d7870c13642ec7c97dbc128/src/alg/alg.ts#L51)
+[alg/alg.ts:51](https://github.com/BrouxtForce/cubelib/blob/46235e0efd69874517537607aff50e6e913dc207/src/alg/alg.ts#L51)
 
 ## Properties
 
@@ -48,7 +48,7 @@ title: Alg
 
 #### Source
 
-[alg/alg.ts:49](https://github.com/BrouxtForce/cubelib/blob/72117884834c9a330d7870c13642ec7c97dbc128/src/alg/alg.ts#L49)
+[alg/alg.ts:49](https://github.com/BrouxtForce/cubelib/blob/46235e0efd69874517537607aff50e6e913dc207/src/alg/alg.ts#L49)
 
 ***
 
@@ -58,7 +58,7 @@ title: Alg
 
 #### Source
 
-[alg/alg.ts:47](https://github.com/BrouxtForce/cubelib/blob/72117884834c9a330d7870c13642ec7c97dbc128/src/alg/alg.ts#L47)
+[alg/alg.ts:47](https://github.com/BrouxtForce/cubelib/blob/46235e0efd69874517537607aff50e6e913dc207/src/alg/alg.ts#L47)
 
 ***
 
@@ -72,7 +72,7 @@ title: Alg
 
 #### Source
 
-[alg/alg.ts:45](https://github.com/BrouxtForce/cubelib/blob/72117884834c9a330d7870c13642ec7c97dbc128/src/alg/alg.ts#L45)
+[alg/alg.ts:45](https://github.com/BrouxtForce/cubelib/blob/46235e0efd69874517537607aff50e6e913dc207/src/alg/alg.ts#L45)
 
 ***
 
@@ -82,7 +82,7 @@ title: Alg
 
 #### Source
 
-[alg/alg.ts:44](https://github.com/BrouxtForce/cubelib/blob/72117884834c9a330d7870c13642ec7c97dbc128/src/alg/alg.ts#L44)
+[alg/alg.ts:44](https://github.com/BrouxtForce/cubelib/blob/46235e0efd69874517537607aff50e6e913dc207/src/alg/alg.ts#L44)
 
 ***
 
@@ -92,7 +92,7 @@ title: Alg
 
 #### Source
 
-[alg/alg.ts:43](https://github.com/BrouxtForce/cubelib/blob/72117884834c9a330d7870c13642ec7c97dbc128/src/alg/alg.ts#L43)
+[alg/alg.ts:43](https://github.com/BrouxtForce/cubelib/blob/46235e0efd69874517537607aff50e6e913dc207/src/alg/alg.ts#L43)
 
 ***
 
@@ -106,7 +106,7 @@ title: Alg
 
 #### Source
 
-[alg/alg.ts:41](https://github.com/BrouxtForce/cubelib/blob/72117884834c9a330d7870c13642ec7c97dbc128/src/alg/alg.ts#L41)
+[alg/alg.ts:41](https://github.com/BrouxtForce/cubelib/blob/46235e0efd69874517537607aff50e6e913dc207/src/alg/alg.ts#L41)
 
 ## Methods
 
@@ -124,7 +124,7 @@ title: Alg
 
 #### Source
 
-[alg/alg.ts:238](https://github.com/BrouxtForce/cubelib/blob/72117884834c9a330d7870c13642ec7c97dbc128/src/alg/alg.ts#L238)
+[alg/alg.ts:238](https://github.com/BrouxtForce/cubelib/blob/46235e0efd69874517537607aff50e6e913dc207/src/alg/alg.ts#L238)
 
 ***
 
@@ -142,7 +142,7 @@ title: Alg
 
 #### Source
 
-[alg/alg.ts:83](https://github.com/BrouxtForce/cubelib/blob/72117884834c9a330d7870c13642ec7c97dbc128/src/alg/alg.ts#L83)
+[alg/alg.ts:83](https://github.com/BrouxtForce/cubelib/blob/46235e0efd69874517537607aff50e6e913dc207/src/alg/alg.ts#L83)
 
 ***
 
@@ -160,7 +160,7 @@ title: Alg
 
 #### Source
 
-[alg/alg.ts:91](https://github.com/BrouxtForce/cubelib/blob/72117884834c9a330d7870c13642ec7c97dbc128/src/alg/alg.ts#L91)
+[alg/alg.ts:91](https://github.com/BrouxtForce/cubelib/blob/46235e0efd69874517537607aff50e6e913dc207/src/alg/alg.ts#L91)
 
 ***
 
@@ -178,7 +178,7 @@ title: Alg
 
 #### Source
 
-[alg/alg.ts:124](https://github.com/BrouxtForce/cubelib/blob/72117884834c9a330d7870c13642ec7c97dbc128/src/alg/alg.ts#L124)
+[alg/alg.ts:124](https://github.com/BrouxtForce/cubelib/blob/46235e0efd69874517537607aff50e6e913dc207/src/alg/alg.ts#L124)
 
 ***
 
@@ -204,7 +204,7 @@ title: Alg
 
 #### Source
 
-[alg/alg.ts:232](https://github.com/BrouxtForce/cubelib/blob/72117884834c9a330d7870c13642ec7c97dbc128/src/alg/alg.ts#L232)
+[alg/alg.ts:232](https://github.com/BrouxtForce/cubelib/blob/46235e0efd69874517537607aff50e6e913dc207/src/alg/alg.ts#L232)
 
 ***
 
@@ -222,7 +222,7 @@ title: Alg
 
 #### Source
 
-[alg/alg.ts:152](https://github.com/BrouxtForce/cubelib/blob/72117884834c9a330d7870c13642ec7c97dbc128/src/alg/alg.ts#L152)
+[alg/alg.ts:152](https://github.com/BrouxtForce/cubelib/blob/46235e0efd69874517537607aff50e6e913dc207/src/alg/alg.ts#L152)
 
 ***
 
@@ -248,7 +248,7 @@ title: Alg
 
 #### Source
 
-[alg/alg.ts:235](https://github.com/BrouxtForce/cubelib/blob/72117884834c9a330d7870c13642ec7c97dbc128/src/alg/alg.ts#L235)
+[alg/alg.ts:235](https://github.com/BrouxtForce/cubelib/blob/46235e0efd69874517537607aff50e6e913dc207/src/alg/alg.ts#L235)
 
 ***
 
@@ -266,7 +266,7 @@ title: Alg
 
 #### Source
 
-[alg/alg.ts:184](https://github.com/BrouxtForce/cubelib/blob/72117884834c9a330d7870c13642ec7c97dbc128/src/alg/alg.ts#L184)
+[alg/alg.ts:184](https://github.com/BrouxtForce/cubelib/blob/46235e0efd69874517537607aff50e6e913dc207/src/alg/alg.ts#L184)
 
 ***
 
@@ -284,7 +284,7 @@ title: Alg
 
 #### Source
 
-[alg/alg.ts:162](https://github.com/BrouxtForce/cubelib/blob/72117884834c9a330d7870c13642ec7c97dbc128/src/alg/alg.ts#L162)
+[alg/alg.ts:162](https://github.com/BrouxtForce/cubelib/blob/46235e0efd69874517537607aff50e6e913dc207/src/alg/alg.ts#L162)
 
 ***
 
@@ -302,4 +302,4 @@ title: Alg
 
 #### Source
 
-[alg/alg.ts:71](https://github.com/BrouxtForce/cubelib/blob/72117884834c9a330d7870c13642ec7c97dbc128/src/alg/alg.ts#L71)
+[alg/alg.ts:71](https://github.com/BrouxtForce/cubelib/blob/46235e0efd69874517537607aff50e6e913dc207/src/alg/alg.ts#L71)

@@ -23,6 +23,7 @@ title: API Reference
 - [Commutator](/docs/api/classes/Commutator)
 - [Conjugate](/docs/api/classes/Conjugate)
 - [Cube](/docs/api/classes/Cube)
+- [CubeTimer](/docs/api/classes/CubeTimer)
 - [Move](/docs/api/classes/Move)
 - [NxNDrawer](/docs/api/classes/NxNDrawer)
 - [PuzzleViewer](/docs/api/classes/PuzzleViewer)

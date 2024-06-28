@@ -28,7 +28,7 @@ title: NxNDrawer
 
 #### Source
 
-[graphics/webgpu/nxn-drawer.ts:24](https://github.com/BrouxtForce/cubelib/blob/72117884834c9a330d7870c13642ec7c97dbc128/src/graphics/webgpu/nxn-drawer.ts#L24)
+[graphics/webgpu/nxn-drawer.ts:24](https://github.com/BrouxtForce/cubelib/blob/46235e0efd69874517537607aff50e6e913dc207/src/graphics/webgpu/nxn-drawer.ts#L24)
 
 ## Properties
 
@@ -38,7 +38,7 @@ title: NxNDrawer
 
 #### Source
 
-[graphics/webgpu/nxn-drawer.ts:9](https://github.com/BrouxtForce/cubelib/blob/72117884834c9a330d7870c13642ec7c97dbc128/src/graphics/webgpu/nxn-drawer.ts#L9)
+[graphics/webgpu/nxn-drawer.ts:9](https://github.com/BrouxtForce/cubelib/blob/46235e0efd69874517537607aff50e6e913dc207/src/graphics/webgpu/nxn-drawer.ts#L9)
 
 ## Methods
 
@@ -58,7 +58,7 @@ title: NxNDrawer
 
 #### Source
 
-[graphics/webgpu/nxn-drawer.ts:117](https://github.com/BrouxtForce/cubelib/blob/72117884834c9a330d7870c13642ec7c97dbc128/src/graphics/webgpu/nxn-drawer.ts#L117)
+[graphics/webgpu/nxn-drawer.ts:117](https://github.com/BrouxtForce/cubelib/blob/46235e0efd69874517537607aff50e6e913dc207/src/graphics/webgpu/nxn-drawer.ts#L117)
 
 ***
 
@@ -72,7 +72,7 @@ title: NxNDrawer
 
 #### Source
 
-[graphics/webgpu/nxn-drawer.ts:142](https://github.com/BrouxtForce/cubelib/blob/72117884834c9a330d7870c13642ec7c97dbc128/src/graphics/webgpu/nxn-drawer.ts#L142)
+[graphics/webgpu/nxn-drawer.ts:142](https://github.com/BrouxtForce/cubelib/blob/46235e0efd69874517537607aff50e6e913dc207/src/graphics/webgpu/nxn-drawer.ts#L142)
 
 ***
 
@@ -86,7 +86,7 @@ title: NxNDrawer
 
 #### Source
 
-[graphics/webgpu/nxn-drawer.ts:149](https://github.com/BrouxtForce/cubelib/blob/72117884834c9a330d7870c13642ec7c97dbc128/src/graphics/webgpu/nxn-drawer.ts#L149)
+[graphics/webgpu/nxn-drawer.ts:149](https://github.com/BrouxtForce/cubelib/blob/46235e0efd69874517537607aff50e6e913dc207/src/graphics/webgpu/nxn-drawer.ts#L149)
 
 ***
 
@@ -100,7 +100,7 @@ title: NxNDrawer
 
 #### Source
 
-[graphics/webgpu/nxn-drawer.ts:46](https://github.com/BrouxtForce/cubelib/blob/72117884834c9a330d7870c13642ec7c97dbc128/src/graphics/webgpu/nxn-drawer.ts#L46)
+[graphics/webgpu/nxn-drawer.ts:46](https://github.com/BrouxtForce/cubelib/blob/46235e0efd69874517537607aff50e6e913dc207/src/graphics/webgpu/nxn-drawer.ts#L46)
 
 ***
 
@@ -114,7 +114,7 @@ title: NxNDrawer
 
 #### Source
 
-[graphics/webgpu/nxn-drawer.ts:63](https://github.com/BrouxtForce/cubelib/blob/72117884834c9a330d7870c13642ec7c97dbc128/src/graphics/webgpu/nxn-drawer.ts#L63)
+[graphics/webgpu/nxn-drawer.ts:63](https://github.com/BrouxtForce/cubelib/blob/46235e0efd69874517537607aff50e6e913dc207/src/graphics/webgpu/nxn-drawer.ts#L63)
 
 ***
 
@@ -134,7 +134,7 @@ title: NxNDrawer
 
 #### Source
 
-[graphics/webgpu/nxn-drawer.ts:156](https://github.com/BrouxtForce/cubelib/blob/72117884834c9a330d7870c13642ec7c97dbc128/src/graphics/webgpu/nxn-drawer.ts#L156)
+[graphics/webgpu/nxn-drawer.ts:156](https://github.com/BrouxtForce/cubelib/blob/46235e0efd69874517537607aff50e6e913dc207/src/graphics/webgpu/nxn-drawer.ts#L156)
 
 ***
 
@@ -152,7 +152,7 @@ title: NxNDrawer
 
 #### Source
 
-[graphics/webgpu/nxn-drawer.ts:90](https://github.com/BrouxtForce/cubelib/blob/72117884834c9a330d7870c13642ec7c97dbc128/src/graphics/webgpu/nxn-drawer.ts#L90)
+[graphics/webgpu/nxn-drawer.ts:90](https://github.com/BrouxtForce/cubelib/blob/46235e0efd69874517537607aff50e6e913dc207/src/graphics/webgpu/nxn-drawer.ts#L90)
 
 ***
 
@@ -174,4 +174,4 @@ title: NxNDrawer
 
 #### Source
 
-[graphics/webgpu/nxn-drawer.ts:77](https://github.com/BrouxtForce/cubelib/blob/72117884834c9a330d7870c13642ec7c97dbc128/src/graphics/webgpu/nxn-drawer.ts#L77)
+[graphics/webgpu/nxn-drawer.ts:77](https://github.com/BrouxtForce/cubelib/blob/46235e0efd69874517537607aff50e6e913dc207/src/graphics/webgpu/nxn-drawer.ts#L77)

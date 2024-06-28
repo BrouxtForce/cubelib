@@ -30,7 +30,7 @@ title: AlgInput
 
 #### Source
 
-[templates/alg-input.ts:70](https://github.com/BrouxtForce/cubelib/blob/72117884834c9a330d7870c13642ec7c97dbc128/src/templates/alg-input.ts#L70)
+[templates/alg-input.ts:70](https://github.com/BrouxtForce/cubelib/blob/46235e0efd69874517537607aff50e6e913dc207/src/templates/alg-input.ts#L70)
 
 ## Accessors
 
@@ -50,7 +50,7 @@ title: AlgInput
 
 #### Source
 
-[templates/alg-input.ts:93](https://github.com/BrouxtForce/cubelib/blob/72117884834c9a330d7870c13642ec7c97dbc128/src/templates/alg-input.ts#L93)
+[templates/alg-input.ts:93](https://github.com/BrouxtForce/cubelib/blob/46235e0efd69874517537607aff50e6e913dc207/src/templates/alg-input.ts#L93)
 
 ***
 
@@ -64,7 +64,7 @@ title: AlgInput
 
 #### Source
 
-[templates/alg-input.ts:191](https://github.com/BrouxtForce/cubelib/blob/72117884834c9a330d7870c13642ec7c97dbc128/src/templates/alg-input.ts#L191)
+[templates/alg-input.ts:191](https://github.com/BrouxtForce/cubelib/blob/46235e0efd69874517537607aff50e6e913dc207/src/templates/alg-input.ts#L191)
 
 ## Methods
 
@@ -86,7 +86,7 @@ title: AlgInput
 
 #### Source
 
-[templates/alg-input.ts:194](https://github.com/BrouxtForce/cubelib/blob/72117884834c9a330d7870c13642ec7c97dbc128/src/templates/alg-input.ts#L194)
+[templates/alg-input.ts:194](https://github.com/BrouxtForce/cubelib/blob/46235e0efd69874517537607aff50e6e913dc207/src/templates/alg-input.ts#L194)
 
 ***
 
@@ -100,4 +100,4 @@ title: AlgInput
 
 #### Source
 
-[templates/alg-input.ts:99](https://github.com/BrouxtForce/cubelib/blob/72117884834c9a330d7870c13642ec7c97dbc128/src/templates/alg-input.ts#L99)
+[templates/alg-input.ts:99](https://github.com/BrouxtForce/cubelib/blob/46235e0efd69874517537607aff50e6e913dc207/src/templates/alg-input.ts#L99)

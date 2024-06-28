@@ -36,7 +36,7 @@ title: Conjugate
 
 #### Source
 
-[alg/conjugate.ts:18](https://github.com/BrouxtForce/cubelib/blob/72117884834c9a330d7870c13642ec7c97dbc128/src/alg/conjugate.ts#L18)
+[alg/conjugate.ts:18](https://github.com/BrouxtForce/cubelib/blob/46235e0efd69874517537607aff50e6e913dc207/src/alg/conjugate.ts#L18)
 
 ## Properties
 
@@ -46,7 +46,7 @@ title: Conjugate
 
 #### Source
 
-[alg/conjugate.ts:9](https://github.com/BrouxtForce/cubelib/blob/72117884834c9a330d7870c13642ec7c97dbc128/src/alg/conjugate.ts#L9)
+[alg/conjugate.ts:9](https://github.com/BrouxtForce/cubelib/blob/46235e0efd69874517537607aff50e6e913dc207/src/alg/conjugate.ts#L9)
 
 ***
 
@@ -56,7 +56,7 @@ title: Conjugate
 
 #### Source
 
-[alg/conjugate.ts:10](https://github.com/BrouxtForce/cubelib/blob/72117884834c9a330d7870c13642ec7c97dbc128/src/alg/conjugate.ts#L10)
+[alg/conjugate.ts:10](https://github.com/BrouxtForce/cubelib/blob/46235e0efd69874517537607aff50e6e913dc207/src/alg/conjugate.ts#L10)
 
 ***
 
@@ -70,7 +70,7 @@ title: Conjugate
 
 #### Source
 
-[alg/conjugate.ts:14](https://github.com/BrouxtForce/cubelib/blob/72117884834c9a330d7870c13642ec7c97dbc128/src/alg/conjugate.ts#L14)
+[alg/conjugate.ts:14](https://github.com/BrouxtForce/cubelib/blob/46235e0efd69874517537607aff50e6e913dc207/src/alg/conjugate.ts#L14)
 
 ***
 
@@ -80,7 +80,7 @@ title: Conjugate
 
 #### Source
 
-[alg/conjugate.ts:12](https://github.com/BrouxtForce/cubelib/blob/72117884834c9a330d7870c13642ec7c97dbc128/src/alg/conjugate.ts#L12)
+[alg/conjugate.ts:12](https://github.com/BrouxtForce/cubelib/blob/46235e0efd69874517537607aff50e6e913dc207/src/alg/conjugate.ts#L12)
 
 ***
 
@@ -94,7 +94,7 @@ title: Conjugate
 
 #### Source
 
-[alg/conjugate.ts:16](https://github.com/BrouxtForce/cubelib/blob/72117884834c9a330d7870c13642ec7c97dbc128/src/alg/conjugate.ts#L16)
+[alg/conjugate.ts:16](https://github.com/BrouxtForce/cubelib/blob/46235e0efd69874517537607aff50e6e913dc207/src/alg/conjugate.ts#L16)
 
 ***
 
@@ -108,7 +108,7 @@ title: Conjugate
 
 #### Source
 
-[alg/conjugate.ts:7](https://github.com/BrouxtForce/cubelib/blob/72117884834c9a330d7870c13642ec7c97dbc128/src/alg/conjugate.ts#L7)
+[alg/conjugate.ts:7](https://github.com/BrouxtForce/cubelib/blob/46235e0efd69874517537607aff50e6e913dc207/src/alg/conjugate.ts#L7)
 
 ## Methods
 
@@ -126,7 +126,7 @@ title: Conjugate
 
 #### Source
 
-[alg/conjugate.ts:136](https://github.com/BrouxtForce/cubelib/blob/72117884834c9a330d7870c13642ec7c97dbc128/src/alg/conjugate.ts#L136)
+[alg/conjugate.ts:136](https://github.com/BrouxtForce/cubelib/blob/46235e0efd69874517537607aff50e6e913dc207/src/alg/conjugate.ts#L136)
 
 ***
 
@@ -144,7 +144,7 @@ title: Conjugate
 
 #### Source
 
-[alg/conjugate.ts:26](https://github.com/BrouxtForce/cubelib/blob/72117884834c9a330d7870c13642ec7c97dbc128/src/alg/conjugate.ts#L26)
+[alg/conjugate.ts:26](https://github.com/BrouxtForce/cubelib/blob/46235e0efd69874517537607aff50e6e913dc207/src/alg/conjugate.ts#L26)
 
 ***
 
@@ -162,7 +162,7 @@ title: Conjugate
 
 #### Source
 
-[alg/conjugate.ts:30](https://github.com/BrouxtForce/cubelib/blob/72117884834c9a330d7870c13642ec7c97dbc128/src/alg/conjugate.ts#L30)
+[alg/conjugate.ts:30](https://github.com/BrouxtForce/cubelib/blob/46235e0efd69874517537607aff50e6e913dc207/src/alg/conjugate.ts#L30)
 
 ***
 
@@ -180,7 +180,7 @@ title: Conjugate
 
 #### Source
 
-[alg/conjugate.ts:68](https://github.com/BrouxtForce/cubelib/blob/72117884834c9a330d7870c13642ec7c97dbc128/src/alg/conjugate.ts#L68)
+[alg/conjugate.ts:68](https://github.com/BrouxtForce/cubelib/blob/46235e0efd69874517537607aff50e6e913dc207/src/alg/conjugate.ts#L68)
 
 ***
 
@@ -206,7 +206,7 @@ title: Conjugate
 
 #### Source
 
-[alg/conjugate.ts:130](https://github.com/BrouxtForce/cubelib/blob/72117884834c9a330d7870c13642ec7c97dbc128/src/alg/conjugate.ts#L130)
+[alg/conjugate.ts:130](https://github.com/BrouxtForce/cubelib/blob/46235e0efd69874517537607aff50e6e913dc207/src/alg/conjugate.ts#L130)
 
 ***
 
@@ -224,7 +224,7 @@ title: Conjugate
 
 #### Source
 
-[alg/conjugate.ts:101](https://github.com/BrouxtForce/cubelib/blob/72117884834c9a330d7870c13642ec7c97dbc128/src/alg/conjugate.ts#L101)
+[alg/conjugate.ts:101](https://github.com/BrouxtForce/cubelib/blob/46235e0efd69874517537607aff50e6e913dc207/src/alg/conjugate.ts#L101)
 
 ***
 
@@ -250,7 +250,7 @@ title: Conjugate
 
 #### Source
 
-[alg/conjugate.ts:133](https://github.com/BrouxtForce/cubelib/blob/72117884834c9a330d7870c13642ec7c97dbc128/src/alg/conjugate.ts#L133)
+[alg/conjugate.ts:133](https://github.com/BrouxtForce/cubelib/blob/46235e0efd69874517537607aff50e6e913dc207/src/alg/conjugate.ts#L133)
 
 ***
 
@@ -268,7 +268,7 @@ title: Conjugate
 
 #### Source
 
-[alg/conjugate.ts:117](https://github.com/BrouxtForce/cubelib/blob/72117884834c9a330d7870c13642ec7c97dbc128/src/alg/conjugate.ts#L117)
+[alg/conjugate.ts:117](https://github.com/BrouxtForce/cubelib/blob/46235e0efd69874517537607aff50e6e913dc207/src/alg/conjugate.ts#L117)
 
 ***
 
@@ -286,4 +286,4 @@ title: Conjugate
 
 #### Source
 
-[alg/conjugate.ts:106](https://github.com/BrouxtForce/cubelib/blob/72117884834c9a330d7870c13642ec7c97dbc128/src/alg/conjugate.ts#L106)
+[alg/conjugate.ts:106](https://github.com/BrouxtForce/cubelib/blob/46235e0efd69874517537607aff50e6e913dc207/src/alg/conjugate.ts#L106)

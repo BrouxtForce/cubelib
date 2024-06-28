@@ -32,7 +32,7 @@ title: Comment
 
 #### Source
 
-[alg/comment.ts:9](https://github.com/BrouxtForce/cubelib/blob/72117884834c9a330d7870c13642ec7c97dbc128/src/alg/comment.ts#L9)
+[alg/comment.ts:9](https://github.com/BrouxtForce/cubelib/blob/46235e0efd69874517537607aff50e6e913dc207/src/alg/comment.ts#L9)
 
 ## Properties
 
@@ -42,7 +42,7 @@ title: Comment
 
 #### Source
 
-[alg/comment.ts:7](https://github.com/BrouxtForce/cubelib/blob/72117884834c9a330d7870c13642ec7c97dbc128/src/alg/comment.ts#L7)
+[alg/comment.ts:7](https://github.com/BrouxtForce/cubelib/blob/46235e0efd69874517537607aff50e6e913dc207/src/alg/comment.ts#L7)
 
 ***
 
@@ -56,7 +56,7 @@ title: Comment
 
 #### Source
 
-[alg/comment.ts:4](https://github.com/BrouxtForce/cubelib/blob/72117884834c9a330d7870c13642ec7c97dbc128/src/alg/comment.ts#L4)
+[alg/comment.ts:4](https://github.com/BrouxtForce/cubelib/blob/46235e0efd69874517537607aff50e6e913dc207/src/alg/comment.ts#L4)
 
 ***
 
@@ -66,7 +66,7 @@ title: Comment
 
 #### Source
 
-[alg/comment.ts:6](https://github.com/BrouxtForce/cubelib/blob/72117884834c9a330d7870c13642ec7c97dbc128/src/alg/comment.ts#L6)
+[alg/comment.ts:6](https://github.com/BrouxtForce/cubelib/blob/46235e0efd69874517537607aff50e6e913dc207/src/alg/comment.ts#L6)
 
 ## Methods
 
@@ -84,7 +84,7 @@ title: Comment
 
 #### Source
 
-[alg/comment.ts:14](https://github.com/BrouxtForce/cubelib/blob/72117884834c9a330d7870c13642ec7c97dbc128/src/alg/comment.ts#L14)
+[alg/comment.ts:14](https://github.com/BrouxtForce/cubelib/blob/46235e0efd69874517537607aff50e6e913dc207/src/alg/comment.ts#L14)
 
 ***
 
@@ -102,4 +102,4 @@ title: Comment
 
 #### Source
 
-[alg/comment.ts:18](https://github.com/BrouxtForce/cubelib/blob/72117884834c9a330d7870c13642ec7c97dbc128/src/alg/comment.ts#L18)
+[alg/comment.ts:18](https://github.com/BrouxtForce/cubelib/blob/46235e0efd69874517537607aff50e6e913dc207/src/alg/comment.ts#L18)

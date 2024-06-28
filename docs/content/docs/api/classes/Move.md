@@ -36,7 +36,7 @@ title: Move
 
 #### Source
 
-[alg/move.ts:16](https://github.com/BrouxtForce/cubelib/blob/72117884834c9a330d7870c13642ec7c97dbc128/src/alg/move.ts#L16)
+[alg/move.ts:16](https://github.com/BrouxtForce/cubelib/blob/46235e0efd69874517537607aff50e6e913dc207/src/alg/move.ts#L16)
 
 ## Properties
 
@@ -50,7 +50,7 @@ title: Move
 
 #### Source
 
-[alg/move.ts:12](https://github.com/BrouxtForce/cubelib/blob/72117884834c9a330d7870c13642ec7c97dbc128/src/alg/move.ts#L12)
+[alg/move.ts:12](https://github.com/BrouxtForce/cubelib/blob/46235e0efd69874517537607aff50e6e913dc207/src/alg/move.ts#L12)
 
 ***
 
@@ -60,7 +60,7 @@ title: Move
 
 #### Source
 
-[alg/move.ts:11](https://github.com/BrouxtForce/cubelib/blob/72117884834c9a330d7870c13642ec7c97dbc128/src/alg/move.ts#L11)
+[alg/move.ts:11](https://github.com/BrouxtForce/cubelib/blob/46235e0efd69874517537607aff50e6e913dc207/src/alg/move.ts#L11)
 
 ***
 
@@ -70,7 +70,7 @@ title: Move
 
 #### Source
 
-[alg/move.ts:9](https://github.com/BrouxtForce/cubelib/blob/72117884834c9a330d7870c13642ec7c97dbc128/src/alg/move.ts#L9)
+[alg/move.ts:9](https://github.com/BrouxtForce/cubelib/blob/46235e0efd69874517537607aff50e6e913dc207/src/alg/move.ts#L9)
 
 ***
 
@@ -84,7 +84,7 @@ title: Move
 
 #### Source
 
-[alg/move.ts:14](https://github.com/BrouxtForce/cubelib/blob/72117884834c9a330d7870c13642ec7c97dbc128/src/alg/move.ts#L14)
+[alg/move.ts:14](https://github.com/BrouxtForce/cubelib/blob/46235e0efd69874517537607aff50e6e913dc207/src/alg/move.ts#L14)
 
 ***
 
@@ -94,7 +94,7 @@ title: Move
 
 #### Source
 
-[alg/move.ts:10](https://github.com/BrouxtForce/cubelib/blob/72117884834c9a330d7870c13642ec7c97dbc128/src/alg/move.ts#L10)
+[alg/move.ts:10](https://github.com/BrouxtForce/cubelib/blob/46235e0efd69874517537607aff50e6e913dc207/src/alg/move.ts#L10)
 
 ***
 
@@ -108,7 +108,7 @@ title: Move
 
 #### Source
 
-[alg/move.ts:7](https://github.com/BrouxtForce/cubelib/blob/72117884834c9a330d7870c13642ec7c97dbc128/src/alg/move.ts#L7)
+[alg/move.ts:7](https://github.com/BrouxtForce/cubelib/blob/46235e0efd69874517537607aff50e6e913dc207/src/alg/move.ts#L7)
 
 ## Methods
 
@@ -126,7 +126,7 @@ title: Move
 
 #### Source
 
-[alg/move.ts:189](https://github.com/BrouxtForce/cubelib/blob/72117884834c9a330d7870c13642ec7c97dbc128/src/alg/move.ts#L189)
+[alg/move.ts:189](https://github.com/BrouxtForce/cubelib/blob/46235e0efd69874517537607aff50e6e913dc207/src/alg/move.ts#L189)
 
 ***
 
@@ -144,7 +144,7 @@ title: Move
 
 #### Source
 
-[alg/move.ts:104](https://github.com/BrouxtForce/cubelib/blob/72117884834c9a330d7870c13642ec7c97dbc128/src/alg/move.ts#L104)
+[alg/move.ts:104](https://github.com/BrouxtForce/cubelib/blob/46235e0efd69874517537607aff50e6e913dc207/src/alg/move.ts#L104)
 
 ***
 
@@ -162,7 +162,7 @@ title: Move
 
 #### Source
 
-[alg/move.ts:176](https://github.com/BrouxtForce/cubelib/blob/72117884834c9a330d7870c13642ec7c97dbc128/src/alg/move.ts#L176)
+[alg/move.ts:176](https://github.com/BrouxtForce/cubelib/blob/46235e0efd69874517537607aff50e6e913dc207/src/alg/move.ts#L176)
 
 ***
 
@@ -180,7 +180,7 @@ title: Move
 
 #### Source
 
-[alg/move.ts:108](https://github.com/BrouxtForce/cubelib/blob/72117884834c9a330d7870c13642ec7c97dbc128/src/alg/move.ts#L108)
+[alg/move.ts:108](https://github.com/BrouxtForce/cubelib/blob/46235e0efd69874517537607aff50e6e913dc207/src/alg/move.ts#L108)
 
 ***
 
@@ -198,7 +198,7 @@ title: Move
 
 #### Source
 
-[alg/move.ts:112](https://github.com/BrouxtForce/cubelib/blob/72117884834c9a330d7870c13642ec7c97dbc128/src/alg/move.ts#L112)
+[alg/move.ts:112](https://github.com/BrouxtForce/cubelib/blob/46235e0efd69874517537607aff50e6e913dc207/src/alg/move.ts#L112)
 
 ***
 
@@ -224,7 +224,7 @@ title: Move
 
 #### Source
 
-[alg/move.ts:183](https://github.com/BrouxtForce/cubelib/blob/72117884834c9a330d7870c13642ec7c97dbc128/src/alg/move.ts#L183)
+[alg/move.ts:183](https://github.com/BrouxtForce/cubelib/blob/46235e0efd69874517537607aff50e6e913dc207/src/alg/move.ts#L183)
 
 ***
 
@@ -242,7 +242,7 @@ title: Move
 
 #### Source
 
-[alg/move.ts:116](https://github.com/BrouxtForce/cubelib/blob/72117884834c9a330d7870c13642ec7c97dbc128/src/alg/move.ts#L116)
+[alg/move.ts:116](https://github.com/BrouxtForce/cubelib/blob/46235e0efd69874517537607aff50e6e913dc207/src/alg/move.ts#L116)
 
 ***
 
@@ -268,7 +268,7 @@ title: Move
 
 #### Source
 
-[alg/move.ts:186](https://github.com/BrouxtForce/cubelib/blob/72117884834c9a330d7870c13642ec7c97dbc128/src/alg/move.ts#L186)
+[alg/move.ts:186](https://github.com/BrouxtForce/cubelib/blob/46235e0efd69874517537607aff50e6e913dc207/src/alg/move.ts#L186)
 
 ***
 
@@ -286,7 +286,7 @@ title: Move
 
 #### Source
 
-[alg/move.ts:166](https://github.com/BrouxtForce/cubelib/blob/72117884834c9a330d7870c13642ec7c97dbc128/src/alg/move.ts#L166)
+[alg/move.ts:166](https://github.com/BrouxtForce/cubelib/blob/46235e0efd69874517537607aff50e6e913dc207/src/alg/move.ts#L166)
 
 ***
 
@@ -304,7 +304,7 @@ title: Move
 
 #### Source
 
-[alg/move.ts:121](https://github.com/BrouxtForce/cubelib/blob/72117884834c9a330d7870c13642ec7c97dbc128/src/alg/move.ts#L121)
+[alg/move.ts:121](https://github.com/BrouxtForce/cubelib/blob/46235e0efd69874517537607aff50e6e913dc207/src/alg/move.ts#L121)
 
 ***
 
@@ -322,4 +322,4 @@ title: Move
 
 #### Source
 
-[alg/move.ts:25](https://github.com/BrouxtForce/cubelib/blob/72117884834c9a330d7870c13642ec7c97dbc128/src/alg/move.ts#L25)
+[alg/move.ts:25](https://github.com/BrouxtForce/cubelib/blob/46235e0efd69874517537607aff50e6e913dc207/src/alg/move.ts#L25)

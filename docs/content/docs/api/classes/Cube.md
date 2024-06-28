@@ -26,7 +26,7 @@ title: Cube
 
 #### Source
 
-[cube/cube.ts:72](https://github.com/BrouxtForce/cubelib/blob/72117884834c9a330d7870c13642ec7c97dbc128/src/cube/cube.ts#L72)
+[cube/cube.ts:72](https://github.com/BrouxtForce/cubelib/blob/46235e0efd69874517537607aff50e6e913dc207/src/cube/cube.ts#L72)
 
 ## Properties
 
@@ -36,7 +36,7 @@ title: Cube
 
 #### Source
 
-[cube/cube.ts:70](https://github.com/BrouxtForce/cubelib/blob/72117884834c9a330d7870c13642ec7c97dbc128/src/cube/cube.ts#L70)
+[cube/cube.ts:70](https://github.com/BrouxtForce/cubelib/blob/46235e0efd69874517537607aff50e6e913dc207/src/cube/cube.ts#L70)
 
 ## Methods
 
@@ -54,7 +54,7 @@ title: Cube
 
 #### Source
 
-[cube/cube.ts:806](https://github.com/BrouxtForce/cubelib/blob/72117884834c9a330d7870c13642ec7c97dbc128/src/cube/cube.ts#L806)
+[cube/cube.ts:806](https://github.com/BrouxtForce/cubelib/blob/46235e0efd69874517537607aff50e6e913dc207/src/cube/cube.ts#L806)
 
 ***
 
@@ -74,7 +74,7 @@ title: Cube
 
 #### Source
 
-[cube/cube.ts:827](https://github.com/BrouxtForce/cubelib/blob/72117884834c9a330d7870c13642ec7c97dbc128/src/cube/cube.ts#L827)
+[cube/cube.ts:827](https://github.com/BrouxtForce/cubelib/blob/46235e0efd69874517537607aff50e6e913dc207/src/cube/cube.ts#L827)
 
 ***
 
@@ -88,7 +88,7 @@ title: Cube
 
 #### Source
 
-[cube/cube.ts:106](https://github.com/BrouxtForce/cubelib/blob/72117884834c9a330d7870c13642ec7c97dbc128/src/cube/cube.ts#L106)
+[cube/cube.ts:106](https://github.com/BrouxtForce/cubelib/blob/46235e0efd69874517537607aff50e6e913dc207/src/cube/cube.ts#L106)
 
 ***
 
@@ -106,7 +106,7 @@ title: Cube
 
 #### Source
 
-[cube/cube.ts:603](https://github.com/BrouxtForce/cubelib/blob/72117884834c9a330d7870c13642ec7c97dbc128/src/cube/cube.ts#L603)
+[cube/cube.ts:603](https://github.com/BrouxtForce/cubelib/blob/46235e0efd69874517537607aff50e6e913dc207/src/cube/cube.ts#L603)
 
 ***
 
@@ -128,7 +128,7 @@ title: Cube
 
 #### Source
 
-[cube/cube.ts:365](https://github.com/BrouxtForce/cubelib/blob/72117884834c9a330d7870c13642ec7c97dbc128/src/cube/cube.ts#L365)
+[cube/cube.ts:365](https://github.com/BrouxtForce/cubelib/blob/46235e0efd69874517537607aff50e6e913dc207/src/cube/cube.ts#L365)
 
 ***
 
@@ -148,7 +148,7 @@ title: Cube
 
 #### Source
 
-[cube/cube.ts:308](https://github.com/BrouxtForce/cubelib/blob/72117884834c9a330d7870c13642ec7c97dbc128/src/cube/cube.ts#L308)
+[cube/cube.ts:308](https://github.com/BrouxtForce/cubelib/blob/46235e0efd69874517537607aff50e6e913dc207/src/cube/cube.ts#L308)
 
 ***
 
@@ -168,7 +168,7 @@ title: Cube
 
 #### Source
 
-[cube/cube.ts:192](https://github.com/BrouxtForce/cubelib/blob/72117884834c9a330d7870c13642ec7c97dbc128/src/cube/cube.ts#L192)
+[cube/cube.ts:192](https://github.com/BrouxtForce/cubelib/blob/46235e0efd69874517537607aff50e6e913dc207/src/cube/cube.ts#L192)
 
 ***
 
@@ -190,7 +190,7 @@ title: Cube
 
 #### Source
 
-[cube/cube.ts:248](https://github.com/BrouxtForce/cubelib/blob/72117884834c9a330d7870c13642ec7c97dbc128/src/cube/cube.ts#L248)
+[cube/cube.ts:248](https://github.com/BrouxtForce/cubelib/blob/46235e0efd69874517537607aff50e6e913dc207/src/cube/cube.ts#L248)
 
 ***
 
@@ -214,7 +214,7 @@ title: Cube
 
 #### Source
 
-[cube/cube.ts:767](https://github.com/BrouxtForce/cubelib/blob/72117884834c9a330d7870c13642ec7c97dbc128/src/cube/cube.ts#L767)
+[cube/cube.ts:767](https://github.com/BrouxtForce/cubelib/blob/46235e0efd69874517537607aff50e6e913dc207/src/cube/cube.ts#L767)
 
 ***
 
@@ -228,7 +228,7 @@ title: Cube
 
 #### Source
 
-[cube/cube.ts:760](https://github.com/BrouxtForce/cubelib/blob/72117884834c9a330d7870c13642ec7c97dbc128/src/cube/cube.ts#L760)
+[cube/cube.ts:760](https://github.com/BrouxtForce/cubelib/blob/46235e0efd69874517537607aff50e6e913dc207/src/cube/cube.ts#L760)
 
 ***
 
@@ -242,7 +242,7 @@ title: Cube
 
 #### Source
 
-[cube/cube.ts:109](https://github.com/BrouxtForce/cubelib/blob/72117884834c9a330d7870c13642ec7c97dbc128/src/cube/cube.ts#L109)
+[cube/cube.ts:109](https://github.com/BrouxtForce/cubelib/blob/46235e0efd69874517537607aff50e6e913dc207/src/cube/cube.ts#L109)
 
 ***
 
@@ -256,7 +256,7 @@ title: Cube
 
 #### Source
 
-[cube/cube.ts:117](https://github.com/BrouxtForce/cubelib/blob/72117884834c9a330d7870c13642ec7c97dbc128/src/cube/cube.ts#L117)
+[cube/cube.ts:117](https://github.com/BrouxtForce/cubelib/blob/46235e0efd69874517537607aff50e6e913dc207/src/cube/cube.ts#L117)
 
 ***
 
@@ -270,7 +270,7 @@ title: Cube
 
 #### Source
 
-[cube/cube.ts:96](https://github.com/BrouxtForce/cubelib/blob/72117884834c9a330d7870c13642ec7c97dbc128/src/cube/cube.ts#L96)
+[cube/cube.ts:96](https://github.com/BrouxtForce/cubelib/blob/46235e0efd69874517537607aff50e6e913dc207/src/cube/cube.ts#L96)
 
 ***
 
@@ -288,4 +288,4 @@ title: Cube
 
 #### Source
 
-[cube/cube.ts:85](https://github.com/BrouxtForce/cubelib/blob/72117884834c9a330d7870c13642ec7c97dbc128/src/cube/cube.ts#L85)
+[cube/cube.ts:85](https://github.com/BrouxtForce/cubelib/blob/46235e0efd69874517537607aff50e6e913dc207/src/cube/cube.ts#L85)

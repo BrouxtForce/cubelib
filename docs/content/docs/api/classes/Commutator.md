@@ -36,7 +36,7 @@ title: Commutator
 
 #### Source
 
-[alg/commutator.ts:18](https://github.com/BrouxtForce/cubelib/blob/72117884834c9a330d7870c13642ec7c97dbc128/src/alg/commutator.ts#L18)
+[alg/commutator.ts:18](https://github.com/BrouxtForce/cubelib/blob/46235e0efd69874517537607aff50e6e913dc207/src/alg/commutator.ts#L18)
 
 ## Properties
 
@@ -46,7 +46,7 @@ title: Commutator
 
 #### Source
 
-[alg/commutator.ts:9](https://github.com/BrouxtForce/cubelib/blob/72117884834c9a330d7870c13642ec7c97dbc128/src/alg/commutator.ts#L9)
+[alg/commutator.ts:9](https://github.com/BrouxtForce/cubelib/blob/46235e0efd69874517537607aff50e6e913dc207/src/alg/commutator.ts#L9)
 
 ***
 
@@ -56,7 +56,7 @@ title: Commutator
 
 #### Source
 
-[alg/commutator.ts:10](https://github.com/BrouxtForce/cubelib/blob/72117884834c9a330d7870c13642ec7c97dbc128/src/alg/commutator.ts#L10)
+[alg/commutator.ts:10](https://github.com/BrouxtForce/cubelib/blob/46235e0efd69874517537607aff50e6e913dc207/src/alg/commutator.ts#L10)
 
 ***
 
@@ -70,7 +70,7 @@ title: Commutator
 
 #### Source
 
-[alg/commutator.ts:14](https://github.com/BrouxtForce/cubelib/blob/72117884834c9a330d7870c13642ec7c97dbc128/src/alg/commutator.ts#L14)
+[alg/commutator.ts:14](https://github.com/BrouxtForce/cubelib/blob/46235e0efd69874517537607aff50e6e913dc207/src/alg/commutator.ts#L14)
 
 ***
 
@@ -80,7 +80,7 @@ title: Commutator
 
 #### Source
 
-[alg/commutator.ts:12](https://github.com/BrouxtForce/cubelib/blob/72117884834c9a330d7870c13642ec7c97dbc128/src/alg/commutator.ts#L12)
+[alg/commutator.ts:12](https://github.com/BrouxtForce/cubelib/blob/46235e0efd69874517537607aff50e6e913dc207/src/alg/commutator.ts#L12)
 
 ***
 
@@ -94,7 +94,7 @@ title: Commutator
 
 #### Source
 
-[alg/commutator.ts:16](https://github.com/BrouxtForce/cubelib/blob/72117884834c9a330d7870c13642ec7c97dbc128/src/alg/commutator.ts#L16)
+[alg/commutator.ts:16](https://github.com/BrouxtForce/cubelib/blob/46235e0efd69874517537607aff50e6e913dc207/src/alg/commutator.ts#L16)
 
 ***
 
@@ -108,7 +108,7 @@ title: Commutator
 
 #### Source
 
-[alg/commutator.ts:7](https://github.com/BrouxtForce/cubelib/blob/72117884834c9a330d7870c13642ec7c97dbc128/src/alg/commutator.ts#L7)
+[alg/commutator.ts:7](https://github.com/BrouxtForce/cubelib/blob/46235e0efd69874517537607aff50e6e913dc207/src/alg/commutator.ts#L7)
 
 ## Methods
 
@@ -126,7 +126,7 @@ title: Commutator
 
 #### Source
 
-[alg/commutator.ts:152](https://github.com/BrouxtForce/cubelib/blob/72117884834c9a330d7870c13642ec7c97dbc128/src/alg/commutator.ts#L152)
+[alg/commutator.ts:152](https://github.com/BrouxtForce/cubelib/blob/46235e0efd69874517537607aff50e6e913dc207/src/alg/commutator.ts#L152)
 
 ***
 
@@ -144,7 +144,7 @@ title: Commutator
 
 #### Source
 
-[alg/commutator.ts:26](https://github.com/BrouxtForce/cubelib/blob/72117884834c9a330d7870c13642ec7c97dbc128/src/alg/commutator.ts#L26)
+[alg/commutator.ts:26](https://github.com/BrouxtForce/cubelib/blob/46235e0efd69874517537607aff50e6e913dc207/src/alg/commutator.ts#L26)
 
 ***
 
@@ -162,7 +162,7 @@ title: Commutator
 
 #### Source
 
-[alg/commutator.ts:30](https://github.com/BrouxtForce/cubelib/blob/72117884834c9a330d7870c13642ec7c97dbc128/src/alg/commutator.ts#L30)
+[alg/commutator.ts:30](https://github.com/BrouxtForce/cubelib/blob/46235e0efd69874517537607aff50e6e913dc207/src/alg/commutator.ts#L30)
 
 ***
 
@@ -180,7 +180,7 @@ title: Commutator
 
 #### Source
 
-[alg/commutator.ts:75](https://github.com/BrouxtForce/cubelib/blob/72117884834c9a330d7870c13642ec7c97dbc128/src/alg/commutator.ts#L75)
+[alg/commutator.ts:75](https://github.com/BrouxtForce/cubelib/blob/46235e0efd69874517537607aff50e6e913dc207/src/alg/commutator.ts#L75)
 
 ***
 
@@ -206,7 +206,7 @@ title: Commutator
 
 #### Source
 
-[alg/commutator.ts:146](https://github.com/BrouxtForce/cubelib/blob/72117884834c9a330d7870c13642ec7c97dbc128/src/alg/commutator.ts#L146)
+[alg/commutator.ts:146](https://github.com/BrouxtForce/cubelib/blob/46235e0efd69874517537607aff50e6e913dc207/src/alg/commutator.ts#L146)
 
 ***
 
@@ -224,7 +224,7 @@ title: Commutator
 
 #### Source
 
-[alg/commutator.ts:110](https://github.com/BrouxtForce/cubelib/blob/72117884834c9a330d7870c13642ec7c97dbc128/src/alg/commutator.ts#L110)
+[alg/commutator.ts:110](https://github.com/BrouxtForce/cubelib/blob/46235e0efd69874517537607aff50e6e913dc207/src/alg/commutator.ts#L110)
 
 ***
 
@@ -250,7 +250,7 @@ title: Commutator
 
 #### Source
 
-[alg/commutator.ts:149](https://github.com/BrouxtForce/cubelib/blob/72117884834c9a330d7870c13642ec7c97dbc128/src/alg/commutator.ts#L149)
+[alg/commutator.ts:149](https://github.com/BrouxtForce/cubelib/blob/46235e0efd69874517537607aff50e6e913dc207/src/alg/commutator.ts#L149)
 
 ***
 
@@ -268,7 +268,7 @@ title: Commutator
 
 #### Source
 
-[alg/commutator.ts:129](https://github.com/BrouxtForce/cubelib/blob/72117884834c9a330d7870c13642ec7c97dbc128/src/alg/commutator.ts#L129)
+[alg/commutator.ts:129](https://github.com/BrouxtForce/cubelib/blob/46235e0efd69874517537607aff50e6e913dc207/src/alg/commutator.ts#L129)
 
 ***
 
@@ -286,4 +286,4 @@ title: Commutator
 
 #### Source
 
-[alg/commutator.ts:118](https://github.com/BrouxtForce/cubelib/blob/72117884834c9a330d7870c13642ec7c97dbc128/src/alg/commutator.ts#L118)
+[alg/commutator.ts:118](https://github.com/BrouxtForce/cubelib/blob/46235e0efd69874517537607aff50e6e913dc207/src/alg/commutator.ts#L118)

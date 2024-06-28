@@ -18,4 +18,4 @@ title: getRandomState
 
 ## Source
 
-[solver/fast-lse.ts:452](https://github.com/BrouxtForce/cubelib/blob/72117884834c9a330d7870c13642ec7c97dbc128/src/solver/fast-lse.ts#L452)
+[solver/fast-lse.ts:452](https://github.com/BrouxtForce/cubelib/blob/46235e0efd69874517537607aff50e6e913dc207/src/solver/fast-lse.ts#L452)
