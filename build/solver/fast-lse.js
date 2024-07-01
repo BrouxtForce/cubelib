@@ -1,4 +1,3 @@
-import { Cube } from "../cube/cube.js";
 export var FastLSE;
 (function (FastLSE) {
     FastLSE.SOLVED_STATE = 0x543210;
@@ -116,96 +115,70 @@ export var FastLSE;
         return state;
     }
     FastLSE.move = move;
-    function reverseLseMove(move) {
-        switch (move) {
-            case LSEMove.M: return LSEMove.MPrime;
-            case LSEMove.MPrime: return LSEMove.M;
-            case LSEMove.U: return LSEMove.UPrime;
-            case LSEMove.UPrime: return LSEMove.U;
-            default: return move;
+    function fillTable(state, depth, mMove, numMoves, table) {
+        const tableValue = table.get(state);
+        if (tableValue === undefined || numMoves < tableValue) {
+            table.set(state, numMoves);
         }
-    }
-    function setLseMove(moves, index, move) {
-        return (moves & ((~0) << (index * 3))) | (move << (index * 3));
-    }
-    function getLseMove(moves, index) {
-        return (moves >> (index * 3)) & 0b111;
-    }
-    function numLseMoves(moves) {
-        return Math.trunc((34 - Math.clz32(moves)) / 3);
-    }
-    function lseMoveArrayToNumber(lseMoves) {
-        let number = 0;
-        for (let i = 0; i < lseMoves.length; i++) {
-            number = setLseMove(number, i, lseMoves[i]);
+        else {
+            return;
         }
-        return number;
-    }
-    function lseMovesToArray(lseMoves) {
-        const array = [];
-        for (let i = 0; i < 10; i++) {
-            const lseMove = getLseMove(lseMoves, i);
-            if (lseMove) {
-                array.push(lseMove);
-            }
+        if (depth < 1) {
+            return;
         }
-        return array;
-    }
-    const table = new Map();
-    let tableSize = 0;
-    function fillTable(state, depth, mMove, lseMoves) {
         const start = mMove ? 1 : 4;
         const end = mMove ? 4 : 7;
         for (let i = start; i < end; i++) {
             const lseMove = i;
             const nextState = move(state, lseMove);
-            if (nextState === FastLSE.SOLVED_STATE) {
-                continue;
-            }
-            const nextLseMoves = setLseMove(lseMoves, depth - 1, reverseLseMove(lseMove));
-            const tableValue = table.get(nextState);
-            if (tableValue === undefined) {
-                table.set(nextState, nextLseMoves);
-            }
-            else if (typeof tableValue === "number") {
-                table.set(nextState, [tableValue, nextLseMoves]);
-            }
-            else {
-                tableValue.push(nextLseMoves);
-            }
-            if (depth > 1) {
-                fillTable(nextState, depth - 1, !mMove, nextLseMoves);
-            }
+            fillTable(nextState, depth - 1, !mMove, numMoves + 1, table);
         }
     }
-    function initTable() {
-        tableSize = 10;
-        console.time("fill table");
-        fillTable(FastLSE.SOLVED_STATE, tableSize, true, 0);
-        fillTable(FastLSE.SOLVED_STATE, tableSize, false, 0);
-        console.timeEnd("fill table");
+    const eolrTable = new Map();
+    let eolrTableSize = 0;
+    function initEolrTable(size) {
+        eolrTableSize = size;
+        let state = getEolrState(FastLSE.SOLVED_STATE);
+        for (let j = 0; j < 4; j++) {
+            state = move(state, LSEMove.U);
+            fillTable(state, eolrTableSize, true, 0, eolrTable);
+            fillTable(state, eolrTableSize, false, 0, eolrTable);
+            state = move(state, LSEMove.U2);
+            fillTable(state, eolrTableSize, true, 0, eolrTable);
+            fillTable(state, eolrTableSize, false, 0, eolrTable);
+            state = move(state, LSEMove.U);
+            state = move(state, LSEMove.M);
+        }
+    }
+    FastLSE.initEolrTable = initEolrTable;
+    function clearEolrTable() {
+        eolrTableSize = 0;
+        eolrTable.clear();
+    }
+    FastLSE.clearEolrTable = clearEolrTable;
+    const lseTable = new Map();
+    let lseTableSize = 0;
+    function initTable(size) {
+        lseTableSize = size;
+        fillTable(FastLSE.SOLVED_STATE, lseTableSize, true, 0, lseTable);
+        fillTable(FastLSE.SOLVED_STATE, lseTableSize, false, 0, lseTable);
     }
     FastLSE.initTable = initTable;
     function clearTable() {
-        tableSize = 0;
-        console.time("clear table");
-        table.clear();
-        console.timeEnd("clear table");
+        lseTableSize = 0;
+        lseTable.clear();
     }
     FastLSE.clearTable = clearTable;
-    function search(state, isSolved, depth, mMove, solution, solutions) {
-        let storedState = table.get(state);
-        if (storedState !== undefined) {
-            if (typeof storedState === "number") {
-                storedState = [storedState];
+    function search(state, depth, mMove, solution, solutions, table, tableSize) {
+        let numMoves = table.get(state);
+        if (numMoves !== undefined) {
+            if (numMoves === 0) {
+                solutions.push(solution.map(move => lseMoveToString(move)).join(" "));
+                return;
             }
-            for (const lseMoves of storedState) {
-                if (numLseMoves(lseMoves) > depth) {
-                    continue;
-                }
-                solutions.push(solution.concat(lseMovesToArray(lseMoves)).map(val => lseMoveToString(val)).join(" "));
+            if (numMoves > depth) {
+                return;
             }
-            return;
         }
         else if (depth <= tableSize) {
             return;
@@ -216,11 +189,8 @@ export var FastLSE;
             const lseMove = i;
             const nextState = move(state, lseMove);
             solution.push(lseMove);
-            if (isSolved(nextState)) {
-                solutions.push(solution.map(move => lseMoveToString(move)).join(" "));
-            }
-            else if (depth > 1) {
-                search(nextState, isSolved, depth - 1, !mMove, solution, solutions);
+            if (depth > 1) {
+                search(nextState, depth - 1, !mMove, solution, solutions, table, tableSize);
             }
             solution.pop();
         }
@@ -228,30 +198,11 @@ export var FastLSE;
     FastLSE.search = search;
     function solve(state, depth) {
         const solutions = [];
-        const isSolved = (state) => state === FastLSE.SOLVED_STATE;
-        console.time("solve");
-        search(state, isSolved, depth, true, [], solutions);
-        search(state, isSolved, depth, false, [], solutions);
-        console.timeEnd("solve");
+        search(state, depth, true, [], solutions, lseTable, lseTableSize);
+        search(state, depth, false, [], solutions, lseTable, lseTableSize);
         return solutions;
     }
     FastLSE.solve = solve;
-    function getEoState(ub, ur, uf, ul, df, db) {
-        let eoState = 0;
-        if (ub)
-            eoState = setNibble(eoState, UB_INDEX, 0b1000);
-        if (ur)
-            eoState = setNibble(eoState, UR_INDEX, 0b1000);
-        if (uf)
-            eoState = setNibble(eoState, UF_INDEX, 0b1000);
-        if (ul)
-            eoState = setNibble(eoState, UL_INDEX, 0b1000);
-        if (df)
-            eoState = setNibble(eoState, DF_INDEX, 0b1000);
-        if (db)
-            eoState = setNibble(eoState, DB_INDEX, 0b1000);
-        return eoState;
-    }
     function getEolrState(state) {
         let eolrState = state;
         const ulurEdges = [UL_INDEX, UR_INDEX];
@@ -275,58 +226,11 @@ export var FastLSE;
             eolrState = setNibble(eolrState, DB_INDEX, dbEdge & 0b1000);
         return eolrState;
     }
-    const ocEolrMask = getEoState(false, false, false, false, false, false);
-    const mcEolrMask = getEoState(false, true, false, true, true, true);
-    const eoMask = getEoState(true, true, true, true, true, true);
-    function isEolrSolved(eolrState) {
-        const centerPermutation = getNibble(eolrState, CENTER_INDEX);
-        if (centerPermutation % 2 === 0) {
-            if ((eolrState & eoMask) !== ocEolrMask) {
-                return false;
-            }
-        }
-        else {
-            if ((eolrState & eoMask) !== mcEolrMask) {
-                return false;
-            }
-        }
-        const ufEdge = getNibble(eolrState, UF_INDEX);
-        const ubEdge = getNibble(eolrState, UB_INDEX);
-        const cornerPermutation = getNibble(eolrState, CORNER_INDEX);
-        switch (cornerPermutation) {
-            case 0:
-            case 2: return false;
-            case 1:
-                if (ufEdge !== UR_INDEX || ubEdge !== UL_INDEX) {
-                    return false;
-                }
-                break;
-            case 3:
-                if (ufEdge !== UL_INDEX || ubEdge !== UR_INDEX) {
-                    return false;
-                }
-                break;
-        }
-        return true;
-    }
     function solveEOLR(state, depth) {
         const solutions = [];
         const eolrState = getEolrState(state);
-        const cubeContainer = document.createElement("div");
-        document.body.appendChild(cubeContainer);
-        const cube = Cube.fromString(stateToString(eolrState));
-        cube.html(cubeContainer);
-        function stringSplit(str) {
-            str = Array(32 - str.length % 32).fill("0").join("") + str;
-            const out = [];
-            for (let i = 0; i < str.length; i += 4) {
-                out.push(str.slice(i, Math.min(i + 4, str.length)));
-            }
-            return out.join(" ");
-        }
-        clearTable();
-        search(eolrState, isEolrSolved, depth, true, [], solutions);
-        search(eolrState, isEolrSolved, depth, false, [], solutions);
+        search(eolrState, depth, true, [], solutions, eolrTable, eolrTableSize);
+        search(eolrState, depth, false, [], solutions, eolrTable, eolrTableSize);
         return solutions;
     }
     FastLSE.solveEOLR = solveEOLR;
@@ -423,4 +327,28 @@ export var FastLSE;
         return randomState;
     }
     FastLSE.getRandomState = getRandomState;
+    function getRandomEolrStateWithEo(eo) {
+        const cornerPermutation = Math.floor(4 * Math.random());
+        const centerPermutation = Math.floor(2 * Math.random()) * 2;
+        const solvedEdgePermutation = [0, 1, 2, 3, 4, 5];
+        const edgePermutation = Array(6).fill(0).map(() => solvedEdgePermutation.splice(Math.floor(solvedEdgePermutation.length * Math.random()), 1)[0]);
+        const edgeOrientation = eo;
+        if (edgeOrientation.reduce((acc, val) => acc + val) % 2 !== 0) {
+            edgeOrientation[0] ^= 1;
+        }
+        let randomState = 0;
+        randomState = setNibble(randomState, UB_INDEX, edgePermutation[0] | (edgeOrientation[0] << 3));
+        randomState = setNibble(randomState, UR_INDEX, edgePermutation[1] | (edgeOrientation[1] << 3));
+        randomState = setNibble(randomState, UF_INDEX, edgePermutation[2] | (edgeOrientation[2] << 3));
+        randomState = setNibble(randomState, UL_INDEX, edgePermutation[3] | (edgeOrientation[3] << 3));
+        randomState = setNibble(randomState, DF_INDEX, edgePermutation[4] | (edgeOrientation[4] << 3));
+        randomState = setNibble(randomState, DB_INDEX, edgePermutation[5] | (edgeOrientation[5] << 3));
+        randomState = setNibble(randomState, CORNER_INDEX, cornerPermutation);
+        randomState = setNibble(randomState, CENTER_INDEX, centerPermutation);
+        if (getNumCycles(edgePermutation) % 2 !== (cornerPermutation + centerPermutation) % 2) {
+            randomState = swapEdges(randomState, DF_INDEX, DB_INDEX);
+        }
+        return randomState;
+    }
+    FastLSE.getRandomEolrStateWithEo = getRandomEolrStateWithEo;
 })(FastLSE || (FastLSE = {}));

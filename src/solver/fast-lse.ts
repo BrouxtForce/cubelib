@@ -150,107 +150,75 @@ export namespace FastLSE {
         return state;
     }
 
-    function reverseLseMove(move: LSEMove): LSEMove {
-        switch (move) {
-            case LSEMove.M:      return LSEMove.MPrime;
-            case LSEMove.MPrime: return LSEMove.M;
-            case LSEMove.U:      return LSEMove.UPrime;
-            case LSEMove.UPrime: return LSEMove.U;
-            default:             return move;
+    function fillTable(state: LSEState, depth: number, mMove: boolean, numMoves: number, table: Map<number, number>): void {
+        const tableValue = table.get(state);
+        if (tableValue === undefined || numMoves < tableValue) {
+            table.set(state, numMoves);
+        } else {
+            return;
         }
-    }
 
-    function setLseMove(moves: number, index: number, move: LSEMove): number {
-        return (moves & ((~0) << (index * 3))) | (move << (index * 3));
-    }
-
-    function getLseMove(moves: number, index: number): LSEMove {
-        return (moves >> (index * 3)) & 0b111;
-    }
-
-    function numLseMoves(moves: number): number {
-        return Math.trunc((34 - Math.clz32(moves)) / 3);
-    }
-
-    function lseMoveArrayToNumber(lseMoves: LSEMove[]): number {
-        let number: number = 0;
-        for (let i = 0; i < lseMoves.length; i++) {
-            number = setLseMove(number, i, lseMoves[i]);
+        if (depth < 1) {
+            return;
         }
-        return number;
-    }
-
-    function lseMovesToArray(lseMoves: number): LSEMove[] {
-        const array: LSEMove[] = [];
-        for (let i = 0; i < 10; i++) {
-            const lseMove = getLseMove(lseMoves, i);
-            if (lseMove) {
-                array.push(lseMove);
-            }
-        }
-        return array;
-    }
-
-    const table = new Map<number, number | number[]>();
-    let tableSize = 0;
-    function fillTable(state: LSEState, depth: number, mMove: boolean, lseMoves: number): void {
+        
         const start = mMove ? 1 : 4;
         const end = mMove ? 4 : 7;
         for (let i = start; i < end; i++) {
             const lseMove: LSEMove = i;
-
+            
             const nextState = move(state, lseMove);
-            if (nextState === SOLVED_STATE) {
-                continue;
-            }
-
-            const nextLseMoves = setLseMove(lseMoves, depth - 1, reverseLseMove(lseMove));
-
-            const tableValue = table.get(nextState);
-            if (tableValue === undefined) {
-                table.set(nextState, nextLseMoves);
-            } else if (typeof tableValue === "number") {
-                table.set(nextState, [tableValue, nextLseMoves]);
-            } else {
-                tableValue.push(nextLseMoves);
-            }
-
-            if (depth > 1) {
-                fillTable(nextState, depth - 1, !mMove, nextLseMoves);
-            }
+            fillTable(nextState, depth - 1, !mMove, numMoves + 1, table);
         }
     }
 
-    export function initTable(): void {
-        tableSize = 10;
+    const eolrTable = new Map<number, number>();
+    let eolrTableSize = 0;
+    export function initEolrTable(size: number): void {
+        eolrTableSize = size;
 
-        console.time("fill table");
-        fillTable(SOLVED_STATE, tableSize, true, 0);
-        fillTable(SOLVED_STATE, tableSize, false, 0);
-        console.timeEnd("fill table");
+        let state = getEolrState(SOLVED_STATE);
+        for (let j = 0; j < 4; j++) {
+            state = move(state, LSEMove.U);
+            fillTable(state, eolrTableSize, true, 0, eolrTable);
+            fillTable(state, eolrTableSize, false, 0, eolrTable);
+            state = move(state, LSEMove.U2);
+            fillTable(state, eolrTableSize, true, 0, eolrTable);
+            fillTable(state, eolrTableSize, false, 0, eolrTable);
+            state = move(state, LSEMove.U);
+            state = move(state, LSEMove.M);
+        }
+    }
+
+    export function clearEolrTable(): void {
+        eolrTableSize = 0;
+        eolrTable.clear();
+    }
+
+    const lseTable = new Map<number, number>();
+    let lseTableSize = 0;
+    export function initTable(size: number): void {
+        lseTableSize = size;
+
+        fillTable(SOLVED_STATE, lseTableSize, true, 0, lseTable);
+        fillTable(SOLVED_STATE, lseTableSize, false, 0, lseTable);
     }
 
     export function clearTable(): void {
-        tableSize = 0;
-
-        console.time("clear table");
-        table.clear();
-        console.timeEnd("clear table");
+        lseTableSize = 0;
+        lseTable.clear();
     }
 
-    export function search(state: LSEState, isSolved: (state: LSEState) => boolean, depth: number, mMove: boolean, solution: number[], solutions: string[]): void {
-        let storedState = table.get(state);
-        if (storedState !== undefined) {
-            if (typeof storedState === "number") {
-                storedState = [storedState];
+    export function search(state: LSEState, depth: number, mMove: boolean, solution: number[], solutions: string[], table: Map<number, number>, tableSize: number): void {
+        let numMoves = table.get(state);
+        if (numMoves !== undefined) {
+            if (numMoves === 0) {
+                solutions.push(solution.map(move => lseMoveToString(move)).join(" "));
+                return;
             }
-            for (const lseMoves of storedState) {
-                if (numLseMoves(lseMoves) > depth) {
-                    continue;
-                }
-                solutions.push(solution.concat(lseMovesToArray(lseMoves)).map(val => lseMoveToString(val)).join(" "));
+            if (numMoves > depth) {
+                return;
             }
-            return;
         } else if (depth <= tableSize) {
             return;
         }
@@ -262,10 +230,8 @@ export namespace FastLSE {
 
             const nextState = move(state, lseMove);
             solution.push(lseMove);
-            if (isSolved(nextState)) {
-                solutions.push(solution.map(move => lseMoveToString(move)).join(" "));
-            } else if (depth > 1) {
-                search(nextState, isSolved, depth - 1, !mMove, solution, solutions);
+            if (depth > 1) {
+                search(nextState, depth - 1, !mMove, solution, solutions, table, tableSize);
             }
             solution.pop();
         }
@@ -274,27 +240,10 @@ export namespace FastLSE {
     export function solve(state: LSEState, depth: number): string[] {
         const solutions: string[] = [];
 
-        const isSolved = (state: LSEState) => state === SOLVED_STATE;
-
-        console.time("solve");
-        search(state, isSolved, depth, true, [], solutions);
-        search(state, isSolved, depth, false, [], solutions);
-        console.timeEnd("solve");
+        search(state, depth, true, [], solutions, lseTable, lseTableSize);
+        search(state, depth, false, [], solutions, lseTable, lseTableSize);
 
         return solutions;
-    }
-
-    function getEoState(ub: boolean, ur: boolean, uf: boolean, ul: boolean, df: boolean, db: boolean): LSEState {
-        let eoState: LSEState = 0;
-
-        if (ub) eoState = setNibble(eoState, UB_INDEX, 0b1000);
-        if (ur) eoState = setNibble(eoState, UR_INDEX, 0b1000);
-        if (uf) eoState = setNibble(eoState, UF_INDEX, 0b1000);
-        if (ul) eoState = setNibble(eoState, UL_INDEX, 0b1000);
-        if (df) eoState = setNibble(eoState, DF_INDEX, 0b1000);
-        if (db) eoState = setNibble(eoState, DB_INDEX, 0b1000);
-
-        return eoState;
     }
 
     function getEolrState(state: LSEState): LSEState {
@@ -319,68 +268,12 @@ export namespace FastLSE {
         return eolrState;
     }
 
-    const ocEolrMask: LSEState = getEoState(false, false, false, false, false, false);
-    const mcEolrMask: LSEState = getEoState(false, true, false, true, true, true);
-    const eoMask: LSEState = getEoState(true, true, true, true, true, true);
-    function isEolrSolved(eolrState: LSEState): boolean {
-        const centerPermutation = getNibble(eolrState, CENTER_INDEX);
-        if (centerPermutation % 2 === 0) {
-            if ((eolrState & eoMask) !== ocEolrMask) {
-                return false;
-            }
-        } else {
-            if ((eolrState & eoMask) !== mcEolrMask) {
-                return false;
-            }
-        }
-
-        const ufEdge = getNibble(eolrState, UF_INDEX);
-        const ubEdge = getNibble(eolrState, UB_INDEX);
-
-        const cornerPermutation = getNibble(eolrState, CORNER_INDEX);
-        switch (cornerPermutation) {
-            case 0: case 2: return false;
-            case 1:
-                if (ufEdge !== UR_INDEX || ubEdge !== UL_INDEX) {
-                    return false;
-                }
-                break;
-            case 3:
-                if (ufEdge !== UL_INDEX || ubEdge !== UR_INDEX) {
-                    return false;
-                }
-                break;
-        }
-
-        return true;
-    }
-
     export function solveEOLR(state: LSEState, depth: number): string[] {
         const solutions: string[] = [];
 
         const eolrState = getEolrState(state);
-
-        const cubeContainer = document.createElement("div");
-        document.body.appendChild(cubeContainer);
-
-        const cube = Cube.fromString(stateToString(eolrState));
-        cube.html(cubeContainer);
-
-        function stringSplit(str: string): string {
-            str = Array(32 - str.length % 32).fill("0").join("") + str;
-
-            const out: string[] = [];
-            for (let i = 0; i < str.length; i += 4) {
-                out.push(str.slice(i, Math.min(i + 4, str.length)));
-            }
-
-            return out.join(" ");
-        }
-
-        clearTable();
-
-        search(eolrState, isEolrSolved, depth, true, [], solutions);
-        search(eolrState, isEolrSolved, depth, false, [], solutions);
+        search(eolrState, depth, true, [], solutions, eolrTable, eolrTableSize);
+        search(eolrState, depth, false, [], solutions, eolrTable, eolrTableSize);
 
         return solutions;
     }
@@ -455,6 +348,34 @@ export namespace FastLSE {
         const solvedEdgePermutation = [0, 1, 2, 3, 4, 5];
         const edgePermutation = Array(6).fill(0).map(() => solvedEdgePermutation.splice(Math.floor(solvedEdgePermutation.length * Math.random()), 1)[0]);
         const edgeOrientation = Array(6).fill(0).map(() => Math.floor(2 * Math.random()));
+
+        if (edgeOrientation.reduce((acc, val) => acc + val) % 2 !== 0) {
+            edgeOrientation[0] ^= 1;
+        }
+
+        let randomState = 0;
+        randomState = setNibble(randomState, UB_INDEX, edgePermutation[0] | (edgeOrientation[0] << 3));
+        randomState = setNibble(randomState, UR_INDEX, edgePermutation[1] | (edgeOrientation[1] << 3));
+        randomState = setNibble(randomState, UF_INDEX, edgePermutation[2] | (edgeOrientation[2] << 3));
+        randomState = setNibble(randomState, UL_INDEX, edgePermutation[3] | (edgeOrientation[3] << 3));
+        randomState = setNibble(randomState, DF_INDEX, edgePermutation[4] | (edgeOrientation[4] << 3));
+        randomState = setNibble(randomState, DB_INDEX, edgePermutation[5] | (edgeOrientation[5] << 3));
+        randomState = setNibble(randomState, CORNER_INDEX, cornerPermutation);
+        randomState = setNibble(randomState, CENTER_INDEX, centerPermutation);
+
+        if (getNumCycles(edgePermutation) % 2 !== (cornerPermutation + centerPermutation) % 2) {
+            randomState = swapEdges(randomState, DF_INDEX, DB_INDEX);
+        }
+
+        return randomState;
+    }
+
+    export function getRandomEolrStateWithEo(eo: number[]): LSEState {
+        const cornerPermutation = Math.floor(4 * Math.random());
+        const centerPermutation = Math.floor(2 * Math.random()) * 2;
+        const solvedEdgePermutation = [0, 1, 2, 3, 4, 5];
+        const edgePermutation = Array(6).fill(0).map(() => solvedEdgePermutation.splice(Math.floor(solvedEdgePermutation.length * Math.random()), 1)[0]);
+        const edgeOrientation = eo;
 
         if (edgeOrientation.reduce((acc, val) => acc + val) % 2 !== 0) {
             edgeOrientation[0] ^= 1;
