@@ -120,37 +120,75 @@ export class Alg {
         return outString;
     }
     simplify() {
-        let changed = true;
-        while (changed) {
-            changed = false;
-            let prevNode = null;
-            let prevNodeIndex = -1;
-            for (let i = 0; i < this.nodes.length; i++) {
-                let node = this.nodes[i];
-                if (node.type === "Whitespace" || node.type === "Comment") {
-                    continue;
-                }
-                node.simplify();
-                if (node.type === "Move") {
+        const moveNodeIndices = [];
+        for (let i = 0; i < this.nodes.length; i++) {
+            let node = this.nodes[i];
+            if (node.type === "Whitespace" || node.type === "Comment") {
+                continue;
+            }
+            node.simplify();
+            let gotoPrev = false;
+            switch (node.type) {
+                case "Alg":
+                    if (node.moveNodes.length === 0) {
+                        this.nodes.splice(i, 1);
+                        gotoPrev = true;
+                        break;
+                    }
+                    if (node.amount === 1 || node.moveNodes.length === 1) {
+                        node.moveNodes[0].amount *= node.amount;
+                        this.nodes.splice(i, 1, ...node.nodes);
+                        gotoPrev = true;
+                        break;
+                    }
+                    break;
+                case "Commutator":
+                    if (node.algA.moveNodes.length === 0 || node.algB.moveNodes.length === 0) {
+                        this.nodes.splice(i, 1);
+                        gotoPrev = true;
+                        break;
+                    }
+                    break;
+                case "Conjugate":
+                    if (node.algB.moveNodes.length === 0) {
+                        this.nodes.splice(i, 1);
+                        gotoPrev = true;
+                        break;
+                    }
+                    if (node.algA.moveNodes.length === 0) {
+                        this.nodes.splice(i, 1, ...node.algB.nodes);
+                        gotoPrev = true;
+                        break;
+                    }
+                    break;
+                case "Move":
                     if (node.amount === 0) {
                         this.nodes.splice(i, 1);
-                        i--;
-                        continue;
+                        gotoPrev = true;
+                        break;
                     }
-                }
-                if (node.type === "Move" && prevNode?.type === "Move") {
-                    if (node.face === prevNode.face) {
-                        changed = true;
-                        prevNode.amount += node.amount;
-                        this.nodes.splice(i, 1);
-                        i = prevNodeIndex;
-                        continue;
+                    const prevNodeIndex = moveNodeIndices.at(-1);
+                    const prevNode = (prevNodeIndex !== undefined) ? this.nodes[prevNodeIndex] : undefined;
+                    if (prevNode?.type === "Move") {
+                        if (node.face === prevNode.face) {
+                            prevNode.amount += node.amount;
+                            this.nodes.splice(i, 1);
+                            gotoPrev = true;
+                            break;
+                        }
                     }
-                }
-                prevNode = node;
-                prevNodeIndex = i;
+                    break;
             }
+            if (gotoPrev) {
+                i = (moveNodeIndices.pop() ?? 0) - 1;
+                continue;
+            }
+            moveNodeIndices.push(i);
         }
+        const newMoveNodes = this.nodes.filter(node => {
+            return node.type !== "Whitespace" && node.type !== "Comment";
+        });
+        this.moveNodes.splice(0, this.moveNodes.length, ...newMoveNodes);
         return this;
     }
     forward() {

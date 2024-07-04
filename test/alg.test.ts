@@ -1,6 +1,6 @@
 /// <reference types="bun-types" />
 
-import { expect, test } from "bun:test";
+import { expect, test, describe } from "bun:test";
 import { Alg } from "../src/alg/alg";
 import { Move } from "../src/alg/move";
 import { Commutator } from "../src/alg/commutator";
@@ -147,5 +147,38 @@ test("Alg.expanded matches Alg.expandedMoves", () => {
         ).toBe(
             testAlg.expandedMoves().join(" ")
         );
+    }
+});
+
+describe("Alg.simplify()", () => {
+    const testCases: [string, string][] = [
+        // Single move simplifications
+        ["R2 F3 L14 B0 D1", "R2 F' L2 D"],
+
+        // Move merging/cancelling
+        ["R U U R", "R U2 R"],
+        ["R U U' R", "R2"],
+        ["R U U' R'", ""],
+
+        // Grouping symbol simplification
+        ["(L U U' L)15", "L2"],
+        ["(R)3", "R'"],
+
+        // Commutator simplification
+        ["[R U2 U2 R', L]2", ""],
+        ["[F D R' L, B0]3'", ""],
+        ["[R2 D U0 D' R R, L2 L L]", ""],
+
+        // Conjugate simplification
+        ["[R: U0]", ""],
+        ["[B2 B' B3: R U R']", "R U R'"],
+        ["[F2 D D3 F6: R D0 R']", ""]
+    ];
+
+    for (const [input, expected] of testCases) {
+        console.log(Alg.fromString(input).simplify());
+        expect(
+            Alg.fromString(input).simplify().expandedMoves().join(" ")
+        ).toEqual(expected);
     }
 });

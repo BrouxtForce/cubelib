@@ -180,50 +180,95 @@ export class Alg implements IAlgMoveNode {
         return outString;
     }
 
+    // TODO: Parallel move simplification
     simplify(): Alg {
-        let changed = true;
-        while (changed) {
-            changed = false;
+        const moveNodeIndices: number[] = [];
+        for (let i = 0; i < this.nodes.length; i++) {
+            let node = this.nodes[i];
+            
+            // Skip over whitespaces and comments
+            if (node.type === "Whitespace" || node.type === "Comment") {
+                continue;
+            }
+            
+            // Simplify the node
+            node.simplify();
+            
+            let gotoPrev = false;
+            switch (node.type) {
+                case "Alg":
+                    // If an inner alg does nothing, remove it
+                    if (node.moveNodes.length === 0) {
+                        this.nodes.splice(i, 1);
+                        gotoPrev = true;
+                        break;
+                    }
+    
+                    // If an inner alg is redundant, expand it into this alg
+                    if (node.amount === 1 || node.moveNodes.length === 1) {
+                        node.moveNodes[0].amount *= node.amount;
+                        this.nodes.splice(i, 1, ...node.nodes);
+                        gotoPrev = true;
+                        break;
+                    }
+                    break;
+                case "Commutator":
+                    // If an inner commutator does nothing, remove it
+                    if (node.algA.moveNodes.length === 0 || node.algB.moveNodes.length === 0) {
+                        this.nodes.splice(i, 1);
+                        gotoPrev = true;
+                        break;
+                    }
+                    break;
+                case "Conjugate":
+                    // If an inner conjugate does nothing, remove it
+                    if (node.algB.moveNodes.length === 0) {
+                        this.nodes.splice(i, 1);
+                        gotoPrev = true;
+                        break;
+                    }
 
-            let prevNode: AlgMoveNode | null = null;
-            let prevNodeIndex = -1;
-            for (let i = 0; i < this.nodes.length; i++) {
-                let node = this.nodes[i];
-
-                // Skip over whitespaces and comments
-                if (node.type === "Whitespace" || node.type === "Comment") {
-                    continue;
-                }
-
-                // Simplify the node
-                node.simplify();
-
-                // If a move does nothing, remove it (e.g. R0, L0, etc.)
-                if (node.type === "Move") {
+                    // If an inner conjugate only has an algB, expand it into this alg
+                    if (node.algA.moveNodes.length === 0) {
+                        this.nodes.splice(i, 1, ...node.algB.nodes);
+                        gotoPrev = true;
+                        break;
+                    }
+                    break;
+                case "Move":
+                    // If a move does nothing, remove it (e.g. R0, L0, etc.)
                     if (node.amount === 0) {
                         this.nodes.splice(i, 1);
-                        i--;
-                        continue;
+                        gotoPrev = true;
+                        break;
                     }
-                }
-
-                // Merge two moves together if possible
-                if (node.type === "Move" && prevNode?.type === "Move") {
-                    if (node.face === prevNode.face) {
-                        changed = true;
-
-                        prevNode.amount += node.amount;
-                        this.nodes.splice(i, 1);
-
-                        i = prevNodeIndex;
-                        continue;
+    
+                    // Merge two moves together if possible
+                    const prevNodeIndex: number | undefined = moveNodeIndices.at(-1);
+                    const prevNode: AlgNode | undefined = (prevNodeIndex !== undefined) ? this.nodes[prevNodeIndex] : undefined;
+                    if (prevNode?.type === "Move") {
+                        if (node.face === prevNode.face) {
+                            prevNode.amount += node.amount;
+                            this.nodes.splice(i, 1);
+                            gotoPrev = true;
+                            break;
+                        }
                     }
-                }
-
-                prevNode = node;
-                prevNodeIndex = i;
+                    break;
             }
+
+            if (gotoPrev) {
+                i = (moveNodeIndices.pop() ?? 0) - 1;
+                continue;
+            }
+
+            moveNodeIndices.push(i);
         }
+
+        const newMoveNodes = this.nodes.filter(node => {
+            return node.type !== "Whitespace" && node.type !== "Comment";
+        }) as AlgMoveNode[];
+        this.moveNodes.splice(0, this.moveNodes.length, ...newMoveNodes);
 
         return this;
     }

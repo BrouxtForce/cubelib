@@ -114,9 +114,9 @@ export class Move {
         return outString;
     }
     simplify() {
-        this.amount %= 4;
-        if (Math.abs(this.amount) === 3) {
-            this.amount = -Math.sign(this.amount);
+        this.amount = (this.amount % 4 + 4) % 4;
+        if (this.amount === 3) {
+            this.amount = -1;
         }
         return this;
     }
