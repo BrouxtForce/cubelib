@@ -139,8 +139,8 @@ export class SiGNTokenInputStream {
                 this.input.next();
                 let comment = this.readWhile((char) => char !== "\n");
                 return {
-                    type: "lineComment",
-                    value: comment,
+                    type: "comment",
+                    value: `//${comment}`,
                     pos, line, col
                 };
             }
@@ -153,8 +153,8 @@ export class SiGNTokenInputStream {
                         this.input.next();
                         this.input.next();
                         return {
-                            type: "blockComment",
-                            value: comment,
+                            type: "comment",
+                            value: `/*${comment}*/`,
                             pos, line, col
                         };
                     }

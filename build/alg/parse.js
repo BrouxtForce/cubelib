@@ -1,8 +1,10 @@
 import { Alg } from "./alg.js";
+import { Comment } from "./comment.js";
 import { Commutator } from "./commutator.js";
 import { Conjugate } from "./conjugate.js";
 import { Move } from "./move.js";
 import { SiGNTokenInputStream } from "./sign-tokens.js";
+import { Whitespace } from "./whitespace.js";
 class TokenStream {
     #tokens;
     #index;
@@ -25,8 +27,7 @@ class TokenStream {
     peekRelevant() {
         for (let i = this.#index; i < this.#tokens.length; i++) {
             switch (this.#tokens[i].type) {
-                case "blockComment":
-                case "lineComment":
+                case "comment":
                 case "whitespace":
                     continue;
             }
@@ -50,6 +51,12 @@ function parseExpression(stream, root = false, paren = false) {
         if (token.type === "move") {
             leftNodes.push(Move.fromString(token.value));
             continue;
+        }
+        if (token.type === "whitespace") {
+            leftNodes.push(new Whitespace(token.value));
+        }
+        if (token.type === "comment") {
+            leftNodes.push(new Comment(token.value));
         }
         if (token.type === "variable") {
             const variableAlg = variableMap.get(token.value);
@@ -131,7 +138,7 @@ function parseExpression(stream, root = false, paren = false) {
     return new Alg(leftNodes);
 }
 export function parseTokens(tokens) {
-    const stream = new TokenStream(tokens.filter(token => (token.type !== "blockComment" && token.type !== "lineComment" && token.type !== "whitespace")));
+    const stream = new TokenStream(tokens);
     variableMap.clear();
     errors.length = 0;
     return parseExpression(stream, true);

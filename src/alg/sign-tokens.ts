@@ -46,7 +46,7 @@ export class CharacterInputStream {
 }
 
 export interface SiGNToken {
-    type: "move" | "punctuation" | "whitespace" | "lineComment" | "blockComment" | "variable";
+    type: "move" | "punctuation" | "whitespace" | "comment" | "variable";
     value: string;
     amount?: number; // Only used for punctuation and variables
 
@@ -170,8 +170,8 @@ export class SiGNTokenInputStream {
 
                 let comment = this.readWhile((char: string) => char !== "\n");
                 return {
-                    type: "lineComment",
-                    value: comment,
+                    type: "comment",
+                    value: `//${comment}`,
                     pos, line, col
                 };
             }
@@ -187,8 +187,8 @@ export class SiGNTokenInputStream {
                         this.input.next(); // Reads '*'
                         this.input.next(); // Reads '/'
                         return {
-                            type: "blockComment",
-                            value: comment,
+                            type: "comment",
+                            value: `/*${comment}*/`,
                             pos, line, col
                         };
                     }

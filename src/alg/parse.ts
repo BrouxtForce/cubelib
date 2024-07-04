@@ -1,8 +1,10 @@
-import { Alg, AlgMoveNode } from "./alg.js";
+import { Alg, AlgNode } from "./alg.js";
+import { Comment } from "./comment.js";
 import { Commutator } from "./commutator.js";
 import { Conjugate } from "./conjugate.js";
 import { Move } from "./move.js";
 import { SiGNTokenInputStream, type SiGNToken } from "./sign-tokens.js";
+import { Whitespace } from "./whitespace.js";
 
 class TokenStream {
     readonly #tokens: SiGNToken[];
@@ -28,8 +30,7 @@ class TokenStream {
     peekRelevant(): SiGNToken | null {
         for (let i = this.#index; i < this.#tokens.length; i++) {
             switch (this.#tokens[i].type) {
-                case "blockComment":
-                case "lineComment":
+                case "comment":
                 case "whitespace":
                     continue;
             }
@@ -50,7 +51,7 @@ const variableMap = new Map<string, Alg>();
 const errors: ParseError[] = [];
 
 function parseExpression(stream: TokenStream, root: boolean = false, paren: boolean = false): Alg {
-    let leftNodes: AlgMoveNode[] = [];
+    let leftNodes: AlgNode[] = [];
 
     while (true) {
         const token = stream.next();
@@ -65,6 +66,12 @@ function parseExpression(stream: TokenStream, root: boolean = false, paren: bool
         if (token.type === "move") {
             leftNodes.push(Move.fromString(token.value));
             continue;
+        }
+        if (token.type === "whitespace") {
+            leftNodes.push(new Whitespace(token.value));
+        }
+        if (token.type === "comment") {
+            leftNodes.push(new Comment(token.value));
         }
 
         if (token.type === "variable") {
@@ -150,7 +157,7 @@ function parseExpression(stream: TokenStream, root: boolean = false, paren: bool
 }
 
 export function parseTokens(tokens: SiGNToken[]): Alg {
-    const stream = new TokenStream(tokens.filter(token => (token.type !== "blockComment" && token.type !== "lineComment" && token.type !== "whitespace")));
+    const stream = new TokenStream(tokens);
 
     variableMap.clear();
     errors.length = 0;

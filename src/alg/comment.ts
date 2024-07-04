@@ -4,21 +4,16 @@ export class Comment implements IAlgNonMoveNode {
     public readonly type = "Comment" as const;
     
     public value: string;
-    public commentType: "blockComment" | "lineComment";
 
-    constructor(comment: string, commentType: "blockComment" | "lineComment") {
+    constructor(comment: string) {
         this.value = comment;
-        this.commentType = commentType;
     }
 
     copy(): Comment {
-        return new Comment(this.value, this.commentType);
+        return new Comment(this.value);
     }
 
     toString(): string {
-        if (this.commentType === "lineComment") {
-            return `//${this.value}`;
-        }
-        return `/*${this.value}*/`;
+        return this.value;
     }
 }
