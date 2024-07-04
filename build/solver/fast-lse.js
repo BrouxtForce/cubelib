@@ -120,9 +120,6 @@ export var FastLSE;
         if (tableValue === undefined || numMoves < tableValue) {
             table.set(state, numMoves);
         }
-        else {
-            return;
-        }
         if (depth < 1) {
             return;
         }
@@ -226,14 +223,18 @@ export var FastLSE;
             eolrState = setNibble(eolrState, DB_INDEX, dbEdge & 0b1000);
         return eolrState;
     }
-    function solveEOLR(state, depth) {
+    function solveEolr(state, depth) {
         const solutions = [];
         const eolrState = getEolrState(state);
         search(eolrState, depth, true, [], solutions, eolrTable, eolrTableSize);
         search(eolrState, depth, false, [], solutions, eolrTable, eolrTableSize);
         return solutions;
     }
-    FastLSE.solveEOLR = solveEOLR;
+    FastLSE.solveEolr = solveEolr;
+    function isEolrSolved(state) {
+        return eolrTable.has(state);
+    }
+    FastLSE.isEolrSolved = isEolrSolved;
     function stateToString(state) {
         const centerPermutation = getNibble(state, CENTER_INDEX);
         const centers = ["U", "B", "D", "F"];

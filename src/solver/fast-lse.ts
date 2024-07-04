@@ -1,5 +1,3 @@
-import { Cube } from "../cube/cube.js";
-
 /**
  * A namespace for executing M and U moves quickly and finding many LSE solutions
  */
@@ -154,14 +152,12 @@ export namespace FastLSE {
         const tableValue = table.get(state);
         if (tableValue === undefined || numMoves < tableValue) {
             table.set(state, numMoves);
-        } else {
-            return;
         }
 
         if (depth < 1) {
             return;
         }
-        
+
         const start = mMove ? 1 : 4;
         const end = mMove ? 4 : 7;
         for (let i = start; i < end; i++) {
@@ -268,7 +264,7 @@ export namespace FastLSE {
         return eolrState;
     }
 
-    export function solveEOLR(state: LSEState, depth: number): string[] {
+    export function solveEolr(state: LSEState, depth: number): string[] {
         const solutions: string[] = [];
 
         const eolrState = getEolrState(state);
@@ -276,6 +272,10 @@ export namespace FastLSE {
         search(eolrState, depth, false, [], solutions, eolrTable, eolrTableSize);
 
         return solutions;
+    }
+
+    export function isEolrSolved(state: LSEState): boolean {
+        return eolrTable.has(state);
     }
 
     export function stateToString(state: LSEState): string {
